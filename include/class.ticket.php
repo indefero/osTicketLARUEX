@@ -100,6 +100,7 @@ class TicketModel extends VerySimpleModel {
     const PERM_CLOSE    = 'ticket.close';
     const PERM_DELETE   = 'ticket.delete';
 
+    const TEXTO_PREASIGNACION_AGENTE = "Preasignación de agente hecha por el usuario";
 
     static protected $perms = array(
             self::PERM_CREATE => array(
@@ -1711,6 +1712,9 @@ implements RestrictedAccess, Threadable {
         $user_comments = (bool) $comments;
         $comments = $comments ?: _S('Ticket Assignment');
         $assigner = $thisstaff ?: _S('SYSTEM (Auto Assignment)');
+        if ($comments == self::TEXTO_PREASIGNACION_AGENTE) {
+            $assigner = $this->getUser()->getFullName();
+        }
 
         //Log an internal note - no alerts on the internal note.
         if ($user_comments) {
@@ -3387,7 +3391,14 @@ implements RestrictedAccess, Threadable {
         $form->save();
 
         // Save the form data from the help-topic form, if any
+        $idAgente = "";
+        $nombreAgente = null;
         foreach ($topic_forms as $topic_form) {
+            if ($campoAgente = $topic_form->getField("agente")) {
+                $agente = $campoAgente->getWidget()->getValue();
+                $idAgente = array_keys($agente)[0];
+                $nombreAgente = $agente[$idAgente];
+            }
             $topic_form->setTicketId($ticket->getId());
             $topic_form->save();
         }
@@ -3444,8 +3455,16 @@ implements RestrictedAccess, Threadable {
 
         // Only do assignment if the ticket is in an open state
         if ($ticket->isOpen()) {
+            // Asigno el ticket al agente que escoge el usuario o si no...
             // Assign ticket to staff or team (new ticket by staff)
-            if ($vars['assignId']) {
+            if ($idAgente != "") {
+                if (substr($idAgente, 0, 1) == 's') {
+                    $agente = Staff::lookup(substr($idAgente, 1, 1));
+                    $ticket->assignToStaff($agente->getId(), 
+                            self::TEXTO_PREASIGNACION_AGENTE);
+                    $ticket->setDeptId($agente->getDeptId());
+                }
+            } elseif ($vars['assignId']) {
                 $asnform = $ticket->getAssignmentForm(array(
                             'assignee' => $vars['assignId'],
                             'comments' => $vars['note'])

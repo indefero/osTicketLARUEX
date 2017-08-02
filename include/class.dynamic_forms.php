@@ -1385,7 +1385,11 @@ class DynamicFormEntryAnswer extends VerySimpleModel {
     }
 
     function display() {
-        return $this->getField()->display($this->getValue());
+        // La primera parte del if la puse para que se mostrara el nombre del agente en lugar de su id
+        if ($this->getIdValue())
+            return $this->getField()->display($this->value);
+        else
+            return $this->getField()->display($this->getValue());
     }
 
     function getSearchable($include_label=false) {
