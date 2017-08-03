@@ -56,6 +56,14 @@ implements TemplateVariable {
     function getUpdateDate() {
         return $this->updated;
     }
+    
+    function getAlertStaff() {
+        return $this->alert_staff;
+    }
+    
+    function getNextSla() {
+        return $this->next_sla;
+    }
 
     function isActive() {
         return $this->flags & self::FLAG_ACTIVE;

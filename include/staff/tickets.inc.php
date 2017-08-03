@@ -92,7 +92,8 @@ case 'closed':
 case 'overdue':
     $status='open';
     $results_type=__('Overdue Tickets');
-    $tickets->filter(array('isoverdue'=>1));
+    //$tickets->filter(array('isoverdue'=>1));  // Si sólo se caduca una vez
+    $tickets->exclude(array('isoverdue'=>0));   // Para permitir N caducidades
     $queue_sort_options = array('priority,due', 'due', 'priority,updated',
         'updated', 'answered', 'priority,created', 'number', 'hot');
     break;
@@ -372,9 +373,11 @@ TicketForm::ensureDynamicDataView();
 
 // Select pertinent columns
 // ------------------------------------------------------------
-$tickets->values('lock__staff_id', 'staff_id', 'isoverdue', 'team_id',
+$tickets->values('lock__staff_id', 'staff_id', 'isoverdue', 'team_id', 'last_duedate',
 'ticket_id', 'number', 'cdata__subject', 'user__default_email__address',
-'source', 'cdata__:priority__priority_color', 'cdata__:priority__priority_desc', 'status_id', 'status__name', 'status__state', 'dept_id', 'dept__name', 'user__name', 'lastupdate', 'isanswered', 'staff__firstname', 'staff__lastname', 'team__name');
+'source', 'cdata__:priority__priority_color', 'cdata__:priority__priority_desc', 
+'status_id', 'status__name', 'status__state', 'dept_id', 'dept__name', 'user__name', 
+'lastupdate', 'isanswered', 'staff__firstname', 'staff__lastname', 'team__name');
 
 // Add in annotations
 $tickets->annotate(array(
@@ -547,7 +550,9 @@ return false;">
                     href="tickets.php?id=<?php echo $T['ticket_id']; ?>"
                     data-preview="#tickets/<?php echo $T['ticket_id']; ?>/preview"
                     ><?php echo $tid; ?></a></td>
-                <td align="center" nowrap><?php echo Format::datetime($T[$date_col ?: 'lastupdate']) ?: $date_fallback; ?></td>
+                <td align="center" nowrap><?php 
+                    echo Format::datetime($T[$date_col ?: 'lastupdate']) ?: $date_fallback;
+                ?></td>
                 <td><div style="max-width: <?php
                     $base = 279;
                     // Make room for the paperclip and some extra

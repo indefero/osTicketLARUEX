@@ -337,7 +337,7 @@ implements RestrictedAccess, Threadable {
     }
 
     function isOverdue() {
-        return $this->ht['isoverdue'];
+        return $this->ht['isoverdue']>0;
     }
 
     function isAnswered() {
@@ -488,11 +488,19 @@ implements RestrictedAccess, Threadable {
     function getDueDate() {
         return $this->duedate;
     }
+    
+    function getLastDueDate() {
+        return $this->last_duedate;
+    }
 
     function getSLADueDate() {
         if ($sla = $this->getSLA()) {
-            $dt = new DateTime($this->getCreateDate());
-
+            $dt;
+            if (!$this->isOverdue()) {
+                $dt = new DateTime($this->getCreateDate());
+            } else {
+                $dt = new DateTime($this->getLastDueDate());
+            }
             return $dt
                 ->add(new DateInterval('PT' . $sla->getGracePeriod() . 'H'))
                 ->format('Y-m-d H:i:s');
@@ -1831,6 +1839,13 @@ implements RestrictedAccess, Threadable {
             ) {
                 $recipients[]= $manager;
             }
+            // Ahora añadimos la notificación al agente especificado en el SLA
+            if ($sla && ($alertStaffId = $sla->getAlertStaff())) {
+                $alertStaff = Staff::lookup($alertStaffId);
+                // Da igual que se repita el agente en la lista porque después
+                // se comprueba que no se repitan correos electrónicos.
+                $recipients[]=$alertStaff;
+            }
             $sentlist = array();
             foreach ($recipients as $k=>$staff) {
                 if (!is_object($staff)
@@ -1970,15 +1985,38 @@ implements RestrictedAccess, Threadable {
     function markOverdue($whine=true) {
         global $cfg;
 
-        if ($this->isOverdue())
-            return true;
+        // Ya no basta con saber que está caducado sino cuantas veces y por qué
+        /*if ($this->isOverdue())
+            return true;*/
 
-        $this->isoverdue = 1;
-        if (!$this->save())
-            return false;
-
+        // Notificamos primero para no cambiar el SLA y que se notifique al
+        // agente equivocado
         $this->logEvent('overdue');
         $this->onOverdue($whine);
+
+        // Si caducó por SLA...
+        if ($this->getSLADueDate() && Misc::db2gmtime($this->getSLADueDate()) <= Misc::gmtime()) {
+            $this->last_duedate = SqlFunction::NOW();
+            // ...y hay otro encadenado se le asocia...
+            if ($this->sla && ($nextSlaId = $this->sla->getNextSla()))
+                $this->setSLAId($nextSlaId);
+            else // ...pero si no hay otro encadenado se elimina la asociación
+                $this->sla = null;
+        }
+        
+        // Si caducó por fecha de caducidad se elimina dicha fecha
+        if ($this->getDueDate() && Misc::db2gmtime($this->getDueDate()) <= Misc::gmtime())
+            $this->duedate = null;
+        
+        // Se añade una caducidad al contador
+        $this->isoverdue += 1;
+        
+        // Update estimated due date in database
+        $estimatedDueDate = $this->getEstDueDate();
+        $this->updateEstDueDate();
+        
+        if (!$this->save())
+            return false;
 
         return true;
     }
@@ -3670,11 +3708,13 @@ implements RestrictedAccess, Threadable {
             .' INNER JOIN '.TICKET_STATUS_TABLE.' status
                 ON (status.id=T1.status_id AND status.state="open") '
             .' LEFT JOIN '.SLA_TABLE.' T2 ON (T1.sla_id=T2.id AND T2.flags & 1 = 1) '
-            .' WHERE isoverdue=0 '
+            .' WHERE (duedate is NOT NULL AND duedate<NOW()) '
+            .' OR (isoverdue = 0 '
             .' AND ((reopened is NULL AND duedate is NULL AND TIME_TO_SEC(TIMEDIFF(NOW(),T1.created))>=T2.grace_period*3600) '
-            .' OR (reopened is NOT NULL AND duedate is NULL AND TIME_TO_SEC(TIMEDIFF(NOW(),reopened))>=T2.grace_period*3600) '
-            .' OR (duedate is NOT NULL AND duedate<NOW()) '
-            .' ) ORDER BY T1.created LIMIT 50'; //Age upto 50 tickets at a time?
+            .' OR (reopened is NOT NULL AND duedate is NULL AND TIME_TO_SEC(TIMEDIFF(NOW(),reopened))>=T2.grace_period*3600))) '
+            .' OR (isoverdue > 0 ' 
+            .' AND (duedate is NULL AND TIME_TO_SEC(TIMEDIFF(NOW(),T1.last_duedate))>=T2.grace_period*3600)) '
+            .' ORDER BY T1.created LIMIT 50'; //Age upto 50 tickets at a time?
 
         if(($res=db_query($sql)) && db_num_rows($res)) {
             while(list($id)=db_fetch_row($res)) {

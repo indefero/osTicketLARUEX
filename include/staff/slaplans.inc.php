@@ -84,11 +84,13 @@ $qstr .= '&amp;order='.($order=='DESC' ? 'ASC' : 'DESC');
     <thead>
         <tr>
             <th width="4%">&nbsp;</th>
-            <th width="38%"><a <?php echo $name_sort; ?> href="slas.php?<?php echo $qstr; ?>&sort=name"><?php echo __('Name');?></a></th>
+            <th width="25%"><a <?php echo $name_sort; ?> href="slas.php?<?php echo $qstr; ?>&sort=name"><?php echo __('Name');?></a></th>
             <th width="8%"><a <?php echo $status_sort; ?> href="slas.php?<?php echo $qstr; ?>&sort=status"><?php echo __('Status');?></a></th>
             <th><a <?php echo $period_sort; ?> href="slas.php?<?php echo $qstr; ?>&sort=period"><?php echo __('Grace Period (hrs)');?></a></th>
-            <th width="15%" nowrap><a <?php echo $created_sort; ?>href="slas.php?<?php echo $qstr; ?>&sort=created"><?php echo __('Date Added');?></a></th>
-            <th width="20%" nowrap><a <?php echo $updated_sort; ?>href="slas.php?<?php echo $qstr; ?>&sort=updated"><?php echo __('Last Updated');?></a></th>
+            <th width="13%" nowrap><a <?php echo $created_sort; ?>href="slas.php?<?php echo $qstr; ?>&sort=created"><?php echo __('Date Added');?></a></th>
+            <th width="15%" nowrap><a <?php echo $updated_sort; ?>href="slas.php?<?php echo $qstr; ?>&sort=updated"><?php echo __('Last Updated');?></a></th>
+            <th width="10%" nowrap><?php echo "Notificar Agente";?></th>
+            <th width="10%" nowrap><?php echo "SLA enlazado";?></th>
         </tr>
     </thead>
     <tbody>
@@ -126,6 +128,16 @@ $qstr .= '&amp;order='.($order=='DESC' ? 'ASC' : 'DESC');
                 <td style="text-align:right;padding-right:35px;"><?php echo $sla->getGracePeriod(); ?>&nbsp;</td>
                 <td>&nbsp;<?php echo Format::date($sla->getCreateDate()); ?></td>
                 <td>&nbsp;<?php echo Format::datetime($sla->getUpdateDate()); ?></td>
+                <td>&nbsp;<?php 
+                    if ($id = $sla->getAlertStaff()) {
+                        echo Staff::lookup($id)->getName();
+                    }
+                ?></td>
+                <td>&nbsp;<?php 
+                    if ($id = $sla->getNextSla()) {
+                        echo SLA::lookup($id)->getName(); 
+                    }
+                ?></td>
             </tr>
             <?php
             } //end of foreach.

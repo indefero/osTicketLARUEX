@@ -89,6 +89,36 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
                     <em><?php echo __('(Override global setting)'); ?></em>
             </td>
         </tr>
+        <?php
+            if ($sla && $_REQUEST['a']!='add') {
+                ?>
+            <tr>
+                <td width="180">
+                    <?php echo "Notificar agente";?>:
+                </td>
+                <td>
+                    <?php 
+                        if ($id = $sla->getAlertStaff()) {
+                            echo Staff::lookup($id)->getName();
+                        } 
+                    ?>
+                </td>
+            </tr>
+            <tr>
+                <td width="180">
+                    <?php echo "SLA enlazado";?>:
+                </td>
+                <td>
+                    <?php 
+                        if ($id = $sla->getNextSla()) {
+                            echo SLA::lookup($id)->getName(); 
+                        }
+                    ?>
+                </td>
+            </tr>
+                <?php
+            }
+        ?>
         <tr>
             <th colspan="2">
                 <em><strong><?php echo __('Internal Notes');?></strong>: <?php echo __("Be liberal, they're internal");?>
