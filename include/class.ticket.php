@@ -1224,6 +1224,30 @@ implements RestrictedAccess, Threadable {
                 if ($thisstaff && $set_closing_agent)
                     $this->staff = $thisstaff;
                 $this->clearOverdue(false);
+                
+                // Notificar el cierre al agente correspondiente según el tipo de ticket
+                if (($dept = $this->getDept())
+                        && ($tpl = $dept->getTemplate())
+                        && ($msg = $tpl->getClosedAlertMsgTemplate())
+                        && ($email = $dept->getAlertEmail())) {
+                    $msg = $this->replaceVars($msg->asArray(),
+                        array('comments' => $comments)
+                    );
+                    $tipoTicket = $this->getTopic();
+                    $idAgente = null;
+                    // Buscamos el id del agente de forma recursiva recorriendo los tipos de
+                    // tickets de abajo a arriba hasta encontrar uno o determinar que no hay
+                    while (!$idAgente && $tipoTicket) {
+                        $idAgente = $tipoTicket->getCloseAlert();
+                        $tipoTicket = $tipoTicket->getParent();
+                    }
+                    // Si se encontró alguno se notifica el cierre
+                    if ($idAgente) {
+                        $agente = Staff::lookup($idAgente);
+                        $alert = $this->replaceVars($msg, array('recipient' => $agente));
+                        $email->sendAlert($agente, $alert['subj'], $alert['body'], null);
+                    }
+                }
 
                 $ecb = function($t) use ($status) {
                     $t->logEvent('closed', array('status' => array($status->getId(), $status->getName())));

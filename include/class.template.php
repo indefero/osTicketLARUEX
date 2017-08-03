@@ -132,6 +132,14 @@ class EmailTemplateGroup {
                 'ticket', 'recipient', 'comments',
             ),
         ),
+        'ticket.closed'=>array(
+            'group'=>'b.ticket.staff',
+            'name'=>/* @trans */ 'Closed Ticket Alert',
+            'desc'=>/* @trans */ 'Alert sent to agents on closed tickets.',
+            'context' => array(
+                'ticket', 'recipient', 'comments',
+            ),
+        ),
         'task.alert' => array(
             'group'=>'c.task',
             'name'=>/* @trans */ 'New Task Alert',
@@ -347,6 +355,10 @@ class EmailTemplateGroup {
 
     function getOverdueAlertMsgTemplate() {
         return $this->getMsgTemplate('ticket.overdue');
+    }
+    
+    function getClosedAlertMsgTemplate() {
+        return $this->getMsgTemplate('ticket.closed');
     }
 
     /* Tasks templates */

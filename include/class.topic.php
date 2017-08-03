@@ -139,6 +139,10 @@ implements TemplateVariable {
     function getStaffId() {
         return $this->staff_id;
     }
+    
+    function getCloseAlert() {
+        return $this->close_alert;
+    }
 
     function getTeamId() {
         return $this->team_id;
