@@ -41,8 +41,8 @@ define('ADMIN_EMAIL','carlos.nunez@juntaex.es');
 define('DBTYPE','mysql');
 define('DBHOST','localhost');
 define('DBNAME','osticket');
-define('DBUSER','root');
-define('DBPASS','pw0183');
+define('DBUSER','admin');
+define('DBPASS','admin');
 
 # Table prefix
 define('TABLE_PREFIX','ost_');
