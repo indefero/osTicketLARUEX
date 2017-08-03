@@ -405,7 +405,7 @@ if($ticket->isOverdue())
                 if($ticket->isOpen()){ ?>
                 <tr>
                     <th><?php echo __('Due Date');?>:</th>
-                    <td><?php echo Format::datetime($ticket->getEstDueDate()); ?></td>
+                    <td><?php echo Format::datetime($ticket->getEstDueDate()?:$ticket->getLastDueDate()); // Se ha añadido la última fecha de vencimiento ?></td>
                 </tr>
                 <?php
                 }else { ?>

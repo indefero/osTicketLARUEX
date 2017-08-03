@@ -551,7 +551,11 @@ return false;">
                     data-preview="#tickets/<?php echo $T['ticket_id']; ?>/preview"
                     ><?php echo $tid; ?></a></td>
                 <td align="center" nowrap><?php 
-                    echo Format::datetime($T[$date_col ?: 'lastupdate']) ?: $date_fallback;
+                    // Esto permite poner la fecha del último vencimiento cuando ya no va a haber más
+                    if ($date_col && $date_col === 'est_duedate' && !$T[$date_col])
+                        echo Format::datetime($T['last_duedate']);
+                    else
+                        echo Format::datetime($T[$date_col ?: 'lastupdate']) ?: $date_fallback;
                 ?></td>
                 <td><div style="max-width: <?php
                     $base = 279;
