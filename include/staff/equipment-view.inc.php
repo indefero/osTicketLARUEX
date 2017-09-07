@@ -186,6 +186,14 @@ $tcount = $equipment->getThreadEntries($types)->count();
             echo sprintf('&nbsp;(<span id="equipment-reservations-count">%d</span>)', $equipment->getNumReservations());
         ?></a>
     </li>
+    <li><a id="equipment-hist-reservations-tab" href="#hist-reservations"
+            data-url="<?php
+        echo sprintf('#equipments/%d/hist-reservations', $equipment->getId()); ?>"><?php
+        echo __('Reservas archivadas');
+        if ($count=$equipment->getNumHistReservations())
+            echo sprintf('&nbsp;(<span id="equipment-reservations-count">%d</span>)', $count);
+        ?></a>
+    </li>
     <?php } ?>
 </ul>
 

@@ -189,6 +189,7 @@ $dispatcher = patterns('',
         url_get('^status/(?P<status>\w+)(?:/(?P<sid>\d+))?$', 'changeSelectedEquipmentStatus'),
         url_post('^status/(?P<state>\w+)$', 'setSelectedEquipmentStatus'),
         url_get('^(?P<tid>\d+)/reservations$', 'reservations'),
+        url_get('^(?P<tid>\d+)/hist-reservations$', 'histReservations'),
         url('^(?P<tid>\d+)/add-reservation$', 'addReservation')
     )),
     url('^/reservations/', patterns('ajax.reservations.php:ReservationsAjaxAPI',

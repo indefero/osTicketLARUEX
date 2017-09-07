@@ -1114,6 +1114,15 @@ class EquipmentAjaxAPI extends AjaxController {
 
          include STAFFINC_DIR . 'equipment-reservations.inc.php';
     }
+    
+    function histReservations($tid) {
+        global $thisstaff;
+
+        if (!($equipment=equipment::lookup($tid)))
+            Http::response(404, 'Unknown equipment');
+
+         include STAFFINC_DIR . 'equipment-hist-reservations.inc.php';
+    }
 
     function addReservation($tid) {
         global $thisstaff;

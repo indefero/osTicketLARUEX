@@ -239,6 +239,16 @@ implements Threadable {
     function getNumReservations() {
         return count($this->reservations);
     }
+    
+    function getNumHistReservations() {
+        $count = 0;
+        $sql='SELECT 1 FROM '.HIST_RESERVATION_TABLE.' T1 '
+                .' WHERE equipment_id = '.$this->getId().';';
+        if ($res = db_query($sql)) {
+            $count=db_num_rows($res);
+        }
+        return $count;
+    }
 
     function getThreadCount() {
         return $this->getClientThread()->count();
