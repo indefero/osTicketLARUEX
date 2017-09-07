@@ -38,6 +38,7 @@ $action = $info[':action'] ?: ('#');
         </tbody>
         <?php
         }
+        if (strcmp($action, "#reservations/mass/delete") != 0) {
        ?>
         <tbody>
             <tr>
@@ -54,11 +55,14 @@ $action = $info[':action'] ?: ('#');
                 </td>
             </tr>
         </tbody>
+        <?php } ?>
     </table>
     <hr>
     <p class="full-width">
         <span class="buttons pull-left">
-            <input type="reset" value="<?php echo __('Reset'); ?>">
+            <?php if (strcmp($action, "#reservations/mass/delete") != 0) { ?>
+                <input type="reset" value="<?php echo __('Reset'); ?>">
+            <?php } ?>
             <input type="button" name="cancel" class="close"
             value="<?php echo __('Cancel'); ?>">
         </span>

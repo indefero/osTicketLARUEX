@@ -16,12 +16,12 @@
 
 if(!defined('INCLUDE_DIR')) die('403');
 
-include_once(INCLUDE_DIR.'class.ticket.php');
+include_once(INCLUDE_DIR.'class.equipment.php');
 require_once(INCLUDE_DIR.'class.ajax.php');
 require_once(INCLUDE_DIR.'class.note.php');
 include_once INCLUDE_DIR.'class.thread_actions.php';
 
-class TicketsAjaxAPI extends AjaxController {
+class EquipmentAjaxAPI extends AjaxController {
 
     function lookup() {
         global $thisstaff;
@@ -93,20 +93,20 @@ class TicketsAjaxAPI extends AjaxController {
         return $this->json_encode($tickets);
     }
 
-    function acquireLock($tid) {
+    function acquireLock($eid) {
         global $cfg, $thisstaff;
 
         if(!$cfg || !$cfg->getLockTime() || $cfg->getTicketLockMode() == Lock::MODE_DISABLED)
             Http::response(418, $this->encode(array('id'=>0, 'retry'=>false)));
 
-        if(!$tid || !is_numeric($tid) || !$thisstaff)
+        if(!$eid || !is_numeric($eid) || !$thisstaff)
             return 0;
 
-        if (!($ticket = Ticket::lookup($tid)) || !$ticket->checkStaffPerm($thisstaff))
+        if (!($equipment = Equipment::lookup($eid)))
             return $this->encode(array('id'=>0, 'retry'=>false, 'msg'=>__('Lock denied!')));
 
         //is the ticket already locked?
-        if ($ticket->isLocked() && ($lock=$ticket->getLock()) && !$lock->isExpired()) {
+        if ($equipment->isLocked() && ($lock=$equipment->getLock()) && !$lock->isExpired()) {
             /*Note: Ticket->acquireLock does the same logic...but we need it here since we need to know who owns the lock up front*/
             //Ticket is locked by someone else.??
             if ($lock->getStaffId() != $thisstaff->getId())
@@ -117,7 +117,7 @@ class TicketsAjaxAPI extends AjaxController {
 
             //Ticket already locked by staff...try renewing it.
             $lock->renew(); //New clock baby!
-        } elseif(!($lock=$ticket->acquireLock($thisstaff->getId(),$cfg->getLockTime()))) {
+        } elseif(!($lock=$equipment->acquireLock($thisstaff->getId(),$cfg->getLockTime()))) {
             //unable to obtain the lock..for some really weired reason!
             //Client should watch for possible loop on retries. Max attempts?
             return $this->json_encode(array('id'=>0, 'retry'=>true));
@@ -129,20 +129,20 @@ class TicketsAjaxAPI extends AjaxController {
         ));
     }
 
-    function renewLock($id, $ticketId) {
+    function renewLock($id, $equipmentId) {
         global $thisstaff;
 
         if (!$id || !is_numeric($id) || !$thisstaff)
             Http::response(403, $this->encode(array('id'=>0, 'retry'=>false)));
         if (!($lock = Lock::lookup($id)))
             Http::response(404, $this->encode(array('id'=>0, 'retry'=>'acquire')));
-        if (!($ticket = Ticket::lookup($ticketId)) || $ticket->lock_id != $lock->lock_id)
+        if (!($equipment = Equipment::lookup($equipmentId)) || $equipment->lock_id != $lock->lock_id)
             // Ticket / Lock mismatch
             Http::response(400, $this->encode(array('id'=>0, 'retry'=>false)));
 
         if (!$lock->getStaffId() || $lock->isExpired())
             // Said lock doesn't exist or is is expired — fetch a new lock
-            return self::acquireLock($ticket->getId());
+            return self::acquireLock($equipment->getId());
 
         if ($lock->getStaffId() != $thisstaff->getId())
             // user doesn't own the lock anymore??? sorry...try to next time.
@@ -150,13 +150,6 @@ class TicketsAjaxAPI extends AjaxController {
                 'msg' => sprintf(__('Currently locked by %s'),
                     $lock->getStaff->getAvatarAndName())
             ))); //Give up...
-
-        // Ensure staff still has access
-        if (!$ticket->checkStaffPerm($thisstaff))
-            Http::response(403, $this->encode(array('id'=>0, 'retry'=>false,
-                'msg' => sprintf(__('You no longer have access to #%s.'),
-                $ticket->getNumber())
-            )));
 
         // Renew the lock.
         // Failure here is not an issue since the lock is not expired yet.. client need to check time!
@@ -810,113 +803,75 @@ class TicketsAjaxAPI extends AjaxController {
 
     }
 
-    function changeTicketStatus($tid, $status, $id=0) {
+    function changeEquipmentStatus($tid, $status, $id=0) {
         global $thisstaff;
 
         if (!$thisstaff)
             Http::response(403, 'Access denied');
         elseif (!$tid
-                || !($ticket=Ticket::lookup($tid))
-                || !$ticket->checkStaffPerm($thisstaff))
-            Http::response(404, 'Unknown ticket #');
-
-        $role = $thisstaff->getRole($ticket->getDeptId());
+                || !($equipment=Equipment::lookup($tid)))
+            Http::response(404, 'Unknown equipment #');
 
         $info = array();
         $state = null;
         switch($status) {
-            case 'open':
-            case 'reopen':
-                $state = 'open';
+            case 'activate':
+                $state = 'active';
                 break;
-            case 'close':
-                if (!$role->hasPerm(TicketModel::PERM_CLOSE))
-                    Http::response(403, 'Access denied');
-                $state = 'closed';
-
-                // Check if ticket is closeable
-                if (is_string($closeable=$ticket->isCloseable()))
-                    $info['warn'] =  $closeable;
-
+            case 'deactivate':
+                $state = 'inactive';
+                break;
+            case 'retire':
+                $state = 'retired';
                 break;
             case 'delete':
-                if (!$role->hasPerm(TicketModel::PERM_DELETE))
-                    Http::response(403, 'Access denied');
                 $state = 'deleted';
                 break;
             default:
-                $state = $ticket->getStatus()->getState();
+                $state = $equipment->getStatus()->getState();
                 $info['warn'] = sprintf(__('%s: Unknown or invalid'),
                         __('status'));
         }
 
-        $info['status_id'] = $id ?: $ticket->getStatusId();
+        $info['status_id'] = $id ?: $equipment->getStatusId();
 
-        return self::_changeTicketStatus($ticket, $state, $info);
+        return self::_changeEquipmentStatus($equipment, $state, $info);
     }
 
-    function setTicketStatus($tid) {
+    function setEquipmentStatus($tid) {
         global $thisstaff, $ost;
 
         if (!$thisstaff)
             Http::response(403, 'Access denied');
         elseif (!$tid
-                || !($ticket=Ticket::lookup($tid))
-                || !$ticket->checkStaffPerm($thisstaff))
-            Http::response(404, 'Unknown ticket #');
+                || !($equipment=Equipment::lookup($tid)))
+            Http::response(404, 'Unknown equipment #');
 
         $errors = $info = array();
         if (!$_POST['status_id']
-                || !($status= TicketStatus::lookup($_POST['status_id'])))
+                || !($status= EquipmentStatus::lookup($_POST['status_id'])))
             $errors['status_id'] = sprintf('%s %s',
                     __('Unknown or invalid'), __('status'));
-        elseif ($status->getId() == $ticket->getStatusId())
-            $errors['err'] = sprintf(__('Ticket already set to %s status'),
+        elseif ($status->getId() == $equipment->getStatusId())
+            $errors['err'] = sprintf(__('Equipamiento ya en estado %s'),
                     __($status->getName()));
-        elseif (($role = $thisstaff->getRole($ticket->getDeptId()))) {
-            // Make sure the agent has permission to set the status
-            switch(mb_strtolower($status->getState())) {
-                case 'open':
-                    if (!$role->hasPerm(TicketModel::PERM_CLOSE)
-                            && !$role->hasPerm(TicketModel::PERM_CREATE))
-                        $errors['err'] = sprintf(__('You do not have permission %s'),
-                                __('to reopen tickets'));
-                    break;
-                case 'closed':
-                    if (!$role->hasPerm(TicketModel::PERM_CLOSE))
-                        $errors['err'] = sprintf(__('You do not have permission %s'),
-                                __('to resolve/close tickets'));
-                    break;
-                case 'deleted':
-                    if (!$role->hasPerm(TicketModel::PERM_DELETE))
-                        $errors['err'] = sprintf(__('You do not have permission %s'),
-                                __('to archive/delete tickets'));
-                    break;
-                default:
-                    $errors['err'] = sprintf('%s %s',
-                            __('Unknown or invalid'), __('status'));
-            }
-        } else {
-            $errors['err'] = __('Access denied');
-        }
 
         $state = strtolower($status->getState());
 
-        if (!$errors && $ticket->setStatus($status, $_REQUEST['comments'], $errors)) {
+        if (!$errors && $equipment->setStatus($status, $_REQUEST['comments'], $errors)) {
 
             if ($state == 'deleted') {
                 $msg = sprintf('%s %s',
-                        sprintf(__('Ticket #%s'), $ticket->getNumber()),
+                        sprintf(__('Equipamiento %s'), $equipment->getName()),
                         __('deleted sucessfully')
                         );
             } elseif ($state != 'open') {
                  $msg = sprintf(__('%s status changed to %s'),
-                         sprintf(__('Ticket #%s'), $ticket->getNumber()),
+                         sprintf(__('Equipamiento %s'), $equipment->getName()),
                          $status->getName());
             } else {
                 $msg = sprintf(
-                        __('%s status changed to %s'),
-                        __('Ticket'),
+                        __('Estado del equipamiento cambiado a %s'),
                         $status->getName());
             }
 
@@ -924,17 +879,17 @@ class TicketsAjaxAPI extends AjaxController {
 
             Http::response(201, 'Successfully processed');
         } elseif (!$errors['err']) {
-            $errors['err'] =  __('Error updating ticket status');
+            $errors['err'] =  __('Error updating equipment status');
         }
 
-        $state = $state ?: $ticket->getStatus()->getState();
+        $state = $state ?: $equipment->getStatus()->getState();
         $info['status_id'] = $status
-            ? $status->getId() : $ticket->getStatusId();
+            ? $status->getId() : $equipment->getStatusId();
 
-        return self::_changeTicketStatus($ticket, $state, $info, $errors);
+        return self::_changeEquipmentStatus($equipment, $state, $info, $errors);
     }
 
-    function changeSelectedTicketsStatus($status, $id=0) {
+    function changeSelectedEquipmentStatus($status, $id=0) {
         global $thisstaff, $cfg;
 
         if (!$thisstaff)
@@ -943,20 +898,17 @@ class TicketsAjaxAPI extends AjaxController {
         $state = null;
         $info = array();
         switch($status) {
-            case 'open':
-            case 'reopen':
-                $state = 'open';
+            case 'create':
+                $state = 'new';
                 break;
-            case 'close':
-                if (!$thisstaff->hasPerm(TicketModel::PERM_CLOSE, false))
-                    Http::response(403, 'Access denied');
-                $state = 'closed';
+            case 'retire':
+                $state = 'retired';
                 break;
-            case 'delete':
-                if (!$thisstaff->hasPerm(TicketModel::PERM_DELETE, false))
-                    Http::response(403, 'Access denied');
-
-                $state = 'deleted';
+            case 'activate':
+                $state = 'active';
+                break;
+            case 'deactivate':
+                $state = 'inactive';
                 break;
             default:
                 $info['warn'] = sprintf('%s %s',
@@ -965,42 +917,31 @@ class TicketsAjaxAPI extends AjaxController {
 
         $info['status_id'] = $id;
 
-        return self::_changeSelectedTicketsStatus($state, $info);
+        return self::_changeSelectedEquipmentStatus($state, $info);
     }
 
-    function setSelectedTicketsStatus($state) {
+    function setSelectedEquipmentStatus($state) {
         global $thisstaff, $ost;
-
+        
         $errors = $info = array();
-        if (!$thisstaff || !$thisstaff->canManageTickets())
+        if (!$thisstaff)
             $errors['err'] = sprintf('%s %s',
                     sprintf(__('You do not have permission %s'),
-                        __('to mass manage tickets')),
+                        __('to mass manage equipment')),
                     __('Contact admin for such access'));
         elseif (!$_REQUEST['tids'] || !count($_REQUEST['tids']))
             $errors['err']=sprintf(__('You must select at least %s.'),
                     __('one ticket'));
-        elseif (!($status= TicketStatus::lookup($_REQUEST['status_id'])))
+        elseif (!($status=EquipmentStatus::lookup($_REQUEST['status_id'])))
             $errors['status_id'] = sprintf('%s %s',
                     __('Unknown or invalid'), __('status'));
         elseif (!$errors) {
             // Make sure the agent has permission to set the status
             switch(mb_strtolower($status->getState())) {
-                case 'open':
-                    if (!$thisstaff->hasPerm(TicketModel::PERM_CLOSE, false)
-                            && !$thisstaff->hasPerm(TicketModel::PERM_CREATE, false))
-                        $errors['err'] = sprintf(__('You do not have permission %s'),
-                                __('to reopen tickets'));
-                    break;
-                case 'closed':
-                    if (!$thisstaff->hasPerm(TicketModel::PERM_CLOSE, false))
-                        $errors['err'] = sprintf(__('You do not have permission %s'),
-                                __('to resolve/close tickets'));
-                    break;
-                case 'deleted':
-                    if (!$thisstaff->hasPerm(TicketModel::PERM_DELETE, false))
-                        $errors['err'] = sprintf(__('You do not have permission %s'),
-                                __('to archive/delete tickets'));
+                case 'new':
+                case 'active':
+                case 'inactive':
+                case 'retired':
                     break;
                 default:
                     $errors['err'] = sprintf('%s %s',
@@ -1014,17 +955,16 @@ class TicketsAjaxAPI extends AjaxController {
             $comments = $_REQUEST['comments'];
             foreach ($_REQUEST['tids'] as $tid) {
 
-                if (($ticket=Ticket::lookup($tid))
-                        && $ticket->getStatusId() != $status->getId()
-                        && $ticket->checkStaffPerm($thisstaff)
-                        && $ticket->setStatus($status, $comments, $errors))
+                if (($equipment=Equipment::lookup($tid))
+                        && $equipment->getStatusId() != $status->getId()
+                        && $equipment->setStatus($status, $comments, $errors))
                     $i++;
             }
 
             if (!$i) {
                 $errors['err'] = $errors['err']
                     ?: sprintf(__('Unable to change status for %s'),
-                        _N('selected ticket', 'selected tickets', $count));
+                        _N('item seleccionado', 'items seleccionados', $count));
             }
             else {
                 // Assume success
@@ -1032,15 +972,13 @@ class TicketsAjaxAPI extends AjaxController {
 
                     if (!strcasecmp($status->getState(), 'deleted')) {
                         $msg = sprintf(__( 'Successfully deleted %s.'),
-                                _N('selected ticket', 'selected tickets',
-                                    $count));
+                                _N('item seleccionado', 'items seleccionados', $count));
                     } else {
                        $msg = sprintf(
                             __(
                                 /* 1$ will be 'selected ticket(s)', 2$ is the new status */
                                 'Successfully changed status of %1$s to %2$s'),
-                            _N('selected ticket', 'selected tickets',
-                                $count),
+                            _N('item seleccionado', 'items seleccionados', $count),
                             $status->getName());
                     }
 
@@ -1056,8 +994,7 @@ class TicketsAjaxAPI extends AjaxController {
 
                         $warn = sprintf(
                                 __('%1$d of %2$d %3$s status changed to %4$s'),$i, $count,
-                                _N('selected ticket', 'selected tickets',
-                                    $count),
+                                _N('item seleccionado', 'items seleccionados', $count),
                                 $status->getName());
                     }
 
@@ -1068,7 +1005,7 @@ class TicketsAjaxAPI extends AjaxController {
             }
         }
 
-        return self::_changeSelectedTicketsStatus($state, $info, $errors);
+        return self::_changeSelectedEquipmentStatus($state, $info, $errors);
     }
 
     function triggerThreadAction($ticket_id, $thread_id, $action) {
@@ -1092,30 +1029,31 @@ class TicketsAjaxAPI extends AjaxController {
         $thread->triggerAction($action);
     }
 
-    private function _changeSelectedTicketsStatus($state, $info=array(), $errors=array()) {
+    private function _changeSelectedEquipmentStatus($state, $info=array(), $errors=array()) {
 
         $count = $_REQUEST['count'] ?:
             ($_REQUEST['tids'] ?  count($_REQUEST['tids']) : 0);
 
         $info['title'] = sprintf(__('Change Status &mdash; %1$d %2$s selected'),
                  $count,
-                 _N('ticket', 'tickets', $count)
+                 _N('item', 'items', $count)
                  );
 
         if (!strcasecmp($state, 'deleted')) {
 
             $info['warn'] = sprintf(__(
                         'Are you sure you want to DELETE %s?'),
-                    _N('selected ticket', 'selected tickets', $count)
+                        _N('item', 'items', $count)
                     );
 
             $info['extra'] = sprintf('<strong>%s</strong>', __(
-                        'Deleted tickets CANNOT be recovered, including any associated attachments.')
+                        'Deleted items CANNOT be recovered, including any associated attachments.')
                     );
 
             $info['placeholder'] = sprintf(__(
                         'Optional reason for deleting %s'),
-                    _N('selected ticket', 'selected tickets', $count));
+                        _N('item', 'items', $count)
+                    );
         }
 
         $info['status_id'] = $info['status_id'] ?: $_REQUEST['status_id'];
@@ -1124,16 +1062,16 @@ class TicketsAjaxAPI extends AjaxController {
         return self::_changeStatus($state, $info, $errors);
     }
 
-    private function _changeTicketStatus($ticket, $state, $info=array(), $errors=array()) {
+    private function _changeEquipmentStatus($equipment, $state, $info=array(), $errors=array()) {
 
-        $verb = TicketStateField::getVerb($state);
+        $verb = EquipmentStateField::getVerb($state);
 
-        $info['action'] = sprintf('#tickets/%d/status', $ticket->getId());
+        $info['action'] = sprintf('#equipments/%d/status', $equipment->getId());
         $info['title'] = sprintf(__(
                     /* 1$ will be a verb, like 'open', 2$ will be the ticket number */
-                    '%1$s Ticket #%2$s'),
+                    '%1$s #%2$s'),
                 $verb ?: $state,
-                $ticket->getNumber()
+                $equipment->getName()
                 );
 
         // Deleting?
@@ -1141,17 +1079,17 @@ class TicketsAjaxAPI extends AjaxController {
 
             $info['placeholder'] = sprintf(__(
                         'Optional reason for deleting %s'),
-                    __('this ticket'));
+                    __('este equipamiento'));
             $info[ 'warn'] = sprintf(__(
                         'Are you sure you want to DELETE %s?'),
-                        __('this ticket'));
+                        __('este equipamiento'));
             //TODO: remove message below once we ship data retention plug
             $info[ 'extra'] = sprintf('<strong>%s</strong>',
-                        __('Deleted tickets CANNOT be recovered, including any associated attachments.')
+                        __('Deleted items CANNOT be recovered, including any associated attachments.')
                         );
         }
 
-        $info['status_id'] = $info['status_id'] ?: $ticket->getStatusId();
+        $info['status_id'] = $info['status_id'] ?: $equipment->getStatusId();
         $info['comments'] = Format::htmlchars($_REQUEST['comments']);
 
         return self::_changeStatus($state, $info, $errors);
@@ -1165,39 +1103,84 @@ class TicketsAjaxAPI extends AjaxController {
         if (!$info['error'] && isset($errors['err']))
             $info['error'] = $errors['err'];
 
-        include(STAFFINC_DIR . 'templates/ticket-status.tmpl.php');
+        include(STAFFINC_DIR . 'templates/equipment-status.tmpl.php');
     }
 
-    function tasks($tid) {
+    function reservations($tid) {
         global $thisstaff;
 
-        if (!($ticket=Ticket::lookup($tid))
-                || !$ticket->checkStaffPerm($thisstaff))
-            Http::response(404, 'Unknown ticket');
+        if (!($equipment=equipment::lookup($tid)))
+            Http::response(404, 'Unknown equipment');
 
-         include STAFFINC_DIR . 'ticket-tasks.inc.php';
+         include STAFFINC_DIR . 'equipment-reservations.inc.php';
     }
 
-    function addTask($tid) {
+    function addReservation($tid) {
         global $thisstaff;
 
-        if (!($ticket=Ticket::lookup($tid)))
-            Http::response(404, 'Unknown ticket');
-
-        if (!$ticket->checkStaffPerm($thisstaff, Task::PERM_CREATE))
-            Http::response(403, 'Permission denied');
+        if (!($equipment=Equipment::lookup($tid)))
+            Http::response(404, 'Unknown equipment');
 
         $info=$errors=array();
 
         if ($_POST) {
             Draft::deleteForNamespace(
-                    sprintf('ticket.%d.task', $ticket->getId()),
+                    sprintf('equipment.%d.reservation', $equipment->getId()),
                     $thisstaff->getId());
             // Default form
-            $form = TaskForm::getInstance();
+            $form = ReservationForm::getInstance();
             $form->setSource($_POST);
             // Internal form
-            $iform = TaskForm::getInternalForm($_POST);
+            $iform = ReservationForm::getInternalForm($_POST);
+            
+            // Se añade un validador de fechas de comienzo y fin de reserva
+            // que compruebe que una es posterior a la otra
+            $iform->addValidator(function($form) use ($equipment) {
+                $reservations = EquipmentReservation::objects()->order_by('start');
+                $reservations->filter(array('equipment_id' => $equipment->getId()));
+                $start=$form->getField('start');
+                $startStr=substr($start->getValue(), 0, 19);
+                $end=$form->getField('end');
+                $endStr=substr($end->getValue(), 0, 19);
+                
+                // Primero se comprueba que la fecha de comienzo sea posterior a
+                // la actual
+                if (strcmp($start->getValue(), date("Y-m-d H:i:s")) < 0) {
+                    $start->addError('El comienzo de la reserva debe ser posterior al actual');
+                    return;
+                }
+                
+                // Después se comprueba que el final sea posterior al comienzo
+                if (strcmp($start->getValue(), $end->getValue()) >= 0) {
+                    $start->addError('El comienzo de la reserva debe ser anterior al final');
+                    $end->addError('El final de la reserva debe ser posterior al comienzo');
+                    return;
+                }
+                
+                // Después que no se solape con otra reserva actual
+                $error = false;
+                foreach($reservations as $reservation) {
+                    if (strcmp($reservation->getStartDate(), $startStr) <= 0
+                            && strcmp($reservation->getEndDate(), $startStr) > 0) {
+                        $start->addError('El comienzo se solapa con otro periodo ya reservado. Revise las reservas actuales.');
+                        $error = true;
+                    }
+                    if (strcmp($reservation->getStartDate(), $endStr) < 0
+                            && strcmp($reservation->getEndDate(), $endStr) >= 0) {
+                        $end->addError('El final se solapa con otro periodo ya reservado. Revise las reservas actuales.');
+                        $error = true;
+                    }
+                    if (!$error && strcmp($reservation->getStartDate(), $startStr) > 0
+                            && strcmp($reservation->getEndDate(), $endStr) < 0) {
+                        $start->addError('El periodo solicitado contiene otro ya reservado. Revise las reservas actuales');
+                        $end->addError('El periodo solicitado contiene otro ya reservado. Revise las reservas actuales');
+                    }
+                    if ($error) {
+                        break;
+                    }
+                }
+            });
+            
             $isvalid = true;
             if (!$iform->isValid())
                 $isvalid = false;
@@ -1206,33 +1189,33 @@ class TicketsAjaxAPI extends AjaxController {
 
             if ($isvalid) {
                 $vars = $_POST;
-                $vars['object_id'] = $ticket->getId();
-                $vars['object_type'] = ObjectModel::OBJECT_TYPE_TICKET;
+                $vars['equipment_id'] = $equipment->getId();
                 $vars['default_formdata'] = $form->getClean();
                 $vars['internal_formdata'] = $iform->getClean();
-                $desc = $form->getField('description');
+                /*$desc = $form->getField('description');
                 if ($desc
                         && $desc->isAttachmentsEnabled()
                         && ($attachments=$desc->getWidget()->getAttachments()))
-                    $vars['cannedattachments'] = $attachments->getClean();
-                $vars['staffId'] = $thisstaff->getId();
+                    $vars['cannedattachments'] = $attachments->getClean();*/
+                $vars['staff_id'] = $thisstaff->getId();
                 $vars['poster'] = $thisstaff;
                 $vars['ip_address'] = $_SERVER['REMOTE_ADDR'];
-                if (($task=Task::create($vars, $errors)))
-                    Http::response(201, $task->getId());
+                if (($reservation= EquipmentReservation::create($vars, $errors))) {
+                    Http::response(201, $reservation->getId());
+                }
             }
 
-            $info['error'] = sprintf('%s - %s', __('Error adding task'), __('Please try again!'));
+            $info['error'] = sprintf('%s - %s', __('Error en la reserva'), __('Corrija los errores'));
         }
 
-        $info['action'] = sprintf('#tickets/%d/add-task', $ticket->getId());
+        $info['action'] = sprintf('#equipments/%d/add-reservation', $equipment->getId());
         $info['title'] = sprintf(
-                __( 'Ticket #%1$s: %2$s'),
-                $ticket->getNumber(),
-                __('Add New Task')
+                __( '%1$s: %2$s'),
+                $equipment->getName(),
+                __('Reservar')
                 );
 
-         include STAFFINC_DIR . 'templates/task.tmpl.php';
+         include STAFFINC_DIR . 'templates/reservation.tmpl.php';
     }
 
     function task($tid, $id) {

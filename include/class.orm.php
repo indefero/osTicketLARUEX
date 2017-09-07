@@ -382,6 +382,7 @@ class VerySimpleModel {
         throw new OrmException(sprintf(__('%s: %s: Field not defined'),
             get_class($this), $field));
     }
+    
     function __get($field) {
         return $this->get($field, null);
     }
@@ -593,6 +594,7 @@ class VerySimpleModel {
             return true;
 
         $ex = DbEngine::save($this);
+        //printf("%s\n", $ex);
         try {
             $ex->execute();
             if ($ex->affected_rows() != 1) {

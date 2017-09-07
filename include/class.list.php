@@ -1469,4 +1469,111 @@ implements CustomListItem, TemplateVariable {
         include(STAFFINC_DIR . 'templates/status-options.tmpl.php');
     }
 }
+
+class EquipmentStatus
+extends VerySimpleModel {
+
+    static $meta = array(
+        'table' => EQUIPMENT_STATUS_TABLE,
+        'ordering' => array('name'),
+        'pk' => array('id'),
+        'joins' => array(
+            'equipments' => array(
+                'reverse' => 'EquipmentModel.status',
+                )
+        )
+    );
+
+    function getNumEquipments() {
+        return $this->equipments->count();
+    }
+
+    function getId() {
+        return $this->get('id');
+    }
+
+    function getName() {
+        return $this->get('name');
+    }
+
+    function getState() {
+        return $this->get('state');
+    }
+
+    function getValue() {
+        return $this->getName();
+    }
+    
+    function getLocalName() {
+        return $this->getLocal('value', $this->getName());
+    }
+
+    static function getLocalById($id, $subtag, $default) {
+        $tag = _H(sprintf('status.%s.%s', $subtag, $id));
+        $T = CustomDataTranslation::translate($tag);
+        return $T != $tag ? $T : $default;
+    }
+
+    function update($vars, &$errors) {
+        $fields = array('name', 'sort');
+        foreach($fields as $k) {
+            if (isset($vars[$k]))
+                $this->set($k, $vars[$k]);
+        }
+        return $this->save();
+    }
+
+    function delete() {
+        return parent::delete();
+    }
+
+    function __toString() {
+        return $this->getName();
+    }
+    
+    function display() {
+        return sprintf('<a class="preview" href="#"
+                data-preview="#items/%d/preview">%s</a>',
+                $this->getId(),
+                $this->getName()
+                );
+    }
+
+    static function create($ht=false) {
+        if (!is_array($ht))
+            return null;
+
+        if (!isset($ht['mode']))
+            $ht['mode'] = 1;
+
+        $ht['created'] = new SqlFunction('NOW');
+
+        return new static($ht);
+    }
+
+    static function lookup($var, $list=null) {
+
+        if (!($item = parent::lookup($var)))
+            return null;
+
+        $item->_list = $list;
+
+        return $item;
+    }
+
+
+    static function __create($ht, &$error=false) {
+        global $ost;
+
+        $ht['properties'] = JsonDataEncoder::encode($ht['properties']);
+        if (($status = TicketStatus::create($ht)))
+            $status->save(true);
+
+        return $status;
+    }
+    
+    static function status_options($options=array()) {
+        include(STAFFINC_DIR . 'templates/equipment-status-options.tmpl.php');
+    }
+}
 ?>

@@ -22,6 +22,8 @@ class ObjectModel {
     const OBJECT_TYPE_FAQ    = 'K';
     const OBJECT_TYPE_FILE   = 'F';
     const OBJECT_TYPE_TASK   = 'A';
+    const OBJECT_TYPE_EQUIPMENT = 'E';
+    const OBJECT_TYPE_RESERVATION = 'R';
 
     private function objects() {
         static $objects = false;
@@ -34,6 +36,8 @@ class ObjectModel {
                     self::OBJECT_TYPE_FAQ     => 'FAQ',
                     self::OBJECT_TYPE_FILE    => 'AttachmentFile',
                     self::OBJECT_TYPE_TASK    => 'Task',
+                    self::OBJECT_TYPE_EQUIPMENT  => 'Equipment',
+                    self::OBJECT_TYPE_RESERVATION  => 'EquipmentReservation',
                     );
         }
 

@@ -101,7 +101,6 @@ class StaffNav {
     }
 
     function addSubMenu($item,$active=false){
-
         // Triger lazy loading if submenus haven't been initialized
         isset($this->submenus[$this->getPanel().'.'.$this->activetab]);
         $this->submenus[$this->getPanel().'.'.$this->activetab][]=$item;
@@ -125,6 +124,7 @@ class StaffNav {
             }
             $this->tabs['tasks'] = array('desc'=>__('Tasks'), 'href'=>'tasks.php', 'title'=>__('Task Queue'));
             $this->tabs['tickets'] = array('desc'=>__('Tickets'),'href'=>'tickets.php','title'=>__('Ticket Queue'));
+            $this->tabs['equipment'] = array('desc'=>__('Equipamiento'),'href'=>'equipment.php','title'=>__('Lista de Equipamiento'));
 
             $this->tabs['kbase'] = array('desc'=>__('Knowledgebase'),'href'=>'kb.php','title'=>__('Knowledgebase'));
             if (count($this->getRegisteredApps()))

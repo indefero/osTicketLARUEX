@@ -36,6 +36,12 @@ class Thread extends VerySimpleModel {
                     'object_id' => 'Task.id',
                 ),
             ),
+            'equipment' => array(
+                'constraint' => array(
+                    'object_type' => "'E'",
+                    'object_id' => 'EquipmentModel.id',
+                ),
+            ),
             'collaborators' => array(
                 'reverse' => 'Collaborator.thread',
             ),
@@ -251,6 +257,7 @@ class Thread extends VerySimpleModel {
         ))->all();
 
         $events = $this->getEvents();
+
         $inc = ($mode == self::MODE_STAFF) ? STAFFINC_DIR : CLIENTINC_DIR;
         include $inc . 'templates/thread-entries.tmpl.php';
     }
@@ -1704,6 +1711,7 @@ class ThreadEvent extends VerySimpleModel {
 
     static function create($ht=false, $user=false) {
         $inst = new static($ht);
+
         $inst->timestamp = SqlFunction::NOW();
 
         global $thisstaff, $thisclient;
@@ -1727,6 +1735,11 @@ class ThreadEvent extends VerySimpleModel {
             'dept_id' => $ticket->getDeptId(),
             'topic_id' => $ticket->getTopicId(),
         ), $user);
+        return $inst;
+    }
+    
+    static function forEquipment($equipment, $state, $user=false) {
+        $inst = self::create(array(), $user);
         return $inst;
     }
 
@@ -1773,6 +1786,9 @@ class ThreadEvents extends InstrumentedList {
         if ($object instanceof Ticket)
             // TODO: Use $object->createEvent() (nolint)
             $event = ThreadEvent::forTicket($object, $state, $user);
+        elseif ($object instanceof Equipment)
+            // TODO: Use $object->createEvent() (nolint)
+            $event = ThreadEvent::forEquipment($object, $state, $user);
         else
             $event = ThreadEvent::create(false, $user);
 
@@ -1853,6 +1869,36 @@ class CloseEvent extends ThreadEvent {
             return $this->template(__('Closed by <b>{somebody}</b> with status of {<TicketStatus>data.status} {timestamp}'));
         else
             return $this->template(__('Closed by <b>{somebody}</b> {timestamp}'));
+    }
+}
+
+class EquipmentRetirementEvent extends ThreadEvent {
+    static $icon = 'thumbs-up-alt';
+    static $state = 'equipment_retirement';
+
+    function getDescription($mode=self::MODE_STAFF) {
+        if ($this->getData('status'))
+            return $this->template(__('Retirado por <b>{somebody}</b> con el estado de {<EquipmentStatus>data.status} {timestamp}'));
+        else
+            return $this->template(__('Retirado por <b>{somebody}</b> {timestamp}'));
+    }
+}
+
+class EquipmentReservationEvent extends ThreadEvent {
+    static $icon = 'thumbs-up-alt';
+    static $state = 'reserved';
+
+    function getDescription($mode=self::MODE_STAFF) {
+        return $this->template(__('Reservado por <b>{somebody}</b> {timestamp}'));
+    }
+}
+
+class EquipmentUnreservationEvent extends ThreadEvent {
+    static $icon = 'thumbs-up-alt';
+    static $state = 'unreserved';
+
+    function getDescription($mode=self::MODE_STAFF) {
+        return $this->template(__('Reserva anulada por <b>{somebody}</b> {timestamp}'));
     }
 }
 
@@ -1997,6 +2043,22 @@ class EditEvent extends ThreadEvent {
             }
             $desc = $changes
                 ? sprintf($base, implode(', ', $changes)) : '';
+            break;
+        }
+
+        return $this->template($desc);
+    }
+}
+
+class EquipmentEditEvent extends ThreadEvent {
+    static $icon = 'pencil';
+    static $state = 'equipment_edition';
+
+    function getDescription($mode=self::MODE_STAFF) {
+        $data = $this->getData();
+        switch (true) {
+        case isset($data['status']):
+            $desc = '<b>{somebody}</b> cambió el estado a <strong>{<EquipmentStatus>data.status}</strong> {timestamp}';
             break;
         }
 
@@ -2590,6 +2652,21 @@ class TicketThread extends ObjectThread {
         $thread = parent::create(array(
                     'object_id' => $id,
                     'object_type' => ObjectModel::OBJECT_TYPE_TICKET
+                    ));
+        if ($thread->save())
+            return $thread;
+    }
+}
+
+// Ticket thread class
+class EquipmentThread extends ObjectThread {
+    static function create($equipment=false) {
+        assert($equipment !== false);
+
+        $id = is_object($equipment) ? $equipment->getId() : $equipment;
+        $thread = parent::create(array(
+                    'object_id' => $id,
+                    'object_type' => ObjectModel::OBJECT_TYPE_EQUIPMENT
                     ));
         if ($thread->save())
             return $thread;

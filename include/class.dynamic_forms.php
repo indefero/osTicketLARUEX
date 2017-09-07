@@ -44,6 +44,8 @@ class DynamicForm extends VerySimpleModel {
         'T' => 'Ticket Information',
         'U' => 'User Information',
         'O' => 'Organization Information',
+        'E' => 'Equipment Information',
+        'R' => 'Reservation Information'
     );
 
     const FLAG_DELETABLE    = 0x0001;
@@ -541,6 +543,28 @@ Filter::addSupportedMatches(/* trans */ 'Custom Forms', function() {
     }
     return $matches;
 }, 9900);
+
+class EquipmentForm extends DynamicForm {
+    static $instance;
+
+    static function objects() {
+        $os = parent::objects();
+        return $os->filter(array('type'=>'E'));
+    }
+
+    static function getInstance() {
+        if (!isset(static::$instance))
+            self::getNewInstance();
+        return static::$instance;
+    }
+
+    static function getNewInstance() {
+        $o = static::objects()->one();
+        static::$instance = $o->instanciate();
+        return static::$instance;
+    }
+
+}
 
 require_once(INCLUDE_DIR . "class.json.php");
 
@@ -1148,9 +1172,28 @@ class DynamicFormEntry extends VerySimpleModel {
         }
         return $entries[$ticket_id];
     }
+    
+    function forEquipment($equipment_id, $force=false) {
+        static $entries = array();
+        if (!isset($entries[$equipment_id]) || $force) {
+            $stuff = DynamicFormEntry::objects()
+                ->filter(array('object_id'=>$equipment_id, 'object_type'=>'E'));
+            // If forced, don't cache the result
+            if ($force)
+                return $stuff;
+            $entries[$equipment_id] = &$stuff;
+        }
+        return $entries[$equipment_id];
+    }
+    
     function setTicketId($ticket_id) {
         $this->object_type = 'T';
         $this->object_id = $ticket_id;
+    }
+    
+    function setEquipmentId($equipment_id) {
+        $this->object_type = 'E';
+        $this->object_id = $equipment_id;
     }
 
     function setClientId($user_id) {

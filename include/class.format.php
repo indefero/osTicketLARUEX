@@ -526,7 +526,7 @@ class Format {
         else
             $cache[$timezone] = $tz = new DateTimeZone($timezone ?: $cfg->getTimezone());
         $datetime->setTimezone($tz);
-
+        
         // Formmating options
         $options = array(
                 'timezone' => $tz->getName(),

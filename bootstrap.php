@@ -101,6 +101,11 @@ class Bootstrap {
         define('THREAD_COLLABORATOR_TABLE', $prefix.'thread_collaborator');
         define('TICKET_STATUS_TABLE', $prefix.'ticket_status');
         define('TICKET_PRIORITY_TABLE',$prefix.'ticket_priority');
+        
+        define('EQUIPMENT_TABLE',$prefix.'equipment');
+        define('EQUIPMENT_STATUS_TABLE', $prefix.'equipment_status');
+        define('EQUIPMENT_RESERVATION_TABLE', $prefix.'equipment_booking');
+        define('HIST_RESERVATION_TABLE', $prefix.'equipment_booking_hist');
 
         define('TASK_TABLE', $prefix.'task');
         define('TASK_CDATA_TABLE', $prefix.'task__cdata');

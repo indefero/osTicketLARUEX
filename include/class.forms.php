@@ -1791,6 +1791,8 @@ class DatetimeField extends FormField {
             $this->min = $config['min']
                 ? Format::parseDateTime($config['min']) : false;
         }
+        
+        error_log($this->min->GetTimezone()->getName());
 
         return $this->min;
     }
@@ -1945,16 +1947,18 @@ class DatetimeField extends FormField {
         if (!$val) {
             $this->_errors[] = __('Enter a valid date');
         } elseif ($min and $val < $min) {
+            $name = $min->getTimezone()->getName();
             $this->_errors[] = sprintf('%s (%s)',
                     __('Selected date is earlier than permitted'),
-                     Format::date($min->getTimestamp(), false, false,
-                         $min->getTimezone()->getName() ?: 'UTC')
+                    Format::datetime($min->getTimestamp(), false,
+                         $name ? ($name == "+00:00" ? $val->getTimezone()->getName() : $name ) : 'UTC')
                      );
         } elseif ($max and $val > $max) {
+            $name = $max->getTimezone()->getName();
             $this->_errors[] = sprintf('%s (%s)',
                     __('Selected date is later than permitted'),
-                    Format::date($max->getTimestamp(), false, false,
-                        $max->getTimezone()->getName() ?: 'UTC')
+                    Format::datetime($max->getTimestamp(), false,
+                        $name ? ($name == "+00:00" ? $val->getTimezone()->getName() : $name ) : 'UTC')
                     );
         }
     }
@@ -2615,6 +2619,89 @@ FormField::addFieldTypes('Dynamic Fields', function() {
         'state' => array('Ticket State', TicketStateField, false),
     );
 });
+
+class EquipmentStateField extends ChoiceField {
+
+    static $_states = array(
+            'new' => array(
+                'name' => 'Nuevo',
+                'verb' => 'Dar de alta'
+                ),
+            'active' => array(
+                'name' => /* @trans, @context "ticket state name" */ 'Operativo',
+                'verb' => /* @trans, @context "ticket state action" */ 'Habilitar'
+                ),
+            'inactive' => array(
+                'name' => /* @trans, @context "ticket state name" */ 'Inoperativo',
+                'verb' => /* @trans, @context "ticket state action" */ 'Inhabilitar'
+                ),
+            'retired' => array(
+                'name' => /* @trans, @context "ticket state name" */ 'Retirado',
+                'verb' => /* @trans, @context "ticket state action" */ 'Retirar'
+                )
+            );
+    // Private states
+    static $_privatestates = array();
+
+    function hasIdValue() {
+        return true;
+    }
+
+    function isChangeable() {
+        return false;
+    }
+
+    function getChoices($verbose=false) {
+        static $_choices;
+
+        $states = static::$_states;
+        if ($this->options['private_too'])
+            $states += static::$_privatestates;
+
+        if (!isset($_choices)) {
+            // Translate and cache the choices
+            foreach ($states as $k => $v)
+                $_choices[$k] =  _P('equipment state name', $v['name']);
+
+            $this->ht['default'] =  '';
+        }
+
+        return $_choices;
+    }
+
+    function getChoice($state) {
+
+        if ($state && is_array($state))
+            $state = key($state);
+
+        if (isset(static::$_states[$state]))
+            return _P('equipment state name', static::$_states[$state]['name']);
+
+        if (isset(static::$_privatestates[$state]))
+            return _P('equipment state name', static::$_privatestates[$state]['name']);
+
+        return $state;
+    }
+
+    function getConfigurationOptions() {
+        return array(
+            'prompt' => new TextboxField(array(
+                'id'=>2, 'label'=> __('Prompt'), 'required'=>false, 'default'=>'',
+                'hint'=> __('Leading text shown before a value is selected'),
+                'configuration'=>array('size'=>40, 'length'=>40),
+            )),
+        );
+    }
+
+    static function getVerb($state) {
+
+        if (isset(static::$_states[$state]))
+            return _P('equipment state action', static::$_states[$state]['verb']);
+
+        if (isset(static::$_privatestates[$state]))
+            return _P('equipment state action', static::$_privatestates[$state]['verb']);
+    }
+}
 
 class TicketFlagField extends ChoiceField {
 

@@ -541,6 +541,14 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
 
         return  $this->stats['tickets'];
     }
+    
+    function getEquipmentStats() {
+
+        if(!$this->stats['equipment'])
+            $this->stats['equipment'] = Equipment::getStaffStats($this);
+
+        return  $this->stats['equipment'];
+    }
 
     function getNumAssignedTickets() {
         return ($stats=$this->getTicketsStats())?$stats['assigned']:0;

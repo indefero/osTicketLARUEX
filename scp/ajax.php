@@ -140,7 +140,13 @@ $dispatcher = patterns('',
     )),
     url('^/lock/', patterns('ajax.tickets.php:TicketsAjaxAPI',
         url_post('^ticket/(?P<tid>\d+)$', 'acquireLock'),
+        url_post('^equipment/(?P<tid>\d+)$', 'acquireLock'),
         url_post('^(?P<id>\d+)/ticket/(?P<tid>\d+)/renew', 'renewLock'),
+        url_post('^(?P<id>\d+)/release', 'releaseLock')
+    )),
+    url('^/equipmentlock/', patterns('ajax.equipment.php:EquipmentAjaxAPI',
+        url_post('^equipment/(?P<tid>\d+)$', 'acquireLock'),
+        url_post('^(?P<id>\d+)/equipment/(?P<tid>\d+)/renew', 'renewLock'),
         url_post('^(?P<id>\d+)/release', 'releaseLock')
     )),
     url('^/tickets/', patterns('ajax.tickets.php:TicketsAjaxAPI',
@@ -176,6 +182,18 @@ $dispatcher = patterns('',
             url_post('^/create$', 'createSearch'),
             url_get('^/field/(?P<id>[\w_!:]+)$', 'addField')
         ))
+    )),
+    url('^/equipments/', patterns('ajax.equipment.php:EquipmentAjaxAPI',
+        url_get('^(?P<tid>\d+)/status/(?P<status>\w+)(?:/(?P<sid>\d+))?$', 'changeEquipmentStatus'),
+        url_post('^(?P<tid>\d+)/status$', 'setEquipmentStatus'),
+        url_get('^status/(?P<status>\w+)(?:/(?P<sid>\d+))?$', 'changeSelectedEquipmentStatus'),
+        url_post('^status/(?P<state>\w+)$', 'setSelectedEquipmentStatus'),
+        url_get('^(?P<tid>\d+)/reservations$', 'reservations'),
+        url('^(?P<tid>\d+)/add-reservation$', 'addReservation')
+    )),
+    url('^/reservations/', patterns('ajax.reservations.php:ReservationsAjaxAPI',
+        url('^add$', 'add'),
+        url('^mass/(?P<action>\w+)(?:/(?P<what>\w+))?', 'massProcess')
     )),
     url('^/tasks/', patterns('ajax.tasks.php:TasksAjaxAPI',
         url_get('^(?P<tid>\d+)/preview$', 'preview'),
