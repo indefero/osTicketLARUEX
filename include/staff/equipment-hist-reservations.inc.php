@@ -112,6 +112,6 @@ $(function() {
         return false;
     });
 
-    $('#equipment-reservations-count').html(<?php echo $count; ?>);
+    $('#equipment-hist-reservations-count').html(<?php echo $count; ?>);
 });
 </script>
