@@ -63,7 +63,7 @@ case 'retired':
 case 'new':
     $status='new';
     $queue_name = $queue_name ?: 'new';
-    $results_type=__('Adquiridos');
+    $results_type=__('Nuevo');
     $queue_sort_options = array('created','updated');
     break;
 default:
@@ -112,7 +112,7 @@ case 'search':
     // Este será el estado por defecto (cuando no se ha seleccionado una lista del submenú en la sesión actual)
 case 'available':
     $status='active';
-    $results_type=__('Disponibles');
+    $results_type=__('Operativo');
     $queue_sort_options = array('activation','updated');
     break;
 }

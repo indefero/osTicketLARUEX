@@ -295,16 +295,16 @@ $open_name = _P('queue-name',
     'Open');
 
 if($stats['new']) {
-    $nav->addSubMenu(array('desc'=>__('Adquirido').' ('.number_format($stats['new']).')',
-                           'title'=>__('Equipamiento Adquirido'),
+    $nav->addSubMenu(array('desc'=>__('Nuevo').' ('.number_format($stats['new']).')',
+                           'title'=>__('Equipamiento adquirido recientemente'),
                            'href'=>'equipment.php?status=new',
                            'iconclass'=>'assignedTickets'),
                         ($_REQUEST['status']=='new'));
 }
 
 //if($stats['available']) {
-    $nav->addSubMenu(array('desc'=>__('Disponible').' ('.number_format($stats['available']).')',
-                            'title'=>__('Equipamiento Disponible'),
+    $nav->addSubMenu(array('desc'=>__('Operativo').' ('.number_format($stats['available']).')',
+                            'title'=>__('Equipamiento en funcionamiento'),
                             'href'=>'equipment.php?status=available',
                             'iconclass'=>'Ticket'),
                          (!$_REQUEST['status'] && !isset($_SESSION['advsearch'])) 
@@ -314,7 +314,7 @@ if($stats['new']) {
 
 if($stats['inactive']) {
     $nav->addSubMenu(array('desc'=>__('Mantenimiento').' ('.number_format($stats['inactive']).')',
-                            'title'=>__('Equipamiento en Mantenimiento'),
+                            'title'=>__('Equipamiento en mantenimiento'),
                             'href'=>'equipment.php?status=inactive',
                             'iconclass'=>'Ticket'),
                          ($_REQUEST['status']=='inactive'));
@@ -322,7 +322,7 @@ if($stats['inactive']) {
 
 if($stats['reserved']) {
     $nav->addSubMenu(array('desc'=>__('Mis reservas').' ('.number_format($stats['reserved']).')',
-                           'title'=>__('Equipamiento Reservado'),
+                           'title'=>__('Equipamiento reservado'),
                            'href'=>'equipment.php?status=reserved',
                            'iconclass'=>'assignedTickets'),
                         ($_REQUEST['status']=='reserved'));
