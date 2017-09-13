@@ -320,6 +320,32 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
         </tr>
         <tr>
             <td width="180">
+                <?php echo 'Notificar cierre a'?>:
+            </td>
+            <td>
+                <select name="close_alert" data-quick-add>
+                    <option value="null">&mdash; <?php echo 'Nadie'; ?> &mdash;</option>
+                    <?php
+                    if (($users=Staff::getStaffMembers())) {
+                        echo sprintf('<OPTGROUP label="%s">',
+                                sprintf(__('Agents (%d)'), count($users)));
+                        foreach ($users as $id => $name) {
+                            $selected = ($info['close_alert']==$id)?'selected="selected"':'';
+                            ?>
+                            <option value="<?php echo $id; ?>"<?php echo $selected; ?>><?php echo $name; ?></option>
+
+                        <?php
+                        }
+                        echo '</OPTGROUP>';
+                    }
+                    ?>
+                </select>
+                &nbsp;<span class="error">&nbsp;<?php echo $errors['close_alert']; ?></span>
+                <i class="help-tip icon-question-sign" href="#close_alert"></i>
+            </td>
+        </tr>
+        <tr>
+            <td width="180">
                 <?php echo __('Auto-Response'); ?>:
             </td>
             <td>

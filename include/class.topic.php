@@ -429,7 +429,8 @@ implements TemplateVariable {
         $this->flags = $vars['custom-numbers'] ? self::FLAG_CUSTOM_NUMBERS : 0;
         $this->noautoresp = !!$vars['noautoresp'];
         $this->notes = Format::sanitize($vars['notes']);
-
+        $this->close_alert = $vars['close_alert'];
+        
         //Auto assign ID is overloaded...
         if ($vars['assign'] && $vars['assign'][0] == 's') {
             $this->team_id = 0;
