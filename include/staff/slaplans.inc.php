@@ -144,7 +144,7 @@ $qstr .= '&amp;order='.($order=='DESC' ? 'ASC' : 'DESC');
         } ?>
     <tfoot>
      <tr>
-        <td colspan="6">
+        <td colspan="8">
             <?php if ($count) { ?>
             <?php echo __('Select');?>:&nbsp;
             <a id="selectAll" href="#ckb"><?php echo __('All');?></a>&nbsp;&nbsp;
