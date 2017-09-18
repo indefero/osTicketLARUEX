@@ -94,14 +94,28 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
                 ?>
             <tr>
                 <td width="180">
-                    <?php echo "Notificar agente";?>:
+                    <?php echo "Notificar incumplimiento a";?>:
                 </td>
                 <td>
-                    <?php 
-                        if ($id = $sla->getAlertStaff()) {
-                            echo Staff::lookup($id)->getName();
-                        } 
-                    ?>
+                    <select name="alert_staff" data-quick-add>
+                        <option value="null">&mdash; <?php echo 'Nadie'; ?> &mdash;</option>
+                        <?php
+                        if (($users=Staff::getStaffMembers())) {
+                            echo sprintf('<OPTGROUP label="%s">',
+                                    sprintf(__('Agents (%d)'), count($users)));
+                            foreach ($users as $id => $name) {
+                                $selected = ($info['alert_staff']==$id)?' selected="selected"':'';
+                                ?>
+                                <option value="<?php echo $id; ?>"<?php echo $selected; ?>><?php echo $name; ?></option>
+
+                            <?php
+                            }
+                            echo '</OPTGROUP>';
+                        }
+                        ?>
+                    </select>
+                    &nbsp;<span class="error">&nbsp;<?php echo $errors['alert_staff']; ?></span>
+                    <i class="help-tip icon-question-sign" href="#alert_staff"></i>
                 </td>
             </tr>
             <tr>
@@ -109,11 +123,24 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
                     <?php echo "SLA enlazado";?>:
                 </td>
                 <td>
-                    <?php 
-                        if ($id = $sla->getNextSla()) {
-                            echo SLA::lookup($id)->getName(); 
+                    <select name="next_sla" data-quick-add>
+                        <option value="null">&mdash; <?php echo 'Ninguno'; ?> &mdash;</option>
+                        <?php
+                        if (($slas=SLA::objects())) {
+                            echo sprintf('<OPTGROUP label="%s">',
+                                    sprintf(__('SLAs (%d)'), count($slas)));
+                            foreach ($slas as $item) {
+                                $selected = ($info['next_sla']==$item->getId())?' selected="selected"':'';
+                                ?>
+                                <option value="<?php echo $item->getId(); ?>"<?php echo $selected; ?>><?php echo $item->getName(); ?></option>
+                            <?php
+                            }
+                            echo '</OPTGROUP>';
                         }
-                    ?>
+                        ?>
+                    </select>
+                    &nbsp;<span class="error">&nbsp;<?php echo $errors['next_sla']; ?></span>
+                    <i class="help-tip icon-question-sign" href="#next_sla"></i>
                 </td>
             </tr>
                 <?php

@@ -89,7 +89,7 @@ $qstr .= '&amp;order='.($order=='DESC' ? 'ASC' : 'DESC');
             <th><a <?php echo $period_sort; ?> href="slas.php?<?php echo $qstr; ?>&sort=period"><?php echo __('Grace Period (hrs)');?></a></th>
             <th width="13%" nowrap><a <?php echo $created_sort; ?>href="slas.php?<?php echo $qstr; ?>&sort=created"><?php echo __('Date Added');?></a></th>
             <th width="15%" nowrap><a <?php echo $updated_sort; ?>href="slas.php?<?php echo $qstr; ?>&sort=updated"><?php echo __('Last Updated');?></a></th>
-            <th width="10%" nowrap><?php echo "Notificar Agente";?></th>
+            <th width="10%" nowrap><?php echo "Notificar incumplimiento";?></th>
             <th width="10%" nowrap><?php echo "SLA enlazado";?></th>
         </tr>
     </thead>

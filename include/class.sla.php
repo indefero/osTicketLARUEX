@@ -136,6 +136,9 @@ implements TemplateVariable {
             | (isset($vars['disable_overdue_alerts']) ? self::FLAG_NOALERTS : 0)
             | (isset($vars['enable_priority_escalation']) ? self::FLAG_ESCALATE : 0)
             | (isset($vars['transient']) ? self::FLAG_TRANSIENT : 0);
+        
+        $this->alert_staff = $vars['alert_staff'];
+        $this->next_sla = $vars['next_sla'];
 
         if ($this->save())
             return true;
