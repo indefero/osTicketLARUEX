@@ -242,7 +242,7 @@ return false;">
     </div>
     <a href="#" onclick="javascript:
         $.dialog('ajax.php/equipment/search', 201);"
-        >[<?php echo __('advanced'); ?>]</a>
+        >[<?php echo __('Advanced Search'); ?>]</a>
         <i class="help-tip icon-question-sign" href="#advanced"></i>
     </form>
 </div>

@@ -19,6 +19,7 @@ if(!defined('INCLUDE_DIR')) die('403');
 include_once(INCLUDE_DIR.'class.ticket.php');
 require_once(INCLUDE_DIR.'class.ajax.php');
 require_once(INCLUDE_DIR.'class.task.php');
+require_once(INCLUDE_DIR.'class.task_schedule.php');
 
 class TasksAjaxAPI extends AjaxController {
 
@@ -760,6 +761,98 @@ class TasksAjaxAPI extends AjaxController {
         }
 
         include STAFFINC_DIR . 'templates/task-view.tmpl.php';
+    }
+    
+    function schedules() {
+        global $thisstaff;
+
+         include STAFFINC_DIR . 'scheduled-tasks.inc.php';
+    }
+    
+    function addSchedule() {
+        global $thisstaff;
+
+        $info=$errors=array();
+
+        if ($_POST) {
+            Draft::deleteForNamespace('schedule.add', $thisstaff->getId());
+            // Default form
+            $form = TaskScheduleForm::getInstance();
+            $form->setSource($_POST);
+            // Internal form
+            $iform = TaskScheduleForm::getInternalForm($_POST);
+            
+            // Se añade un validador de fechas de comienzo
+            $iform->addValidator(function($form) {
+                $start=$form->getField('start');
+                // Se comprueba que la fecha de comienzo sea posterior a
+                // la actual
+                if (strcmp($start->getValue(), date("Y-m-d H:i:s")) < 0) {
+                    $start->addError('El comienzo de la programación debe ser posterior al actual');
+                    return;
+                }
+            });
+            
+            // Se añade un validador de tiempo de respuesta
+            $iform->addValidator(function($form) {
+                $period=$form->getField('period');
+                // Se comprueba que el periodo no sea superior a 255 (admite un byte)
+                if ($period->getValue() >= 256) {
+                    $period->addError('El tiempo de respuesta debe ser inferior a 256 días');
+                    return;
+                } elseif ($period->getValue() < 1) {
+                    $period->addError('El tiempo de respuesta debe ser al menos un día');
+                    return;
+                }
+            });
+            
+            // Se añade un validador de agente asignado
+            $iform->addValidator(function($form) {
+                $assigneeField = $form->getField('assignee');
+                $assigneeValue = $assigneeField->getWidget()->getValue();   // No funciona si hacemos sólo $assigneeField->getValue() ¿?
+                if ($assigneeValue) {
+                    if (array_keys($assigneeValue)[0][0] == 's') {  // Staff
+                        $staff = Staff::lookup(substr(array_keys($assigneeValue)[0],1));
+                        $deptField = $form->getField('department_id');
+                        $deptValue = $deptField->getWidget()->getValue();
+                        if (!$staff->canAccessDept(array_keys($deptValue)[0])) {
+                            $assigneeField->addError('El agente no tiene permisos para acceder al departamento seleccionado');
+                            return;
+                        }
+                    }
+                }
+            });
+            
+            $isvalid = true;
+            if (!$iform->isValid())
+                $isvalid = false;
+            if (!$form->isValid())
+                $isvalid = false;
+
+            if ($isvalid) {
+                $vars = $_POST;
+                $vars['default_formdata'] = $form->getClean();
+                $vars['internal_formdata'] = $iform->getClean();
+                /*$desc = $form->getField('description');
+                if ($desc
+                        && $desc->isAttachmentsEnabled()
+                        && ($attachments=$desc->getWidget()->getAttachments()))
+                    $vars['cannedattachments'] = $attachments->getClean();*/
+                $vars['staff_id'] = $thisstaff->getId();
+                $vars['poster'] = $thisstaff;
+                $vars['ip_address'] = $_SERVER['REMOTE_ADDR'];
+                if (($taskSchedule= TaskSchedule::create($vars, $errors))) {
+                    Http::response(201, $taskSchedule->getId());
+                }
+            }
+
+            $info['error'] = sprintf('%s - %s', __('Error en la programación de tareas'), __('Corrija los errores'));
+        }
+
+        $info['action'] = '#tasks/add-schedule';
+        $info['title'] = 'Programación de tareas';
+
+         include STAFFINC_DIR . 'templates/task-schedule.tmpl.php';
     }
 }
 ?>

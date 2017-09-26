@@ -109,6 +109,8 @@ class Bootstrap {
 
         define('TASK_TABLE', $prefix.'task');
         define('TASK_CDATA_TABLE', $prefix.'task__cdata');
+        define('TASK_SCHEDULE_TABLE', $prefix.'task_schedule');
+        define('TASK_SCHEDULE_CDATA_TABLE', $prefix.'task_schedule__cdata');
 
         define('PRIORITY_TABLE',TICKET_PRIORITY_TABLE);
 

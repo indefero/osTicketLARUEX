@@ -182,9 +182,9 @@ class EquipmentReservation extends VerySimpleModel {
                     $reservation->archive();
             }
         }
-   }
+    }
 }
-
+    
 class ReservationForm extends DynamicForm {
     static $instance;
     static $defaultForm;

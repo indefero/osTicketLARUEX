@@ -50,6 +50,11 @@ class Cron {
         require_once(INCLUDE_DIR.'class.reservation.php');
         EquipmentReservation::ArchiveReservations();
     }
+    
+    function CreateScheduledTasks() {
+        require_once(INCLUDE_DIR.'class.task_schedule.php');
+        TaskSchedule::CreateTasks();
+    }
 
     function CleanOrphanedFiles() {
         require_once(INCLUDE_DIR.'class.file.php');

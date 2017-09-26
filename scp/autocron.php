@@ -59,6 +59,9 @@ Cron::TicketMonitor();
 // Se archivan las reservas de equipamiento que hayan caducado ya
 Cron::ArchiveEquipmentReservations();
 
+// Se crean las tareas que correspondan a la programación actual
+Cron::CreateScheduledTasks();
+
 // Run file purging about every 20 cron runs (1h40 on a five minute cron)
 if (mt_rand(1, 20) == 4)
     Cron::CleanOrphanedFiles();

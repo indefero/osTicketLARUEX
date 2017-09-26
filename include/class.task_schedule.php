@@ -1,8 +1,8 @@
 <?php
 /*********************************************************************
-    class.task.php
+    class.task_schedule.php
 
-    Task
+    Task Schedule
 
     Peter Rotich <peter@osticket.com>
     Copyright (c)  2014 osTicket
@@ -17,13 +17,13 @@
 include_once INCLUDE_DIR.'class.role.php';
 
 
-class TaskModel extends VerySimpleModel {
+class TaskScheduleModel extends VerySimpleModel {
     static $meta = array(
-        'table' => TASK_TABLE,
+        'table' => TASK_SCHEDULE_TABLE,
         'pk' => array('id'),
         'joins' => array(
             'dept' => array(
-                'constraint' => array('dept_id' => 'Dept.id'),
+                'constraint' => array('department_id' => 'Dept.id'),
             ),
             'lock' => array(
                 'constraint' => array('lock_id' => 'Lock.lock_id'),
@@ -33,88 +33,63 @@ class TaskModel extends VerySimpleModel {
                 'constraint' => array('staff_id' => 'Staff.staff_id'),
                 'null' => true,
             ),
-            'team' => array(
-                'constraint' => array('team_id' => 'Team.team_id'),
-                'null' => true,
-            ),
             'thread' => array(
                 'constraint' => array(
-                    'id'  => 'TaskThread.object_id',
-                    "'A'" => 'TaskThread.object_type',
+                    'id'  => 'TaskScheduleThread.object_id',
+                    "'S'" => 'TaskScheduleThread.object_type',
                 ),
                 'list' => false,
                 'null' => false,
             ),
-            'cdata' => array(
-                'constraint' => array('id' => 'TaskCData.task_id'),
-                'list' => false,
-            ),
             'entries' => array(
                 'constraint' => array(
-                    "'A'" => 'DynamicFormEntry.object_type',
+                    "'S'" => 'DynamicFormEntry.object_type',
                     'id' => 'DynamicFormEntry.object_id',
                 ),
                 'list' => true,
-            ),
-
-            'ticket' => array(
-                'constraint' => array(
-                    'object_type' => "'T'",
-                    'object_id' => 'Ticket.ticket_id',
-                ),
-                'null' => true,
-            ),
-        ),
+            )
+        )
     );
 
-    const PERM_CREATE   = 'task.create';
-    const PERM_EDIT     = 'task.edit';
-    const PERM_ASSIGN   = 'task.assign';
-    const PERM_TRANSFER = 'task.transfer';
-    const PERM_REPLY    = 'task.reply';
-    const PERM_CLOSE    = 'task.close';
-    const PERM_DELETE   = 'task.delete';
+    const PERM_CREATE   = 'task-schedule.create';
+    const PERM_EDIT     = 'task-schedule.edit';
+    const PERM_ASSIGN   = 'task-schedule.assign';
+    const PERM_TRANSFER = 'task-schedule.transfer';
+    const PERM_REPLY    = 'task-schedule.reply';
+    const PERM_DELETE   = 'task-schedule.delete';
 
     static protected $perms = array(
             self::PERM_CREATE    => array(
                 'title' =>
                 /* @trans */ 'Create',
                 'desc'  =>
-                /* @trans */ 'Ability to create tasks'),
-            self::PERM_EDIT      => array(
+                /* @trans */ 'Ability to schedule tasks'),
+            /*self::PERM_EDIT      => array(
                 'title' =>
-                /* @trans */ 'Edit',
+                /* @trans  'Edit',
                 'desc'  =>
-                /* @trans */ 'Ability to edit tasks'),
+                /* @trans  'Ability to edit scheduled tasks'),*/
             self::PERM_ASSIGN    => array(
                 'title' =>
                 /* @trans */ 'Assign',
                 'desc'  =>
-                /* @trans */ 'Ability to assign tasks to agents or teams'),
+                /* @trans */ 'Ability to assign scheduled tasks to agents'),
             self::PERM_TRANSFER  => array(
                 'title' =>
                 /* @trans */ 'Transfer',
                 'desc'  =>
-                /* @trans */ 'Ability to transfer tasks between departments'),
+                /* @trans */ 'Ability to transfer scheduled tasks between departments'),
             self::PERM_REPLY => array(
                 'title' =>
                 /* @trans */ 'Post Reply',
                 'desc'  =>
-                /* @trans */ 'Ability to post task update'),
-            self::PERM_CLOSE     => array(
-                'title' =>
-                /* @trans */ 'Close',
-                'desc'  =>
-                /* @trans */ 'Ability to close tasks'),
+                /* @trans */ 'Ability to post scheduled task internal notes'),
             self::PERM_DELETE    => array(
                 'title' =>
                 /* @trans */ 'Delete',
                 'desc'  =>
-                /* @trans */ 'Ability to delete tasks'),
+                /* @trans */ 'Ability to delete scheduled tasks'),
             );
-
-    const ISOPEN    = 0x0001;
-    const ISOVERDUE = 0x0002;
 
 
     protected function hasFlag($flag) {
@@ -133,10 +108,6 @@ class TaskModel extends VerySimpleModel {
         return $this->id;
     }
 
-    function getNumber() {
-        return $this->number;
-    }
-
     function getStaffId() {
         return $this->staff_id;
     }
@@ -145,16 +116,8 @@ class TaskModel extends VerySimpleModel {
         return $this->staff;
     }
 
-    function getTeamId() {
-        return $this->team_id;
-    }
-
-    function getTeam() {
-        return $this->team;
-    }
-
     function getDeptId() {
-        return $this->dept_id;
+        return $this->department_id;
     }
 
     function getDept() {
@@ -165,52 +128,8 @@ class TaskModel extends VerySimpleModel {
         return $this->created;
     }
 
-    function getDueDate() {
-        return $this->duedate;
-    }
-
-    function getCloseDate() {
-        return $this->isClosed() ? $this->closed : '';
-    }
-
-    function isOpen() {
-        return $this->hasFlag(self::ISOPEN);
-    }
-
-    function isClosed() {
-        return !$this->isOpen();
-    }
-
-    function isCloseable() {
-
-        if ($this->isClosed())
-            return true;
-
-        $warning = null;
-        if ($this->getMissingRequiredFields()) {
-            $warning = sprintf(
-                    __( '%1$s is missing data on %2$s one or more required fields %3$s and cannot be closed'),
-                    __('This task'),
-                    '', '');
-        }
-
-        return $warning ?: true;
-    }
-
-    protected function close() {
-        return $this->clearFlag(self::ISOPEN);
-    }
-
-    protected function reopen() {
-        return $this->setFlag(self::ISOPEN);
-    }
-
     function isAssigned() {
-        return ($this->isOpen() && ($this->getStaffId() || $this->getTeamId()));
-    }
-
-    function isOverdue() {
-        return $this->hasFlag(self::ISOVERDUE);
+        return ($this->getStaffId());
     }
 
     static function getPermissions() {
@@ -219,10 +138,10 @@ class TaskModel extends VerySimpleModel {
 
 }
 
-RolePermission::register(/* @trans */ 'Tasks', TaskModel::getPermissions());
+RolePermission::register(/* @trans */ 'Scheduled Tasks', TaskScheduleModel::getPermissions());
 
 
-class Task extends TaskModel implements RestrictedAccess, Threadable {
+class TaskSchedule extends TaskScheduleModel implements RestrictedAccess, Threadable {
     var $form;
     var $entry;
 
@@ -242,7 +161,7 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
             foreach (DynamicFormEntryAnswer::objects()
                 ->filter(array(
                     'entry__object_id' => $this->getId(),
-                    'entry__object_type' => ObjectModel::OBJECT_TYPE_TASK
+                    'entry__object_type' => ObjectModel::OBJECT_TYPE_TASK_SCHEDULE
                 )) as $answer
             ) {
                 $tag = mb_strtolower($answer->field->name)
@@ -253,12 +172,9 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
         return $this->_answers;
     }
 
-    function getStatus() {
-        return $this->isOpen() ? __('Open') : __('Completed');
-    }
-
     function getTitle() {
-        return $this->__cdata('title', ObjectModel::OBJECT_TYPE_TASK);
+        //return $this->title;
+        return $this->__cdata('title', ObjectModel::OBJECT_TYPE_TASK_SCHEDULE);
     }
 
     function checkStaffPerm($staff, $perm=null) {
@@ -320,10 +236,6 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
         $assignees=array();
         if ($this->staff)
             $assignees[] = $this->staff->getName();
-
-        //Add team assignment
-        if ($this->team)
-            $assignees[] = $this->team->getName();
 
         return $assignees;
     }
@@ -416,18 +328,18 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
         if (!isset($this->form)) {
             // Look for the entry first
             if ($this->form = DynamicFormEntry::lookup(
-                        array('object_type' => ObjectModel::OBJECT_TYPE_TASK))) {
+                        array('object_type' => ObjectModel::OBJECT_TYPE_TASK_SCHEDULE))) {
                 return $this->form;
             }
             // Make sure the form is in the database
             elseif (!($this->form = DynamicForm::lookup(
-                            array('type' => ObjectModel::OBJECT_TYPE_TASK)))) {
+                            array('type' => ObjectModel::OBJECT_TYPE_TASK_SCHEDULE)))) {
                 $this->__loadDefaultForm();
                 return $this->getForm();
             }
             // Create an entry to be saved later
             $this->form = $this->form->instanciate();
-            $this->form->object_type = ObjectModel::OBJECT_TYPE_TASK;
+            $this->form->object_type = ObjectModel::OBJECT_TYPE_TASK_SCHEDULE;
         }
 
         return $this->form;
@@ -443,7 +355,7 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
                 foreach ($dept->getAssignees() as $member)
                     $assignees['s'.$member->getId()] = $member;
 
-                if (!$source && $this->isOpen() && $this->staff)
+                if (!$source && $this->staff)
                     $assignee = sprintf('s%d', $this->staff->getId());
                 $prompt = __('Select an Agent');
                 break;
@@ -452,7 +364,7 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
                     foreach ($teams as $id => $name)
                         $assignees['t'.$id] = $name;
 
-                if (!$source && $this->isOpen() && $this->team)
+                if (!$source && $this->team)
                     $assignee = sprintf('t%d', $this->team->getId());
                 $prompt = __('Select a Team');
                 break;
@@ -499,7 +411,7 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
 
     function addDynamicData($data) {
 
-        $tf = TaskForm::getInstance($this->id, true);
+        $tf = TaskScheduleForm::getInstance($this->id, true);
         foreach ($tf->getFields() as $f)
             if (isset($data[$f->get('name')]))
                 $tf->setAnswer($f->get('name'), $data[$f->get('name')]);
@@ -512,74 +424,15 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
     function getDynamicData($create=true) {
         if (!isset($this->_entries)) {
             $this->_entries = DynamicFormEntry::forObject($this->id,
-                    ObjectModel::OBJECT_TYPE_TASK)->all();
+                    ObjectModel::OBJECT_TYPE_TASK_SCHEDULE)->all();
             if (!$this->_entries && $create) {
-                $f = TaskForm::getInstance($this->id, true);
+                $f = TaskScheduleForm::getInstance($this->id, true);
                 $f->save();
                 $this->_entries[] = $f;
             }
         }
 
         return $this->_entries ?: array();
-    }
-
-    function setStatus($status, $comments='', &$errors=array()) {
-        global $thisstaff;
-
-        $ecb = null;
-        switch($status) {
-        case 'open':
-            if ($this->isOpen())
-                return false;
-
-            $this->reopen();
-            $this->closed = null;
-
-            $ecb = function ($t) {
-                $t->logEvent('reopened', false, null, 'closed');
-            };
-            break;
-        case 'closed':
-            if ($this->isClosed())
-                return false;
-
-            // Check if task is closeable
-            $closeable = $this->isCloseable();
-            if ($closeable !== true)
-                $errors['err'] = $closeable ?: sprintf(__('%s cannot be closed'), __('This task'));
-
-            if ($errors)
-                return false;
-
-            $this->close();
-            $this->closed = SqlFunction::NOW();
-            $ecb = function($t) {
-                $t->logEvent('closed');
-            };
-            break;
-        default:
-            return false;
-        }
-
-        if (!$this->save(true))
-            return false;
-
-        // Log events via callback
-        if ($ecb) $ecb($this);
-
-        if ($comments) {
-            $errors = array();
-            $this->postNote(array(
-                        'note' => $comments,
-                        'title' => sprintf(
-                            __('Status changed to %s'),
-                            $this->getStatus())
-                        ),
-                    $errors,
-                    $thisstaff);
-        }
-
-        return true;
     }
 
     function to_json() {
@@ -675,7 +528,7 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
         if ($assignee instanceof Staff) {
             if ($this->getStaffId() == $assignee->getId()) {
                 $errors['assignee'] = sprintf(__('%s already assigned to %s'),
-                        __('Task'),
+                        __('Programación de tareas'),
                         __('the agent')
                         );
             } elseif(!$assignee->isAvailable()) {
@@ -690,7 +543,7 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
         } elseif ($assignee instanceof Team) {
             if ($this->getTeamId() == $assignee->getId()) {
                 $errors['assignee'] = sprintf(__('%s already assigned to %s'),
-                        __('Task'),
+                        __('Programación de tareas'),
                         __('the team')
                         );
             } else {
@@ -725,7 +578,7 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
         $note = null;
         if ($comments) {
 
-            $title = sprintf(__('Task assigned to %s'),
+            $title = sprintf(__('Programación de tareas asignada a %s'),
                     (string) $assignee);
 
             $errors = array();
@@ -798,9 +651,9 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
         if (!$dept || !($dept instanceof Dept))
             $errors['dept'] = __('Department selection is required');
         elseif ($dept->getid() == $this->getDeptId())
-            $errors['dept'] = __('Task already in the department');
+            $errors['dept'] = __('Programación de tareas ya en el departamento');
         else
-            $this->dept_id = $dept->getId();
+            $this->department_id = $dept->getId();
 
         if ($errors || !$this->save(true))
             return false;
@@ -812,7 +665,7 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
         $note = $form->getField('comments')->getClean();
         if ($note) {
             $title = sprintf(__('%1$s transferred from %2$s to %3$s'),
-                    __('Task'),
+                    __('Programación de tareas'),
                    $cdept->getName(),
                     $dept->getName());
 
@@ -894,8 +747,8 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
 
         $assignee = $this->getStaff();
 
-        if (isset($vars['task:status']))
-            $this->setStatus($vars['task:status']);
+        if (isset($vars['taskschedule:status']))
+            $this->setStatus($vars['taskschedule:status']);
 
         $this->onActivity(array(
             'activity' => $note->getActivity(),
@@ -925,8 +778,8 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
 
         $assignee = $this->getStaff();
 
-        if (isset($vars['task:status']))
-            $this->setStatus($vars['task:status']);
+        if (isset($vars['taskschedule:status']))
+            $this->setStatus($vars['taskschedule:status']);
 
         /*
         // TODO: add auto claim setting for tasks.
@@ -987,7 +840,7 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
         global $ost;
 
         return $ost->replaceTemplateVariables($input,
-                array_merge($vars, array('task' => $this)));
+                array_merge($vars, array('taskschedule' => $this)));
     }
 
     function asVar() {
@@ -1270,22 +1123,23 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
 
         if (!is_array($vars)
                 || !$thisstaff
-                || !$thisstaff->hasPerm(Task::PERM_CREATE, false))
+                || !$thisstaff->hasPerm(self::PERM_CREATE, false))
             return null;
 
         $task = new static(array(
-            'flags' => self::ISOPEN,
-            'object_id' => $vars['object_id'],
-            'object_type' => $vars['object_type'],
-            'number' => $cfg->getNewTaskNumber(),
+            'flags' => '',
             'created' => new SqlFunction('NOW'),
             'updated' => new SqlFunction('NOW'),
         ));
 
-        if ($vars['internal_formdata']['dept_id'])
-            $task->dept_id = $vars['internal_formdata']['dept_id'];
-        if ($vars['internal_formdata']['duedate'])
-	    $task->duedate = date('Y-m-d G:i', Misc::dbtime($vars['internal_formdata']['duedate']));
+        if ($vars['internal_formdata']['department_id'])
+            $task->department_id = $vars['internal_formdata']['department_id'];
+        if ($vars['internal_formdata']['start'])
+	    $task->start = date('Y-m-d G:i', Misc::dbtime($vars['internal_formdata']['start']));
+        if ($vars['internal_formdata']['regularity'])
+	    $task->regularity = $vars['internal_formdata']['regularity'];
+        if ($vars['internal_formdata']['period'])
+	    $task->period = $vars['internal_formdata']['period'];
 
         if (!$task->save(true))
             return false;
@@ -1294,19 +1148,19 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
         $task->addDynamicData($vars['default_formdata']);
 
         // Create a thread + message.
-        $thread = TaskThread::create($task);
+        $thread = TaskScheduleThread::create($task);
         $thread->addDescription($vars);
 
 
         $task->logEvent('created', null, $thisstaff);
 
         // Get role for the dept
-        $role = $thisstaff->getRole($task->dept_id);
+        $role = $thisstaff->getRole($task->department_id);
         // Assignment
         $assignee = $vars['internal_formdata']['assignee'];
         if ($assignee
                 // skip assignment if the user doesn't have perm.
-                && $role->hasPerm(Task::PERM_ASSIGN)) {
+                && $role->hasPerm(self::PERM_ASSIGN)) {
             $_errors = array();
             $assigneeId = sprintf('%s%d',
                     ($assignee  instanceof Staff) ? 's' : 't',
@@ -1317,46 +1171,7 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
             $task->assign($form, $_errors);
         }
 
-        Signal::send('task.created', $task);
-
-        return $task;
-    }
-    
-    static function createScheduledTask($vars=false) {
-        global $thisstaff, $cfg;
-
-        if (!is_array($vars))
-            return null;
-        
-        $params = array('flags' => self::ISOPEN,
-            'number' => $cfg->getNewTaskNumber(),
-            'dept_id' => $vars['dept_id'],
-            'created' => $vars['created'],
-            'duedate' => $vars['duedate'],
-            'updated' => new SqlFunction('NOW'));
-        
-        if ($vars['staff_id']) {
-            $params['staff_id'] = $vars['staff_id'];
-        }
-
-        $task = new static($params);
-
-        if (!$task->save(true))
-            return false;
-        
-        // Add dynamic data
-        $task->addDynamicData(array('title' => $vars['title'], 
-                'description' => $vars['description']));
-
-        // Create a thread + message.
-        $thread = TaskThread::create($task);
-        unset($vars['title']); // Si lo quitamos el título aparece como título del thread
-        $thread->addDescription($vars);
-
-
-        $task->logEvent('created');
-
-        Signal::send('task.created', $task);
+        Signal::send('task-schedule.created', $task);
 
         return $task;
     }
@@ -1371,21 +1186,21 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
 
         $thread->delete();
 
-        Draft::deleteForNamespace('task.%.' . $this->getId());
+        Draft::deleteForNamespace('schedule.%.' . $this->getId());
 
-        foreach (DynamicFormEntry::forObject($this->getId(), ObjectModel::OBJECT_TYPE_TASK) as $form)
+        foreach (DynamicFormEntry::forObject($this->getId(), ObjectModel::OBJECT_TYPE_TASK_SCHEDULE) as $form)
             $form->delete();
 
         // Log delete
-        $log = sprintf(__('Task #%1$s deleted by %2$s'),
-                $this->getNumber(),
+        $log = sprintf(__('Programación de tareas #%1$s eliminada por %2$s'),
+                $this->getId(),
                 $thisstaff ? $thisstaff->getName() : __('SYSTEM'));
 
         if ($comments)
             $log .= sprintf('<hr>%s', $comments);
 
         $ost->logDebug(
-                sprintf( __('Task #%s deleted'), $this->getNumber()),
+                sprintf( __('Programación de tareas #%s eliminada'), $this->getId()),
                 $log);
 
         return true;
@@ -1429,7 +1244,7 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
                         .')';
 
         if(!$staff->showAssignedOnly() && ($depts=$staff->getDepts())) //Staff with limited access just see Assigned tasks.
-            $where[] = 'task.dept_id IN('.implode(',', db_input($depts)).') ';
+            $where[] = 'task.department_id IN('.implode(',', db_input($depts)).') ';
 
         $where = implode(' OR ', $where);
         if ($where) $where = 'AND ( '.$where.' ) ';
@@ -1468,25 +1283,73 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
         if (!$agent)
             return;
 
-        require STAFFINC_DIR.'templates/tasks-actions.tmpl.php';
+        require STAFFINC_DIR.'templates/task-schedule-actions.tmpl.php';
     }
+    
+    /**
+     * Método que crea las tareas en función de la programación actual
+     */
+    static function CreateTasks() {
+        $sql='select id, department_id, staff_id, '
+                .'GetProximaFechaCreacion(regularity, last_created_task, start) create_date, '
+                .'date_add(GetProximaFechaCreacion(regularity, last_created_task, start), interval period day) duedate '
+                .'from '.TASK_SCHEDULE_TABLE.' '
+                .'where start <= now() '
+                .'and GetProximaFechaCreacion(regularity, last_created_task, start) <= now();';
+        if (($res = db_query($sql)) && db_num_rows($res)) {
+            while (list($id, $dept_id, $staff_id, $create_date, $duedate) = db_fetch_row($res)) {
+                if ($taskSchedule = TaskSchedule::lookup($id)) {
+                    $vars['dept_id'] = $dept_id;
+                    $vars['staff_id'] = $staff_id;
+                    $vars['created'] = $create_date;
+                    $vars['duedate'] = $duedate;
+                    
+                    // OJO con el código del formulario (el 14). Que corresponda con la BDD!
+                    $sql='select value from ost_form_entry ofe inner join ost_form_entry_values ofev on ofe.id = ofev.entry_id '
+                            .'inner join ost_form_field off on ofev.field_id = off.id '
+                            ."where ofe.form_id = 14 and object_type = '".ObjectModel::OBJECT_TYPE_TASK_SCHEDULE."' "
+                                ."and off.name = 'title' and object_id = ".$taskSchedule->getId().';';
+                    if (($res2 = db_query($sql)) && db_num_rows($res2)) {
+                        list($title) = db_fetch_row($res2);
+                        $vars['title'] = $title;
+                    }
+                    
+                    $sql="select body "
+                            ."from ost_thread ot inner join ost_thread_entry ote on ot.id = ote.thread_id "
+                            ."where object_id = ".$taskSchedule->getId()." "
+                            ."and object_type = '".ObjectModel::OBJECT_TYPE_TASK_SCHEDULE."' and pid = 0;";
+                    if (($res2 = db_query($sql)) && db_num_rows($res2)) {
+                        list($description) = db_fetch_row($res2);
+                        $vars['description'] = $description;
+                    }
+                    
+                    if ($task=Task::createScheduledTask($vars)) {
+                        $sql="update ".TASK_SCHEDULE_TABLE." set last_created_task = '".$create_date."' "
+                            ."where id = ".$id;
+                        db_query($sql);
+                    }
+                }
+            }
+        }
+    }
+    
 }
 
 
-class TaskCData extends VerySimpleModel {
+class TaskScheduleCData extends VerySimpleModel {
     static $meta = array(
         'pk' => array('task_id'),
-        'table' => TASK_CDATA_TABLE,
+        'table' => TASK_SCHEDULE_CDATA_TABLE,
         'joins' => array(
             'task' => array(
-                'constraint' => array('task_id' => 'TaskModel.task_id'),
+                'constraint' => array('task_id' => 'TaskScheduleModel.task_id'),
             ),
         ),
     );
 }
 
 
-class TaskForm extends DynamicForm {
+class TaskScheduleForm extends DynamicForm {
     static $instance;
     static $defaultForm;
     static $internalForm;
@@ -1494,14 +1357,14 @@ class TaskForm extends DynamicForm {
     static $forms;
 
     static $cdata = array(
-            'table' => TASK_CDATA_TABLE,
+            'table' => TASK_SCHEDULE_CDATA_TABLE,
             'object_id' => 'task_id',
-            'object_type' => ObjectModel::OBJECT_TYPE_TASK,
+            'object_type' => ObjectModel::OBJECT_TYPE_TASK_SCHEDULE,
         );
 
     static function objects() {
         $os = parent::objects();
-        return $os->filter(array('type'=>ObjectModel::OBJECT_TYPE_TASK));
+        return $os->filter(array('type'=>ObjectModel::OBJECT_TYPE_TASK_SCHEDULE));
     }
 
     static function getDefaultForm() {
@@ -1517,7 +1380,7 @@ class TaskForm extends DynamicForm {
         if ($new || !isset(static::$instance))
             static::$instance = static::getDefaultForm()->instanciate();
 
-        static::$instance->object_type = ObjectModel::OBJECT_TYPE_TASK;
+        static::$instance->object_type = ObjectModel::OBJECT_TYPE_TASK_SCHEDULE;
 
         if ($object_id)
             static::$instance->object_id = $object_id;
@@ -1527,35 +1390,48 @@ class TaskForm extends DynamicForm {
 
     static function getInternalForm($source=null, $options=array()) {
         if (!isset(static::$internalForm))
-            static::$internalForm = new TaskInternalForm($source, $options);
+            static::$internalForm = new TaskScheduleInternalForm($source, $options);
 
         return static::$internalForm;
     }
 }
 
-class TaskInternalForm
+class TaskScheduleInternalForm
 extends AbstractForm {
     static $layout = 'GridFormLayout';
 
     function buildFields() {
 
         $fields = array(
-                'dept_id' => new DepartmentField(array(
-                    'id'=>1,
+                'regularity' => new ChoiceField(array(
+                    'id'=>1, 'label'=>'Periodicidad', 'required'=>true, 'default'=>'',
+                    'choices' => array('','Anual','Semestral','Cuatrimestral','Trimestral','Bimensual','Mensual','Quincenal','Semanal'),
+                    //'hint'=>'',
+                    'configuration'=>array('size'=>20, 'length'=>40),
+                    'layout' => new GridFluidCell(6)
+                    )),
+                'period' => new TextboxField(array(
+                    'id'=>2, 'label'=>'Tiempo de resolución (días)', 'required'=>true,
+                    'configuration' => array('size'=>20, 'validator'=>'number', 'size'=>2),
+                    'layout' => new GridFluidCell(6)
+                )),
+                'department_id' => new DepartmentField(array(
+                    'id'=>3,
                     'label' => __('Department'),
                     'required' => true,
                     'layout' => new GridFluidCell(6),
                     )),
                 'assignee' => new AssigneeField(array(
-                    'id'=>2,
+                    'id'=>4,
                     'label' => __('Assignee'),
                     'required' => false,
                     'layout' => new GridFluidCell(6),
                     )),
-                'duedate'  =>  new DatetimeField(array(
-                    'id' => 3,
-                    'label' => __('Due Date'),
-                    'required' => false,
+                'start'  =>  new DatetimeField(array(
+                    'id' => 5,
+                    'label' => 'Inicio',
+                    'hint' => 'Fecha de creación de la primera tarea',
+                    'required' => true,
                     'configuration' => array(
                         'min' => Misc::gmtime(),
                         'time' => true,
@@ -1568,7 +1444,7 @@ extends AbstractForm {
 
         $mode = @$this->options['mode'];
         if ($mode && $mode == 'edit') {
-            unset($fields['dept_id']);
+            unset($fields['department_id']);
             unset($fields['assignee']);
         }
 
@@ -1577,7 +1453,7 @@ extends AbstractForm {
 }
 
 // Task thread class
-class TaskThread extends ObjectThread {
+class TaskScheduleThread extends ObjectThread {
 
     function addDescription($vars, &$errors=array()) {
 
@@ -1593,7 +1469,7 @@ class TaskThread extends ObjectThread {
         $id = is_object($task) ? $task->getId() : $task;
         $thread = parent::create(array(
                     'object_id' => $id,
-                    'object_type' => ObjectModel::OBJECT_TYPE_TASK
+                    'object_type' => ObjectModel::OBJECT_TYPE_TASK_SCHEDULE
                     ));
         if ($thread->save())
             return $thread;

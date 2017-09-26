@@ -22,6 +22,7 @@ class ObjectModel {
     const OBJECT_TYPE_FAQ    = 'K';
     const OBJECT_TYPE_FILE   = 'F';
     const OBJECT_TYPE_TASK   = 'A';
+    const OBJECT_TYPE_TASK_SCHEDULE = 'S';
     const OBJECT_TYPE_EQUIPMENT = 'E';
     const OBJECT_TYPE_RESERVATION = 'R';
 
