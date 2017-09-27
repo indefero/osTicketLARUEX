@@ -137,7 +137,7 @@ class EquipmentReservation extends VerySimpleModel {
         // Add dynamic data
         $reservation->addDynamicData($vars['default_formdata']);
 
-        $reservation->logEvent('reserved', null, $thisstaff);
+        //$reservation->logEvent('reserved', null, $thisstaff);
 
         Signal::send('reservation.created', $reservation);
         

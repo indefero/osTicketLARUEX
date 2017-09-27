@@ -184,7 +184,7 @@ class ReservationsAjaxAPI extends AjaxController {
                     if (($r=EquipmentReservation::lookup($tid))
                             && ($thisstaff->getId() == $r->getStaff()->getId())
                             && $r->delete($_POST, $e)) {
-                        $r->logEvent('unreserved');
+                        //$r->logEvent('unreserved');
                         $i++;
                     }
                 }
