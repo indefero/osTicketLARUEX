@@ -23,7 +23,7 @@ $equipment = $user = null; //clean start.
 $redirect = false;
 //LOCKDOWN...See if the id provided is actually valid and if the user has access.
 if($_REQUEST['id']) {
-    if($_REQUEST['id'] && !($equipment= Equipment::lookup($_REQUEST['id'])))
+    if(!($equipment= Equipment::lookup($_REQUEST['id'])))
          $errors['err']=sprintf(__('%s: Unknown or invalid ID.'), __('ticket'));
 }
 
@@ -154,7 +154,7 @@ if($_POST && !$errors):
                     Draft::deleteForNamespace('equipment.note.'.$equipment->getId(),
                         $thisstaff->getId());
 
-                 $redirect = 'equipment.php';
+                //$redirect = 'equipment.php';
             } else {
 
                 if(!$errors['err'])

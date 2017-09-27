@@ -132,7 +132,7 @@ if($_POST && !$errors):
 
                 // Go back to the ticket listing page on reply
                 $ticket = null;
-                $redirect = 'tickets.php';
+                //$redirect = 'tickets.php';
 
             } elseif(!$errors['err']) {
                 $errors['err']=sprintf('%s %s',
@@ -178,7 +178,7 @@ if($_POST && !$errors):
                     Draft::deleteForNamespace('ticket.note.'.$ticket->getId(),
                         $thisstaff->getId());
 
-                 $redirect = 'tickets.php';
+                 //$redirect = 'tickets.php';
             } else {
 
                 if(!$errors['err'])
