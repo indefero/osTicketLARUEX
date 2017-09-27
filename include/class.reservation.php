@@ -62,6 +62,13 @@ class EquipmentReservation extends VerySimpleModel {
     function getEndDate() {
         return $this->ht['end'];
     }
+    
+    function isActive() {
+        global $cfg;
+        date_default_timezone_set($cfg->getTimezone());
+        $now = date("Y-m-d H:i:s");
+        return $this->getStartDate() <= $now && $now < $this->getEndDate();
+    }
 
     // Render reservation
     function render($type=false, $options=array()) {

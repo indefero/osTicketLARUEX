@@ -70,6 +70,7 @@ if ($count) { ?>
     <tbody class="reservations">
     <?php
     foreach($reservations as $reservation) {
+        $activa = $reservation->isActive();
         $id = $reservation->getId();
         ?>
         <tr id="<?php echo $id; ?>">
@@ -81,11 +82,23 @@ if ($count) { ?>
                                 echo 'title="La reserva no le pertenece"'; } 
                             ?>>
             </td>
-            <td nowrap><?php echo $reservation->getStaff()->getName(); ?></td>
-            <td nowrap><?php echo
-            Format::datetime($reservation->start); ?></td>
-            <td nowrap><?php echo
-            Format::datetime($reservation->end); ?></td>
+            <td nowrap><?php 
+                echo $reservation->getStaff()->getName();
+            ?></td>
+            <td nowrap><?php
+                if ($activa)
+                    echo "<a href='#' title='Reserva activa en este momento'>";
+                echo Format::datetime($reservation->start); 
+                if ($activa)
+                    echo "</a>";
+            ?></td>
+            <td nowrap><?php
+                if ($activa)
+                    echo "<a href='#' title='Reserva activa en este momento'>";
+                echo Format::datetime($reservation->end); 
+                if ($activa)
+                    echo "</a>";
+            ?></td>
         </tr>
    <?php
     }
