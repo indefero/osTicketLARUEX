@@ -21,6 +21,9 @@ $showing = $pageNav->showing().' '._N('item', 'items', $count);
         echo sprintf(__('%s no tiene ninguna reserva'), $equipment? 'Este equipamiento' :
                 'System');
     }
+    if (!$equipment->isActive()) {
+        echo '. El estado actual no permite hacer reservas';
+    }
    ?>
 </div>
 <div class="pull-right">
