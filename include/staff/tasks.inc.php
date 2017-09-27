@@ -72,7 +72,7 @@ case 'closed':
 case 'overdue':
     $status='open';
     $results_type=__('Overdue Tasks');
-    $tasks->filter(array('isoverdue'=>1));
+    $tasks->filter(array('flags'=>3));  // OJO, habría que comparar sólo con el segundo bit, no ambos!
     $queue_sort_options = array('updated', 'created', 'number', 'hot');
     break;
 case 'assigned':

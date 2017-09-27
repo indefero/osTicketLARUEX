@@ -56,6 +56,9 @@ session_write_close();
 // Age tickets: We're going to age tickets regardless of cron settings.
 Cron::TicketMonitor();
 
+// Age tasks: We're going to age tasks regardless of cron settings.
+Cron::TaskMonitor();
+
 // Se archivan las reservas de equipamiento que hayan caducado ya
 Cron::ArchiveEquipmentReservations();
 

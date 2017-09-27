@@ -33,6 +33,15 @@ class Cron {
         Lock::cleanup();
 
     }
+    
+    function TaskMonitor() {
+        require_once(INCLUDE_DIR.'class.task.php');
+        Task::checkOverdue(); //Make stale tasks overdue
+        // Cleanup any expired locks
+        require_once(INCLUDE_DIR.'class.lock.php');
+        Lock::cleanup();
+
+    }
 
     function PurgeLogs() {
         global $ost;

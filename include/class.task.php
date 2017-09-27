@@ -522,6 +522,93 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
 
         return $this->_entries ?: array();
     }
+    
+    /**
+     * 
+     * @global type $cfg
+     * @param type $whine Parece que es para controlar la notificación al usuario.
+     *                      Si se pone a false no se notifica.
+     * @return boolean
+     */
+    function markOverdue($whine=true) {
+        global $cfg;
+
+        if ($this->isOverdue())
+            return true;
+
+        // Notificamos primero para no cambiar el SLA y que se notifique al
+        // agente equivocado
+        $this->logEvent('overdue');
+        $this->onOverdue($whine);
+        
+        $this->setFlag(Task::ISOVERDUE);
+        
+        if (!$this->save())
+            return false;
+
+        return true;
+    }
+    
+    function onOverdue($whine=true, $comments="") {
+        global $cfg;
+
+        // Check if we need to send alerts.
+        if (!$whine
+            || !$cfg->alertONOverdueTask()
+            || !($dept = $this->getDept())
+        ) {
+            return true;
+        }
+        
+        // Get the message template
+        if (($tpl = $dept->getTemplate())
+            && ($msg=$tpl->getTaskOverdueAlertMsgTemplate())
+            && ($email = $dept->getAlertEmail())
+        ) {
+            $msg = $this->replaceVars($msg->asArray(),
+                array('comments' => $comments)
+            );
+            // Recipients
+            $recipients = array();
+            // Assigned staff or team... if any
+            if ($this->isAssigned() && $cfg->alertAssignedONOverdueTask()) {
+                if ($this->getStaffId()) {
+                    $recipients[]=$this->getStaff();
+                }
+                elseif ($this->getTeamId()
+                    && ($team = $this->getTeam())
+                    && ($members = $team->getMembers())
+                ) {
+                    $recipients=array_merge($recipients, $members);
+                }
+            }
+            elseif ($cfg->alertDeptMembersONOverdueTask() && !$this->isAssigned()) {
+                // Only alerts dept members if the ticket is NOT assigned.
+                foreach ($dept->getMembersForAlerts() as $M)
+                    $recipients[] = $M;
+            }
+            // Always alert dept manager??
+            if ($cfg->alertDeptManagerONOverdueTask()
+                && $dept && ($manager=$dept->getManager())
+            ) {
+                $recipients[]= $manager;
+            }
+            
+            $sentlist = array();
+            foreach ($recipients as $k=>$staff) {
+                if (!is_object($staff)
+                    || !$staff->isAvailable()
+                    || in_array($staff->getEmail(), $sentlist)
+                ) {
+                    continue;
+                }
+                $alert = $this->replaceVars($msg, array('recipient' => $staff));
+                $email->sendAlert($staff, $alert['subj'], $alert['body'], null);
+                $sentlist[] = $staff->getEmail();
+            }
+        }
+        return true;
+    }
 
     function setStatus($status, $comments='', &$errors=array()) {
         global $thisstaff;
@@ -1470,6 +1557,20 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
 
         require STAFFINC_DIR.'templates/tasks-actions.tmpl.php';
     }
+    
+    static function checkOverdue() {
+        $sql='SELECT id FROM '.TASK_TABLE.' '
+            .' WHERE closed is null AND flags & 3 = 1 '
+            .' AND (duedate is NOT NULL AND duedate<NOW()) '
+            .' ORDER BY created LIMIT 50'; //Age upto 50 tasks at a time?
+
+        if(($res=db_query($sql)) && db_num_rows($res)) {
+            while(list($id)=db_fetch_row($res)) {
+                if ($task=Task::lookup($id))
+                    $task->markOverdue();
+            }
+        }
+   }
 }
 
 
