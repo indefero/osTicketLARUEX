@@ -22,7 +22,7 @@ $showing = $pageNav->showing().' '._N('item', 'items', $count);
                 'System');
     }
     if (!$equipment->isActive()) {
-        echo '. El estado actual no permite hacer reservas';
+        echo '. El estado actual no permite hacer reservas.';
     }
    ?>
 </div>
