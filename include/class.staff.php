@@ -469,6 +469,12 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
                 || $this->hasPerm(TicketModel::PERM_ASSIGN, false)
                 || $this->hasPerm(TicketModel::PERM_CLOSE, false);
     }
+    
+    function canManageEquipment() {
+        return $this->hasPerm(EquipmentModel::PERM_DELETE, false)
+                || $this->hasPerm(EquipmentModel::PERM_TRANSFER, false)
+                || $this->hasPerm(EquipmentModel::PERM_RETIRE, false);
+    }
 
     function isManager() {
         return (($dept=$this->getDept()) && $dept->getManagerId()==$this->getId());

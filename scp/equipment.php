@@ -351,12 +351,14 @@ if($stats['retired']) {
                         ($_REQUEST['status']=='retired'));
 }
 
-$nav->addSubMenu(array('desc'=>__('Nuevo equipamiento'),
+if ($thisstaff->hasPerm(EquipmentModel::PERM_CREATE, false)) {
+    $nav->addSubMenu(array('desc'=>__('Nuevo equipamiento'),
                         'title'=> __('Añadir equipamiento'),
                         'href'=>'equipment.php?a=open',
                         'iconclass'=>'newTicket',
                         'id' => 'new-equipment'),
                      ($_REQUEST['a']=='open'));
+}
 
 $ost->addExtraHeader('<script type="text/javascript" src="js/equipment.js?d2ef3b1"></script>');
 $ost->addExtraHeader('<script type="text/javascript" src="js/thread.js?d2ef3b1"></script>');

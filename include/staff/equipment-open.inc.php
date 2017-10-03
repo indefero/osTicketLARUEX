@@ -1,13 +1,22 @@
 <?php
-if (!defined('OSTSCPINC') || !$thisstaff)
-        die('Access Denied');
+if (!defined('OSTSCPINC') || !$thisstaff
+        || !$thisstaff->hasPerm(EquipmentModel::PERM_CREATE, false))
+    die('Access Denied');
 
 $info=array();
 $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
 
 $forms = array();
-$form=DynamicForm::lookup(12); // id del formulario de equipamiento
-$forms[] = $form;
+foreach (DynamicForm::objects()->filter(array('type' => 'E')) as $form) {
+    if ($form->hasAnyVisibleFields()) {
+        if ($_POST) {
+            $form = $form->instanciate();
+            $form->isValidForClient();
+        }
+        $forms[] = $form;
+    }
+}
+
 ?>
 <form action="equipment.php?a=open" method="post" class="save"  enctype="multipart/form-data">
  <?php csrf_token(); ?>

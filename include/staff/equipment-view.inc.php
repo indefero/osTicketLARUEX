@@ -3,7 +3,7 @@
 if(!defined('OSTSCPINC') || !$thisstaff || !is_object($equipment) || !$equipment->getId()) die('Invalid path');
 
 //Make sure the staff is allowed to access the page.
-if(!@$thisstaff->isStaff()) die('Access Denied');
+if(!@$thisstaff->isStaff() || !$equipment->checkStaffPerm($thisstaff)) die('Access Denied');
 
 //Re-use the post info on error...savekeyboards.org (Why keyboard? -> some people care about objects than users!!)
 $info=($_POST && $errors)?Format::input($_POST):array();
@@ -14,6 +14,8 @@ if (!$lock && $cfg->getTicketLockMode() == Lock::MODE_ON_VIEW)
     $lock = $equipment->acquireLock($thisstaff->getId());
 $mylock = ($lock && $lock->getStaffId() == $thisstaff->getId()) ? $lock : null;
 $id    = $equipment->getId();    // Equipment ID.
+$dept  = $equipment->getDept();  //Dept
+$role  = $thisstaff->getRole($dept);
 
 //Useful warnings and errors the user might want to know!
 //if ($ticket->isClosed() && !$ticket->isReopenable())
@@ -42,19 +44,47 @@ if (!$errors['err']) {
     <div class="sticky bar">
        <div class="content">
         <div class="pull-right flush-right">
-            <!--<span class="action-button pull-right" data-placement="bottom" data-dropdown="#action-dropdown-more" data-toggle="tooltip" title="<?php echo __('More');?>">
+            <?php
+            if ($role->hasPerm(EquipmentModel::PERM_DELETE)) {
+            ?>
+            <span class="action-button pull-right" data-placement="bottom" data-dropdown="#action-dropdown-more" data-toggle="tooltip" title="<?php echo __('More');?>">
                 <i class="icon-caret-down pull-right"></i>
                 <span ><i class="icon-cog"></i></span>
             </span>
             <div id="action-dropdown-more" class="action-dropdown anchor-right">
-              <ul>
-                    <li class="danger"><a class="equipment-action" href="#equipment/<?php
-                    echo $equipment->getId(); ?>/status/delete"
-                    data-redirect="equipment.php"><i class="icon-trash"></i> <?php
-                    echo __('Eliminar equipamiento'); ?></a></li>
-              </ul>
-            </div>-->
-            <!--<span class="action-button pull-right"><a data-placement="bottom" data-toggle="tooltip" title="<?php echo __('Edit'); ?>" href="equipment.php?id=<?php echo $equipment->getId(); ?>&a=edit"><i class="icon-edit"></i></a></span>-->
+                <ul>
+                    <?php
+                    if ($role->hasPerm(EquipmentModel::PERM_DELETE)) {
+                       ?>
+                      <li class="danger"><a class="equipment-action" href="#equipments/<?php
+                      echo $equipment->getId(); ?>/status/delete"
+                      data-redirect="equipment.php"><i class="icon-trash"></i> <?php
+                      echo 'Eliminar equipamiento'; ?></a></li>
+                    <?php
+                    }
+                    ?>
+                </ul>
+            </div>
+            <?php
+            }
+            ?>
+            
+            <?php
+            if ($role->hasPerm(EquipmentModel::PERM_EDIT)) { ?>
+                <span class="action-button pull-right"><a data-placement="bottom" data-toggle="tooltip" title="<?php echo __('Edit'); ?>" href="equipment.php?id=<?php echo $equipment->getId(); ?>&a=edit"><i class="icon-edit"></i></a></span>
+            <?php
+            }
+            
+            if ($role->hasPerm(EquipmentModel::PERM_TRANSFER)) {?>
+            <span class="action-button pull-right">
+            <a class="equipment-action" id="equipment-transfer" data-placement="bottom" data-toggle="tooltip" title="<?php echo __('Transfer'); ?>"
+                data-redirect="equipment.php"
+                href="#equipments/<?php echo $equipment->getId(); ?>/transfer"><i class="icon-share"></i></a>
+            </span>
+            <?php
+            }
+            ?>
+            
             <!--<span class="action-button pull-right" data-placement="bottom" data-dropdown="#action-dropdown-print" data-toggle="tooltip" title="<?php echo __('Print'); ?>">
                 <i class="icon-caret-down pull-right"></i>
                 <a id="equipment-print" href="equipment.php?id=<?php echo $equipment->getId(); ?>&a=print"><i class="icon-print"></i></a>
@@ -67,17 +97,21 @@ if (!$errors['err']) {
                  class="icon-file-text-alt"></i> <?php echo __('Thread + Internal Notes'); ?></a>
               </ul>
             </div>-->
+                
             <a href="#post-note" id="post-note" class="post-response action-button"
             data-placement="bottom" data-toggle="tooltip"
             title="<?php echo __('Post Internal Note'); ?>"><i class="icon-file-text"></i></a>
             <?php // Status change options
-            echo EquipmentStatus::status_options(array('status' => $equipment->getStatus()->getState()));
+            echo EquipmentStatus::status_options(array(
+                    'status' => $equipment->getStatus()->getState(), 
+                    'dept_id' => $equipment->getDeptId()
+                ));
             ?>
         </div>
         <div class="flush-left">
              <h2><a href="equipment.php?id=<?php echo $equipment->getId(); ?>"
              title="<?php echo __('Reload'); ?>"><i class="icon-refresh"></i>
-             <?php echo sprintf('%s', $equipment->getName()); ?></a>
+             <?php echo sprintf('#%s: %s', str_pad($equipment->getId(), 6, "0", STR_PAD_LEFT), $equipment->getName()); ?></a>
             </h2>
         </div>
     </div>
@@ -100,8 +134,8 @@ if (!$errors['err']) {
         <td width="50%">
             <table cellspacing="0" cellpadding="4" width="100%" border="0">
                 <tr>
-                    <th></th>
-                    <td></td>
+                    <th><?php echo __('Department');?>:</th>
+                    <td><?php echo Format::htmlchars($equipment->getDeptName()); ?></td>
                 </tr>
                 <?php
                 if ($equipment->isActive()) { ?>

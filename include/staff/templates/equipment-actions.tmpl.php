@@ -1,7 +1,29 @@
 <?php
 // Equipment mass actions
 
-echo EquipmentStatus::status_options($options);
+// Status change
+if ($agent->canManageEquipment())
+    echo EquipmentStatus::status_options($options);
+
+// Mass Transfer
+if ($agent->hasPerm(Equipment::PERM_TRANSFER, false)) {?>
+<span class="action-button">
+ <a class="equipments-action" id="equipments-transfer" data-placement="bottom"
+    data-toggle="tooltip" title="<?php echo __('Transfer'); ?>"
+    href="#equipments/mass/transfer"><i class="icon-share"></i></a>
+</span>
+<?php
+}
+
+// Mass Delete
+if ($agent->hasPerm(Equipment::PERM_DELETE, false)) {?>
+<span class="red button action-button">
+ <a class="equipments-action" id="equipments-delete" data-placement="bottom"
+    data-toggle="tooltip" title="<?php echo __('Delete'); ?>"
+    href="#equipments/mass/delete"><i class="icon-trash"></i></a>
+</span>
+<?php
+}
 
 ?>
 <script type="text/javascript">

@@ -544,28 +544,6 @@ Filter::addSupportedMatches(/* trans */ 'Custom Forms', function() {
     return $matches;
 }, 9900);
 
-class EquipmentForm extends DynamicForm {
-    static $instance;
-
-    static function objects() {
-        $os = parent::objects();
-        return $os->filter(array('type'=>'E'));
-    }
-
-    static function getInstance() {
-        if (!isset(static::$instance))
-            self::getNewInstance();
-        return static::$instance;
-    }
-
-    static function getNewInstance() {
-        $o = static::objects()->one();
-        static::$instance = $o->instanciate();
-        return static::$instance;
-    }
-
-}
-
 require_once(INCLUDE_DIR . "class.json.php");
 
 class DynamicFormField extends VerySimpleModel {

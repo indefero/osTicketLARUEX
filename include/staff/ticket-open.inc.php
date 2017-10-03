@@ -1,7 +1,7 @@
 <?php
 if (!defined('OSTSCPINC') || !$thisstaff
         || !$thisstaff->hasPerm(TicketModel::PERM_CREATE, false))
-        die('Access Denied');
+    die('Access Denied');
 
 $info=array();
 $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);

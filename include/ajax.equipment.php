@@ -370,41 +370,41 @@ class EquipmentAjaxAPI extends AjaxController {
     function transfer($tid) {
         global $thisstaff;
 
-        if (!($ticket=Ticket::lookup($tid)))
-            Http::response(404, __('No such ticket'));
+        if (!($equipment=Equipment::lookup($tid)))
+            Http::response(404, __('No such equipment'));
 
-        if (!$ticket->checkStaffPerm($thisstaff, Ticket::PERM_TRANSFER))
+        if (!$equipment->checkStaffPerm($thisstaff, Equipment::PERM_TRANSFER))
             Http::response(403, __('Permission denied'));
 
         $errors = array();
 
         $info = array(
-                ':title' => sprintf(__('Ticket #%s: %s'),
-                    $ticket->getNumber(),
+                ':title' => sprintf('Equipamiento #%s: %s',
+                    $equipment->getId(),
                     __('Transfer')),
-                ':action' => sprintf('#tickets/%d/transfer',
-                    $ticket->getId())
+                ':action' => sprintf('#equipments/%d/transfer',
+                    $equipment->getId())
                 );
 
-        $form = $ticket->getTransferForm($_POST);
+        $form = $equipment->getTransferForm($_POST);
         if ($_POST && $form->isValid()) {
-            if ($ticket->transfer($form, $errors)) {
+            if ($equipment->transfer($form, $errors)) {
                 $_SESSION['::sysmsgs']['msg'] = sprintf(
                         __('%s successfully'),
                         sprintf(
                             __('%s transferred to %s department'),
-                            __('Ticket'),
-                            $ticket->getDept()
+                            'Equipamiento',
+                            $equipment->getDept()
                             )
                         );
-                Http::response(201, $ticket->getId());
+                Http::response(201, $equipment->getId());
             }
 
             $form->addErrors($errors);
             $info['error'] = $errors['err'] ?: __('Unable to transfer ticket');
         }
 
-        $info['dept_id'] = $info['dept_id'] ?: $ticket->getDeptId();
+        $info['dept_id'] = $info['dept_id'] ?: $equipment->getDeptId();
 
         include STAFFINC_DIR . 'templates/transfer.tmpl.php';
     }
@@ -534,20 +534,11 @@ class EquipmentAjaxAPI extends AjaxController {
                 'transfer' => array(
                     'verbed' => __('transferred'),
                     ),
-                'assign' => array(
-                    'verbed' => __('assigned'),
-                    ),
-                'claim' => array(
-                    'verbed' => __('assigned'),
-                    ),
                 'delete' => array(
                     'verbed' => __('deleted'),
                     ),
-                'reopen' => array(
-                    'verbed' => __('reopen'),
-                    ),
-                'close' => array(
-                    'verbed' => __('closed'),
+                'retire' => array(
+                    'verbed' => 'retirado',
                     ),
                 );
 
@@ -562,140 +553,24 @@ class EquipmentAjaxAPI extends AjaxController {
             if (!$_POST['tids'] || !($count=count($_POST['tids'])))
                 $errors['err'] = sprintf(
                         __('You must select at least %s.'),
-                        __('one ticket'));
+                        'un item');
         } else {
             $count  =  $_REQUEST['count'];
         }
         switch ($action) {
-        case 'claim':
-            $w = 'me';
-        case 'assign':
-            $inc = 'assign.tmpl.php';
-            $info[':action'] = "#tickets/mass/assign/$w";
-            $info[':title'] = sprintf('Assign %s',
-                    _N('selected ticket', 'selected tickets', $count));
-
-            $form = AssignmentForm::instantiate($_POST);
-
-            $assignCB = function($t, $f, $e) {
-                return $t->assign($f, $e);
-            };
-
-            $assignees = null;
-            switch ($w) {
-                case 'agents':
-                    $depts = array();
-                    $tids = $_POST['tids'] ?: array_filter(explode(',', $_REQUEST['tids']));
-                    if ($tids) {
-                        $tickets = TicketModel::objects()
-                            ->distinct('dept_id')
-                            ->filter(array('ticket_id__in' => $tids));
-
-                        $depts = $tickets->values_flat('dept_id');
-                    }
-                    $members = Staff::objects()
-                        ->distinct('staff_id')
-                        ->filter(array(
-                                    'onvacation' => 0,
-                                    'isactive' => 1,
-                                    )
-                                );
-
-                    if ($depts) {
-                        $members->filter(Q::any( array(
-                                        'dept_id__in' => $depts,
-                                        Q::all(array(
-                                            'dept_access__dept__id__in' => $depts,
-                                            Q::not(array('dept_access__dept__flags__hasbit'
-                                                => Dept::FLAG_ASSIGN_MEMBERS_ONLY))
-                                            ))
-                                        )));
-                    }
-
-                    switch ($cfg->getAgentNameFormat()) {
-                    case 'last':
-                    case 'lastfirst':
-                    case 'legal':
-                        $members->order_by('lastname', 'firstname');
-                        break;
-
-                    default:
-                        $members->order_by('firstname', 'lastname');
-                    }
-
-                    $prompt  = __('Select an Agent');
-                    $assignees = array();
-                    foreach ($members as $member)
-                         $assignees['s'.$member->getId()] = $member->getName();
-
-                    if (!$assignees)
-                        $info['warn'] =  __('No agents available for assignment');
-                    break;
-                case 'teams':
-                    $assignees = array();
-                    $prompt = __('Select a Team');
-                    foreach (Team::getActiveTeams() as $id => $name)
-                        $assignees['t'.$id] = $name;
-
-                    if (!$assignees)
-                        $info['warn'] =  __('No teams available for assignment');
-                    break;
-                case 'me':
-                    $info[':action'] = '#tickets/mass/claim';
-                    $info[':title'] = sprintf('Claim %s',
-                            _N('selected ticket', 'selected tickets', $count));
-                    $info['warn'] = sprintf(
-                            __('Are you sure you want to CLAIM %s?'),
-                            _N('selected ticket', 'selected tickets', $count));
-                    $verb = sprintf('%s, %s', __('Yes'), __('Claim'));
-                    $id = sprintf('s%s', $thisstaff->getId());
-                    $assignees = array($id => $thisstaff->getName());
-                    $vars = $_POST ?: array('assignee' => array($id));
-                    $form = ClaimForm::instantiate($vars);
-                    $assignCB = function($t, $f, $e) {
-                        return $t->claim($f, $e);
-                    };
-                    break;
-            }
-
-            if ($assignees != null)
-                $form->setAssignees($assignees);
-
-            if ($prompt && ($f=$form->getField('assignee')))
-                $f->configure('prompt', $prompt);
-
-            if ($_POST && $form->isValid()) {
-                foreach ($_POST['tids'] as $tid) {
-                    if (($t=Ticket::lookup($tid))
-                            // Make sure the agent is allowed to
-                            // access and assign the task.
-                            && $t->checkStaffPerm($thisstaff, Ticket::PERM_ASSIGN)
-                            // Do the assignment
-                            && $assignCB($t, $form, $e)
-                            )
-                        $i++;
-                }
-
-                if (!$i) {
-                    $info['error'] = sprintf(
-                            __('Unable to %1$s %2$s'),
-                            __('assign'),
-                            _N('selected ticket', 'selected tickets', $count));
-                }
-            }
-            break;
         case 'transfer':
             $inc = 'transfer.tmpl.php';
-            $info[':action'] = '#tickets/mass/transfer';
-            $info[':title'] = sprintf('Transfer %s',
-                    _N('selected ticket', 'selected tickets', $count));
+            $info[':action'] = '#equipments/mass/transfer';
+            $info[':title'] = sprintf(__('Transfer %s'),
+                    _N('selected item', 'selected items', $count));
+            
             $form = TransferForm::instantiate($_POST);
             if ($_POST && $form->isValid()) {
                 foreach ($_POST['tids'] as $tid) {
-                    if (($t=Ticket::lookup($tid))
+                    if (($t=Equipment::lookup($tid))
                             // Make sure the agent is allowed to
                             // access and transfer the task.
-                            && $t->checkStaffPerm($thisstaff, Ticket::PERM_TRANSFER)
+                            && $t->checkStaffPerm($thisstaff, Equipment::PERM_TRANSFER)
                             // Do the transfer
                             && $t->transfer($form, $e)
                             )
@@ -706,36 +581,36 @@ class EquipmentAjaxAPI extends AjaxController {
                     $info['error'] = sprintf(
                             __('Unable to %1$s %2$s'),
                             __('transfer'),
-                            _N('selected ticket', 'selected tickets', $count));
+                            _N('selected item', 'selected items', $count));
                 }
             }
             break;
         case 'delete':
             $inc = 'delete.tmpl.php';
-            $info[':action'] = '#tickets/mass/delete';
-            $info[':title'] = sprintf('Delete %s',
-                    _N('selected ticket', 'selected tickets', $count));
+            $info[':action'] = '#equipments/mass/delete';
+            $info[':title'] = sprintf(__('Delete %s'),
+                    _N('selected item', 'selected items', $count));
 
             $info[':placeholder'] = sprintf(__(
                         'Optional reason for deleting %s'),
-                    _N('selected ticket', 'selected tickets', $count));
+                    _N('selected item', 'selected items', $count));
             $info['warn'] = sprintf(__(
                         'Are you sure you want to DELETE %s?'),
-                    _N('selected ticket', 'selected tickets', $count));
+                    _N('selected item', 'selected items', $count));
             $info[':extra'] = sprintf('<strong>%s</strong>',
-                        __('Deleted tickets CANNOT be recovered, including any associated attachments.')
+                        __('Deleted items CANNOT be recovered, including any associated attachments.')
                         );
 
             // Generic permission check.
-            if (!$thisstaff->hasPerm(Ticket::PERM_DELETE, false))
+            if (!$thisstaff->hasPerm(Equipment::PERM_DELETE, false))
                 $errors['err'] = sprintf(
                         __('You do not have permission %s'),
-                        __('to delete tickets'));
+                        'para eliminar equipamiento');
 
             if ($_POST && !$errors) {
                 foreach ($_POST['tids'] as $tid) {
-                    if (($t=Ticket::lookup($tid))
-                            && $t->checkStaffPerm($thisstaff, Ticket::PERM_DELETE)
+                    if (($t=Equipment::lookup($tid))
+                            && $t->checkStaffPerm($thisstaff, Equipment::PERM_DELETE)
                             && $t->delete($_POST['comments'], $e)
                             )
                         $i++;
@@ -745,7 +620,7 @@ class EquipmentAjaxAPI extends AjaxController {
                     $info['error'] = sprintf(
                             __('Unable to %1$s %2$s'),
                             __('delete'),
-                            _N('selected ticket', 'selected tickets', $count));
+                            _N('selected item', 'selected items', $count));
                 }
             }
             break;
@@ -757,11 +632,11 @@ class EquipmentAjaxAPI extends AjaxController {
 
             // Assume success
             if ($i==$count) {
-                $msg = sprintf(__('Successfully %1$s %2$s.' /* Tokens are <actioned> <x selected ticket(s)> */ ),
+                $msg = sprintf(__('Successfully %1$s %2$s.'),
                         $actions[$action]['verbed'],
                         sprintf('%1$d %2$s',
                             $count,
-                            _N('selected ticket', 'selected tickets', $count))
+                            _N('selected item', 'selected items', $count))
                         );
                 $_SESSION['::sysmsgs']['msg'] = $msg;
             } else {
@@ -769,7 +644,7 @@ class EquipmentAjaxAPI extends AjaxController {
                         __('%1$d of %2$d %3$s %4$s'
                         /* Tokens are <x> of <y> <selected ticket(s)> <actioned> */),
                         $i, $count,
-                        _N('selected ticket', 'selected tickets',
+                        _N('selected item', 'selected items',
                             $count),
                         $actions[$action]['verbed']);
                 $_SESSION['::sysmsgs']['warn'] = $warn;
@@ -779,7 +654,7 @@ class EquipmentAjaxAPI extends AjaxController {
             $info['error'] = $errors['err'] ?: sprintf(
                     __('Unable to %1$s %2$s'),
                     __('process'),
-                    _N('selected ticket', 'selected tickets', $count));
+                    _N('selected item', 'selected items', $count));
         }
 
         if ($_POST)
@@ -790,7 +665,7 @@ class EquipmentAjaxAPI extends AjaxController {
         echo "
         <script type=\"text/javascript\">
         $(function() {
-            $('form#tickets input[name=\"tids[]\"]:checkbox:checked')
+            $('form#equipments input[name=\"tids[]\"]:checkbox:checked')
             .each(function() {
                 $('<input>')
                 .prop('type', 'hidden')
@@ -811,6 +686,8 @@ class EquipmentAjaxAPI extends AjaxController {
         elseif (!$tid
                 || !($equipment=Equipment::lookup($tid)))
             Http::response(404, 'Unknown equipment #');
+        
+        $role = $thisstaff->getRole($equipment->getDeptId());
 
         $info = array();
         $state = null;
@@ -822,9 +699,13 @@ class EquipmentAjaxAPI extends AjaxController {
                 $state = 'inactive';
                 break;
             case 'retire':
+                if (!$role->hasPerm(EquipmentModel::PERM_RETIRE))
+                    Http::response(403, 'Access denied');
                 $state = 'retired';
                 break;
             case 'delete':
+                if (!$role->hasPerm(EquipmentModel::PERM_DELETE))
+                    Http::response(403, 'Access denied');
                 $state = 'deleted';
                 break;
             default:
@@ -855,6 +736,28 @@ class EquipmentAjaxAPI extends AjaxController {
         elseif ($status->getId() == $equipment->getStatusId())
             $errors['err'] = sprintf(__('Equipamiento ya en estado %s'),
                     __($status->getName()));
+        elseif (($role = $thisstaff->getRole($equipment->getDeptId()))) {
+            // Make sure the agent has permission to set the status
+            switch(mb_strtolower($status->getState())) {
+                case 'active':
+                    break;
+                case 'inactive':
+                    break;
+                case 'retired':
+                    if (!$role->hasPerm(EquipmentModel::PERM_RETIRE))
+                        $errors['err'] = sprintf(__('You do not have permission %s'),
+                                'para retirar equipamiento');
+                    break;
+                case 'deleted':
+                    if (!$role->hasPerm(TicketModel::PERM_DELETE))
+                        $errors['err'] = sprintf(__('You do not have permission %s'),
+                                'para eliminar equipamiento');
+                    break;
+                default:
+                    $errors['err'] = sprintf('%s %s',
+                            __('Unknown or invalid'), __('status'));
+            }
+        }
 
         $state = strtolower($status->getState());
 
@@ -902,6 +805,8 @@ class EquipmentAjaxAPI extends AjaxController {
                 $state = 'new';
                 break;
             case 'retire':
+                if (!$thisstaff->hasPerm(EquipmentModel::PERM_RETIRE, false))
+                    Http::response(403, 'Access denied');
                 $state = 'retired';
                 break;
             case 'activate':
@@ -941,7 +846,11 @@ class EquipmentAjaxAPI extends AjaxController {
                 case 'new':
                 case 'active':
                 case 'inactive':
+                    break;
                 case 'retired':
+                    if (!$thisstaff->hasPerm(EquipmentModel::PERM_RETIRE, false))
+                        $errors['err'] = sprintf(__('You do not have permission %s'),
+                                'para retirar equipamiento');
                     break;
                 default:
                     $errors['err'] = sprintf('%s %s',
@@ -1069,7 +978,7 @@ class EquipmentAjaxAPI extends AjaxController {
         $info['action'] = sprintf('#equipments/%d/status', $equipment->getId());
         $info['title'] = sprintf(__(
                     /* 1$ will be a verb, like 'open', 2$ will be the ticket number */
-                    '%1$s #%2$s'),
+                    '%1$s %2$s'),
                 $verb ?: $state,
                 $equipment->getName()
                 );

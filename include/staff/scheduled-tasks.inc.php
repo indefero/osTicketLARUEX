@@ -1,5 +1,5 @@
 <?php
-global $thisstaff;
+global $thisstaff, $cfg;
 
 $schedules = TaskSchedule::objects()->order_by('start');
 

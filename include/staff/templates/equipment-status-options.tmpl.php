@@ -21,11 +21,12 @@ $actions= array(
 $statuses = EquipmentStatus::objects();
 
 // Excluimos ciertas transiciones de estados en función del actual
-$excludedEquipmentStates[] = $equipment ? $equipment->getState() : "";
 // El propio estado
 $excludedEquipmentStates[] = $options['status'];
 // Nunca se puede volver al estado inicial
 $excludedEquipmentStates[] = "new";
+// El estado 'deleted' es un estado interno
+$excludedEquipmentStates[] = "deleted";
 switch ($options['status']) {
     case "new":
         $excludedEquipmentStates[] = "inactive";
@@ -34,6 +35,10 @@ switch ($options['status']) {
     case "retired":
         $excludedEquipmentStates[] = "inactive";
         break;
+}
+
+if (!$thisstaff->getRole($options['dept_id'])->hasPerm(EquipmentModel::PERM_RETIRE)) {
+    $excludedEquipmentStates[] = "retired";
 }
 
 $nextStatuses = array();

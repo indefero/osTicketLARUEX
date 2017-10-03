@@ -42,6 +42,11 @@ implements TemplateVariable {
                 'list' => true,
                 'reverse' => 'Staff.dept',
             ),
+            'equipment' => array(
+                'null' => true,
+                'list' => true,
+                'reverse' => 'Equipment.dept',
+            ),
             'extended' => array(
                 'null' => true,
                 'list' => true,
@@ -53,6 +58,8 @@ implements TemplateVariable {
     var $_members;
     var $_primary_members;
     var $_extended_members;
+    
+    var $_equipment;
 
     var $_groupids;
     var $config;
@@ -81,6 +88,9 @@ implements TemplateVariable {
             'members' => array(
                 'class' => 'UserList', 'desc' => 'Department members',
             ),
+            'equipment' => array(
+                'class' => 'EquipmentList', 'desc' => 'Department equipment',
+            ),
             'parent' => array(
                 'class' => 'Dept', 'desc' => 'Parent department',
             ),
@@ -95,6 +105,8 @@ implements TemplateVariable {
         switch ($tag) {
         case 'members':
             return new UserList($this->getMembers()->all());
+        case 'equipment':
+            return new EquipmentList($this->getEquipment()->all());
         }
     }
 
@@ -154,6 +166,29 @@ implements TemplateVariable {
             return $this->email;
 
         return $cfg? $cfg->getDefaultEmail() : null;
+    }
+    
+    function getNumEquipment() {
+        return count($this->getEquipment());
+    }
+
+    function getEquipment() {
+        if (!isset($this->_equipment)) {
+            $equipment = Equipment::objects()
+                ->filter(array(
+                    'dept_id' => $this->getId()
+                ));
+
+            $this->_equipment = $equipment->order_by('name');
+        }
+        return $this->_equipment;
+    }
+
+    function getAvailableEquipment() {
+        $equipment = clone $this->getEquipment();
+        return $equipment->filter(array(
+            'status_id' => 2,
+        ));
     }
 
     function getNumMembers() {
@@ -222,7 +257,7 @@ implements TemplateVariable {
         return $this->_extended_members;
     }
 
-    // Get members  eligible members only
+    // Get members eligible members only
     function getAssignees() {
         $members = clone $this->getAvailableMembers();
         // If restricted then filter to primary members ONLY!
@@ -324,6 +359,15 @@ implements TemplateVariable {
             'staff_id' => $staff
         ));
     }
+    
+    function isDeptEquipment($item) {
+        if (is_object($item))
+            $item = $item->getId();
+
+        return $this->getMembers()->findFirst(array(
+            'id' => $item
+        ));
+    }
 
     function isPublic() {
          return $this->ispublic;
@@ -376,6 +420,8 @@ implements TemplateVariable {
             || $this->getId()==$cfg->getDefaultDeptId()
             // Department  with users cannot be deleted
             || $this->members->count()
+            // Department  with equipment cannot be deleted
+            || $this->equipment->count()
         ) {
             return 0;
         }
@@ -395,6 +441,11 @@ implements TemplateVariable {
 
             //Move Dept members: This should never happen..since delete should be issued only to empty Depts...but check it anyways
             Staff::objects()
+                ->filter(array('dept_id' => $id))
+                ->update(array('dept_id' => $cfg->getDefaultDeptId()));
+            
+            //Move Dept equipment: This should never happen..since delete should be issued only to empty Depts...but check it anyways
+            Equipment::objects()
                 ->filter(array('dept_id' => $id))
                 ->update(array('dept_id' => $cfg->getDefaultDeptId()));
 

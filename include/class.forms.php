@@ -2376,7 +2376,8 @@ class DepartmentField extends ChoiceField {
             reset($id);
             $id = key($id);
         }
-        return $id;
+        
+        return Dept::lookup($id);
     }
 
     function to_database($dept) {
@@ -2641,7 +2642,12 @@ class EquipmentStateField extends ChoiceField {
                 )
             );
     // Private states
-    static $_privatestates = array();
+    static $_privatestates = array(
+        'deleted'  => array(
+                'name' => /* @trans, @context "ticket state name" */ 'Eliminado',
+                'verb' => /* @trans, @context "ticket state action" */ 'Eliminar'
+                )        
+    );
 
     function hasIdValue() {
         return true;
@@ -4565,7 +4571,7 @@ class TransferForm extends Form {
     function getDept() {
 
         if (!isset($this->_dept)) {
-            if (($id = $this->getField('dept')->getClean()))
+            if (($id = $this->getField('dept')->getClean()->getId()))   // Puse el ->getId() porque Dept::lookup no funciona con un objeto Dept
                 $this->_dept = Dept::lookup($id);
         }
 

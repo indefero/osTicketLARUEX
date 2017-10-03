@@ -35,6 +35,7 @@ require_once(INCLUDE_DIR.'class.user.php');
 require_once(INCLUDE_DIR.'class.collaborator.php');
 require_once(INCLUDE_DIR.'class.task.php');
 include_once(INCLUDE_DIR.'class.task_schedule.php');
+include_once(INCLUDE_DIR.'class.equipment.php');
 require_once(INCLUDE_DIR.'class.faq.php');
 
 class TicketModel extends VerySimpleModel {

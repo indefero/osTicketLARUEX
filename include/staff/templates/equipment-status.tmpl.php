@@ -40,7 +40,7 @@ $action = $info['action'] ?: ('#equipments/status/'. $state);
 
             $verb = '';
             if ($state) {
-                $statuses = array(EquipmentStatus::lookup($info['status_id']));
+                $statuses = EquipmentStatus::objects()->filter(array('state'=>$state));
                 switch($state) {
                     case 'new':
                         $verb = 'Crear';
@@ -53,6 +53,9 @@ $action = $info['action'] ?: ('#equipments/status/'. $state);
                         break;
                     case 'retired':
                         $verb = 'Retirar';
+                        break;
+                    case 'deleted':
+                        $verb = 'Eliminar';
                         break;
                 }
             }
@@ -80,8 +83,8 @@ $action = $info['action'] ?: ('#equipments/status/'. $state);
                             </select>
                             <font class="error">*&nbsp;<?php echo $errors['status_id']; ?></font>
                         <?php
-                        } elseif ($statuses[0]) {
-                            echo  "<input type='hidden' name='status_id' value={$statuses[0]->getId()} />";
+                        } elseif ($statuses->first()) {
+                            echo  "<input type='hidden' name='status_id' value={$statuses->first()->getId()} />";
                         } ?>
                         </span>
                     </td>

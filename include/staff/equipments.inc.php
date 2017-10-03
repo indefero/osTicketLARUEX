@@ -26,20 +26,25 @@ $sort_options = array(
 // Queues columns
 
 $queue_columns = array(
+        'id' => array(
+            'width' => '10%',
+            'heading' => __('Number'),
+            'sort_col' => 'id',
+            ),
         'name' => array(
-            'width' => '80%',
+            'width' => '60%',
             'heading' => __('Name'),
             'sort_col' => 'name',
             ),
-        'date' => array(
+        'dept' => array(
             'width' => '20%',
+            'heading' => __('Department'),
+            'sort_col' => 'dept_id',
+            ),
+        'date' => array(
+            'width' => '10%',
             'heading' => __('Date Created'),
             'sort_col' => 'created',
-            ),
-        'updated' => array(
-            'width' => '20%',
-            'heading' => __('Fecha de actualización'),
-            'sort_col' => 'updated',
             )
         );
 
@@ -120,6 +125,16 @@ case 'available':
 // Apply primary ticket status
 if ($status)
     $equipments->filter(array('status__state'=>$status));
+
+// Impose visibility constraints
+// ------------------------------------------------------------
+if (!$view_all_equipment) {
+    // -- Routed to a department of mine
+    if (($depts=$thisstaff->getDepts())) {
+        $visibility = Q::any(new Q(array('dept_id__in' => $depts)));
+        $equipments->filter(Q::any($visibility));
+    }
+}
 
 // TODO :: Apply requested quick filter
 
@@ -202,12 +217,10 @@ $equipments = $equipments2;
 // Save the query to the session for exporting
 $_SESSION[':Q:equipments'] = $equipments;
 
-TicketForm::ensureDynamicDataView();
-
 // Select pertinent columns
 // ------------------------------------------------------------
 $equipments->values('lock__staff_id', 'id', 'name', 'description',
-'status_id', 'status__name', 'status__state', 'updated');
+'status_id', 'status__name', 'status__state', 'updated', 'dept__name');
 
 
 // Make sure we're only getting active locks
@@ -259,7 +272,7 @@ return false;">
             <div class="pull-right flush-right">
             <?php
             if ($count) {
-                Equipment::agentActions(array('status' => $status));
+                Equipment::agentActions($thisstaff, array('status' => $status));
             }?>
             </div>
         </div>
@@ -303,8 +316,6 @@ return false;">
      </thead>
      <tbody>
         <?php
-        // Setup Subject field for display
-        $subject_field = TicketForm::getInstance()->getField('subject');
         $class = "row1";
         $total=0;
         $ids=($errors && $_POST['tids'] && is_array($_POST['tids']))?$_POST['tids']:null;
@@ -328,17 +339,21 @@ return false;">
                     <input class="ckb" type="checkbox" name="tids[]"
                         value="<?php echo $E['id']; ?>" <?php echo $sel?'checked="checked"':''; ?>>
                 </td>
-                <td title="<?php echo $E['name']; ?>" nowrap>
-                  <a class="Icon <?php echo strtolower($E['source']); ?>Equipment preview"
-                    title="Preview Equipment"
+                <td nowrap>
+                  <a class="Icon <?php echo strtolower($E['source']); ?>Ticket preview"
                     href="equipment.php?id=<?php echo $E['id']; ?>"
                     data-preview="#equipment/<?php echo $E['id']; ?>/preview"
-                    ><?php echo $tid; ?></a></td>
-                <td align="center" nowrap><?php 
-                    echo Format::datetime($E[$date_col ?: 'updated']) ?: $date_fallback;
+                    ><?php echo sprintf('<b>%s</b>', str_pad($E['id'], 6, "0", STR_PAD_LEFT)); ?></a>
+                </td>
+                <td nowrap>
+                  <a href="equipment.php?id=<?php echo $E['id']; ?>"
+                    ><?php echo $tid; ?></a>
+                </td>
+                <td align="center" nowrap><?php
+                    echo $E['dept__name'];
                 ?></td>
                 <td align="center" nowrap><?php 
-                    echo Format::datetime($E['updated']) ?: $date_fallback;
+                    echo Format::datetime($E[$date_col ?: 'updated']) ?: $date_fallback;
                 ?></td>
             </tr>
             <?php

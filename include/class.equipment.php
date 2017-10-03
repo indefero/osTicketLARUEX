@@ -23,6 +23,9 @@ class EquipmentModel extends VerySimpleModel {
             'status' => array(
                 'constraint' => array('status_id' => 'EquipmentStatus.id')
             ),
+            'dept' => array(
+                'constraint' => array('dept_id' => 'Dept.id'),
+            ),
             'lock' => array(
                 'constraint' => array('lock_id' => 'Lock.lock_id'),
                 'null' => true,
@@ -38,6 +41,46 @@ class EquipmentModel extends VerySimpleModel {
         )
     );
     
+    const PERM_CREATE   = 'equipment.create';
+    const PERM_EDIT     = 'equipment.edit';
+    const PERM_TRANSFER = 'equipment.transfer';
+    const PERM_REPLY    = 'equipment.reply';
+    const PERM_RETIRE   = 'equipment.retire';
+    const PERM_DELETE   = 'equipment.delete';
+    
+    static protected $perms = array(
+            self::PERM_CREATE => array(
+                'title' =>
+                /* @trans */ 'Create',
+                'desc'  =>
+                /* @trans */ 'Ability to create equipment'),
+            self::PERM_EDIT => array(
+                'title' =>
+                /* @trans */ 'Edit',
+                'desc'  =>
+                /* @trans */ 'Ability to edit equipment'),
+            self::PERM_TRANSFER => array(
+                'title' =>
+                /* @trans */ 'Transfer',
+                'desc'  =>
+                /* @trans */ 'Ability to transfer equipment between departments'),
+            self::PERM_REPLY => array(
+                'title' =>
+                /* @trans */ 'Post Reply',
+                'desc'  =>
+                /* @trans */ 'Ability to post a equipment note'),
+            self::PERM_RETIRE => array(
+                'title' =>
+                /* @trans */ 'Retire',
+                'desc'  =>
+                /* @trans */ 'Ability to retire equipment'),
+            self::PERM_DELETE => array(
+                'title' =>
+                /* @trans */ 'Delete',
+                'desc'  =>
+                /* @trans */ 'Ability to delete equipment'),
+            );
+    
     function getId() {
         return $this->id;
     }
@@ -51,14 +94,16 @@ class EquipmentModel extends VerySimpleModel {
 
         return static::$sources;
     }
+    
+    static function getPermissions() {
+        return self::$perms;
+    }
 }
+
+RolePermission::register(/* @trans */ 'Equipment', EquipmentModel::getPermissions(), true);
 
 class Equipment extends EquipmentModel
 implements Threadable {
-
-    static $meta = array(
-        'select_related' => array('thread')
-    );
     
     function __onload() {
         $this->loadDynamicData();
@@ -105,6 +150,29 @@ implements Threadable {
         return null !== $this->getLock();
     }
     
+    function checkStaffPerm($staff, $perm=null) {
+        // Must be a valid staff
+        if (!$staff instanceof Staff && !($staff=Staff::lookup($staff)))
+            return false;
+
+        // Check access based on department
+        if (!$staff->canAccessDept($this->getDeptId())) {
+            return false;
+        }
+
+        // At this point staff has view access unless a specific permission is
+        // requested
+        if ($perm === null)
+            return true;
+
+        // Permission check requested -- get role.
+        if (!($role=$staff->getRole($this->getDeptId())))
+            return false;
+
+        // Check permission based on the effective role
+        return $role->hasPerm($perm);
+    }
+    
     function isBookable() {
         return $this->ht['bookable']>0;
     }
@@ -140,6 +208,19 @@ implements Threadable {
 
     function getStatusId() {
         return $this->status_id;
+    }
+    
+    function getDeptId() {
+        return $this->dept_id;
+    }
+    
+    function getDeptName() {
+        if ($this->dept instanceof Dept)
+            return $this->dept->getFullName();
+    }
+
+    function getDept() {
+        return $this->dept;
     }
 
     /**
@@ -289,11 +370,124 @@ implements Threadable {
 
         return $authtoken;
     }
+    
+    function getTransferForm($source=null) {
+
+        if (!$source)
+            $source = array('dept' => array($this->getDeptId()));
+
+        return TransferForm::instantiate($source);
+    }
+    
+    //Dept Transfer...with alert.. done by staff
+    function transfer(TransferForm $form, &$errors, $alert=true) {
+        global $thisstaff, $cfg;
+
+        // Check if staff can do the transfer
+        if (!$this->checkStaffPerm($thisstaff, Equipment::PERM_TRANSFER))
+            return false;
+
+        $cdept = $this->getDept(); // Current department
+        $dept = $form->getDept(); // Target department
+        if (!$dept || !($dept instanceof Dept))
+            $errors['dept'] = __('Department selection required');
+        elseif ($dept->getid() == $this->getDeptId())
+            $errors['dept'] = sprintf(
+                    __('%s already in the department'), 'Equipamiento');
+        else {
+            $this->dept_id = $dept->getId();
+
+            // Make sure the new department allows assignment to the
+            // currently assigned agent (if any)
+            /*if ($this->isAssigned()
+                && ($staff=$this->getStaff())
+                && $dept->assignMembersOnly()
+                && !$dept->isMember($staff)
+            ) {
+                $this->staff_id = 0;
+            }*/
+        }
+
+        if ($errors || !$this->save(true))
+            return false;
+
+        // Log transfer event
+        $this->logEvent('transferred');
+
+        // Post internal note if any
+        $note = null;
+        $comments = $form->getField('comments')->getClean();
+        if ($comments) {
+            $title = sprintf(__('%1$s transferred from %2$s to %3$s'),
+                    'Equipamiento',
+                    $cdept->getName(),
+                    $dept->getName());
+
+            $_errors = array();
+            $note = $this->postNote(
+                    array('note' => $comments, 'title' => $title),
+                    $_errors, $thisstaff, false);
+        }
+
+        //Send out alerts if enabled AND requested
+        if (!$alert || !$cfg->alertONTransfer())
+            return true; //no alerts!!
+
+         if (($email = $dept->getAlertEmail())
+             && ($tpl = $dept->getTemplate())
+             && ($msg=$tpl->getTransferAlertMsgTemplate())
+         ) {
+            $msg = $this->replaceVars($msg->asArray(),
+                array('comments' => $note, 'staff' => $thisstaff));
+            // Recipients
+            $recipients = array();
+            if ($cfg->alertDeptMembersONTransfer()) {
+                foreach ($dept->getMembersForAlerts() as $M)
+                    $recipients[] = $M;
+            }
+
+            // Always alert dept manager??
+            if ($cfg->alertDeptManagerONTransfer()
+                && $dept
+                && ($manager=$dept->getManager())
+            ) {
+                $recipients[] = $manager;
+            }
+            $sentlist = $options = array();
+            if ($note) {
+                $options += array('thread'=>$note);
+            }
+            foreach ($recipients as $k=>$staff) {
+                if (!is_object($staff)
+                    || !$staff->isAvailable()
+                    || in_array($staff->getEmail(), $sentlist)
+                ) {
+                    continue;
+                }
+                $alert = $this->replaceVars($msg, array('recipient' => $staff));
+                $email->sendAlert($staff, $alert['subj'], $alert['body'], null, $options);
+                $sentlist[] = $staff->getEmail();
+            }
+         }
+
+         return true;
+    }
+    
+    //Replace base variables.
+    function replaceVars($input, $vars = array()) {
+        global $ost;
+
+        $vars = array_merge($vars, array('equipment' => $this));
+        return $ost->replaceTemplateVariables($input, $vars);
+    }
 
     //Status helper.
 
     function setStatus($status, $comments='', &$errors=array()) {
         global $thisstaff;
+        
+        if ($thisstaff && !($role = $thisstaff->getRole($this->getDeptId())))
+            return false;
         
         if ($status && is_numeric($status))
             $status = EquipmentStatus::lookup($status);
@@ -304,9 +498,16 @@ implements Threadable {
         // Double check permissions (when changing status)
         if ($role && $this->getStatusId()) {
             switch ($status->getState()) {
+            case 'retired':
+                if (!($role->hasPerm(EquipmentModel::PERM_RETIRE)))
+                    return false;
+                break;
             case 'deleted':
                 // XXX: intercept deleted status and do hard delete
-                return $this->delete($comments);
+                if ($role->hasPerm(EquipmentModel::PERM_DELETE))
+                    return $this->delete($comments);
+                // Agent doesn't have permission to delete  tickets
+                return false;
                 break;
             }
         }
@@ -548,16 +749,13 @@ implements Threadable {
         /* Unknown or invalid staff */
         if(!$staff || (!is_object($staff) && !($staff=Staff::lookup($staff))) || !$staff->isStaff())
             return null;
-
-        // -- Open and assigned to me
-        $assigned = Q::any(array(
-            'staff_id' => $staff->getId(),
-        ));
-
-        $visibility = Q::any(new Q(array('status__state'=>'new', $assigned)));
+        
+        // -- Routed to a department of mine
+        if ($depts = $staff->getDepts())
+            $visibility = Q::any(new Q(array('dept_id__in' => $depts)));
 
         $blocks = Equipment::objects()
-            //->filter(Q::any($visibility))
+            ->filter(Q::any($visibility))
             //->filter(array('status__state' => 'new'))
             ->aggregate(array('count' => SqlAggregate::COUNT('id')))
             ->values('status__state');
@@ -593,8 +791,8 @@ implements Threadable {
         global $ost, $cfg, $thisclient, $thisstaff;
         
         // Don't enforce form validation for email
-        $field_filter = function($type) use ($origin) {
-            return function($f) use ($origin) {
+        $field_filter = function($type) {
+            return function($f) {
                 return true;
             };
         };
@@ -604,11 +802,19 @@ implements Threadable {
         // Create and verify the dynamic form entry for the new ticket
         $form = EquipmentForm::getNewInstance();
         $form->setSource($vars);
+        
+        $fields=array();
+        $fields['dept_id'] = array('type'=>'int', 'required'=>0, 'error'=>__('Department selection is required'));
+
+        if(!Validator::process($fields, $vars, $errors) && !$errors['err'])
+            $errors['err'] = sprintf('%s — %s',
+                __('Missing or invalid data'),
+                __('Correct any errors below and try again'));
 
         if (!$form->isValid($field_filter('equipment'))) {
             $errors += $form->errors();
         }
-
+        
         // Any errors above are fatal.
         if ($errors) {
             return 0;
@@ -629,7 +835,10 @@ implements Threadable {
         
         // Y ahora los visibles
         foreach ($form->getFields() as $field) {
-            $campos[$field->getSelectName()] = $field->getValue();
+            if (is_a($field->getClean(), "VerySimpleModel"))
+                $campos[$field->getSelectName()] = $field->getClean()->getId();
+            else
+                $campos[$field->getSelectName()] = $field->getClean();
         }
         
         //We are ready son...hold on to the rails.
@@ -697,9 +906,119 @@ implements Threadable {
         return $equipment;
     }
 
-    static function agentActions($options=array()) {
+    static function agentActions($agent, $options=array()) {
+        if (!$agent)
+            return;
 
         require STAFFINC_DIR.'templates/equipment-actions.tmpl.php';
     }
 }
+
+class EquipmentForm extends DynamicForm {
+    static $instance;
+    static $defaultForm;
+    static $internalForm;
+
+    static $forms;
+
+    static function objects() {
+        $os = parent::objects();
+        return $os->filter(array('type'=>ObjectModel::OBJECT_TYPE_EQUIPMENT));
+    }
+
+    static function getDefaultForm() {
+        if (!isset(static::$defaultForm)) {
+            if (($o = static::objects()) && $o[0])
+                static::$defaultForm = $o[0];
+        }
+
+        return static::$defaultForm;
+    }
+
+    static function getInstance($object_id=0, $new=false) {
+        if ($new || !isset(static::$instance))
+            static::$instance = static::getDefaultForm()->instanciate();
+
+        static::$instance->object_type = ObjectModel::OBJECT_TYPE_EQUIPMENT;
+
+        if ($object_id)
+            static::$instance->object_id = $object_id;
+
+        return static::$instance;
+    }
+    
+    static function getNewInstance() {
+        $o = static::objects()->one();
+        static::$instance = $o->instanciate();
+        return static::$instance;
+    }
+
+    static function getInternalForm($source=null, $options=array()) {
+        if (!isset(static::$internalForm))
+            static::$internalForm = new EquipmentInternalForm($source, $options);
+
+        return static::$internalForm;
+    }
+}
+
+class EquipmentInternalForm
+extends AbstractForm {
+    static $layout = 'GridFormLayout';
+
+    function buildFields() {
+
+        $fields = array(
+                'dept_id' => new DepartmentField(array(
+                    'id'=>1,
+                    'label' => __('Department'),
+                    'required' => true,
+                    'layout' => new GridFluidCell(6),
+                    ))
+            );
+
+        $mode = @$this->options['mode'];
+        if ($mode && $mode == 'edit') {
+            unset($fields['dept_id']);
+        }
+
+        return $fields;
+    }
+}
+
+/*
+ *  Generic user list.
+ */
+class EquipmentList extends ListObject implements TemplateVariable {
+
+    function __toString() {
+        return $this->getNames();
+    }
+
+    function getNames() {
+        $list = array();
+        foreach($this->storage as $item) {
+            if (is_object($item))
+                $list [] = $item->getName();
+        }
+        return $list ? implode(', ', $list) : '';
+    }
+
+    function getFull() {
+        $list = array();
+        foreach($this->storage as $item) {
+            if (is_object($item))
+                $list[] = sprintf("%s <%s>", $item->getName(), '<posibilidad de añadir otro dato>');
+        }
+
+        return $list ? implode(', ', $list) : '';
+    }
+
+    static function getVarScope() {
+        return array(
+            'names' => __('List of names'),
+            'full' => __('List of names and email addresses'),
+        );
+    }
+}
+
 ?>

@@ -1739,7 +1739,9 @@ class ThreadEvent extends VerySimpleModel {
     }
     
     static function forEquipment($equipment, $state, $user=false) {
-        $inst = self::create(array(), $user);
+        $inst = self::create(array(
+            'dept_id' => $equipment->getDeptId()
+        ), $user);
         return $inst;
     }
 

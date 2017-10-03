@@ -265,6 +265,7 @@ class RolePermission {
     // New groups will be appended to the bottom
     static protected $_permissions = array(
             /* @trans */ 'Tickets' => array(),
+            /* @trans */ 'Equipment' => array(),
             /* @trans */ 'Tasks' => array(),
             /* @trans */ 'Scheduled Tasks' => array(),
             /* @trans */ 'Users' => array(),
