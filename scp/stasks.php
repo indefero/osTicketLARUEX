@@ -141,13 +141,11 @@ if ($stats['closed']) {
                         false);
 }
 
-if ($thisstaff->hasPerm(TaskScheduleModel::PERM_CREATE, false)) {
-    $nav->addSubMenu(array('desc'=>__('Programación'),
-                           'title'=>__('Programación de tareas'),
-                           'href'=>'stasks.php',
-                           'iconclass'=>'assignedTickets'),
-                            true);
-}
+$nav->addSubMenu(array('desc'=>__('Programación'),
+                       'title'=>__('Programación de tareas'),
+                       'href'=>'stasks.php',
+                       'iconclass'=>'assignedTickets'),
+                        true);
 
 $ost->addExtraHeader('<script type="text/javascript" src="js/ticket.js?d2ef3b1"></script>');
 $ost->addExtraHeader('<script type="text/javascript" src="js/thread.js?d2ef3b1"></script>');

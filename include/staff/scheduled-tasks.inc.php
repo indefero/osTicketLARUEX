@@ -19,13 +19,16 @@ $showing = $pageNav->showing().' '._N('item', 'items', $count);
    ?>
 </div>
 <div class="pull-right">
+    <?php
+    if ($thisstaff->hasPerm(TaskSchedule::PERM_CREATE, false)) {
+    ?>
     <a class="green button action-button task-schedule-action"
             data-url="tasks.php?#reservations"
             data-dialog-config='{"size":"large"}'
             href="#tasks/add-schedule">
-        <i class="icon-plus-sign"></i> <?php
-        print 'Nueva programación'; ?></a>
+        <i class="icon-plus-sign"></i>Nueva programación</a>
     <?php
+    }
     if ($count)
         TaskSchedule::getAgentActions($thisstaff, array(
                     'container' => '#task_schedule_content',

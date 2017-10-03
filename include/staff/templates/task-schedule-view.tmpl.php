@@ -125,8 +125,8 @@ $info=($_POST && $errors)?Format::input($_POST):array();
               </ul>
             </div>
             <?php
-            } ?>
-            <?php
+            }
+            
             foreach ($actions as $action) {?>
             <span class="action-button <?php echo $action['class'] ?: ''; ?>">
                 <a class="task-action"
@@ -273,11 +273,11 @@ foreach (DynamicFormEntry::forObject($task->getId(),
 
 $action = 'stasks.php?id='.$task->getId();
 ?>
-<div id="task_response_options" class="<?php echo $ticket ? 'ticket_task_actions' : ''; ?> sticky bar stop actions">
-    <ul class="tabs">
+<div id="task_response_options" class="sticky bar stop actions">
+    <ul class="tabs" id="response-tabs">
         <?php
         if ($role->hasPerm(TaskScheduleModel::PERM_REPLY)) { ?>
-        <li><a href="#task_note"><?php echo __('Post Internal Note');?></a></li>
+        <li><a id="post-note-tab" href="#task_note"><?php echo __('Post Internal Note');?></a></li>
         <?php
         }?>
     </ul>
@@ -374,5 +374,30 @@ $(function() {
     $('#ticket-tasks-count').html(<?php echo $ticket->getNumTasks(); ?>);
    <?php
     } ?>
+            
+    // Post Reply or Note action buttons.
+    $('a.post-response').click(function (e) {
+        var $r = $('ul.tabs > li > a'+$(this).attr('href')+'-tab');
+        if ($r.length) {
+            // Make sure ticket thread tab is visiable.
+            var $t = $('ul#ticket_tabs > li > a#ticket-thread-tab');
+            if ($t.length && !$t.hasClass('active'))
+                $t.trigger('click');
+            // Make the target response tab active.
+            if (!$r.hasClass('active'))
+                $r.trigger('click');
+
+            // Scroll to the response section.
+            var $stop = $(document).height();
+            var $s = $('div#task_response_options');
+            if ($s.length)
+                $stop = $s.offset().top-125
+
+            $('html, body').animate({scrollTop: $stop}, 'fast');
+        }
+
+        return false;
+    });
+
 });
 </script>

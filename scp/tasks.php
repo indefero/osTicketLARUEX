@@ -196,13 +196,11 @@ if (isset($_SESSION['advsearch:tasks'])) {
                         (!$_REQUEST['status'] || $_REQUEST['status']=='search'));
 }
 
-if ($thisstaff->hasPerm(TaskScheduleModel::PERM_CREATE, false)) {
-    $nav->addSubMenu(array('desc'=>__('Programación'),
-                           'title'=>__('Programación de tareas'),
-                           'href'=>'stasks.php',
-                           'iconclass'=>'assignedTickets'),
-                            false);
-}
+$nav->addSubMenu(array('desc'=>__('Programación'),
+                       'title'=>__('Programación de tareas'),
+                       'href'=>'stasks.php',
+                       'iconclass'=>'assignedTickets'),
+                        false);
 
 if ($thisstaff->hasPerm(TaskModel::PERM_CREATE, false)) {
     $nav->addSubMenu(array('desc'=>__('New Task'),
