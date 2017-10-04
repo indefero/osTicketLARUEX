@@ -418,20 +418,12 @@ if ($errors['err'] && isset($_POST['a'])) {
 </div>
 <script type="text/javascript">
 $(function() {
-    // Prueba de JQuery
-//    $(document).off('.equipment-action');
-//    $(document).on('click', 'a.equipment-action', function(e) {
-//        e.preventDefault();
-//        alert("LLEGA");
-//        return false;
-//    });
-    
     // Post Reply or Note action buttons.
     $('a.post-response').click(function (e) {
         var $r = $('ul.tabs > li > a'+$(this).attr('href')+'-tab');
         if ($r.length) {
-            // Make sure ticket thread tab is visiable.
-            var $t = $('ul#ticket_tabs > li > a#ticket-thread-tab');
+            // Make sure ticket thread tab is visible.
+            var $t = $('ul#equipment_tabs > li > a#equipment-thread-tab');
             if ($t.length && !$t.hasClass('active'))
                 $t.trigger('click');
             // Make the target response tab active.
