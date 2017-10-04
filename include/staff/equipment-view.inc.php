@@ -142,7 +142,7 @@ if (!$errors['err']) {
                 <?php
                 if ($equipment->isActive()) { ?>
                 <tr>
-                    <th><?php echo __('Activo desde');?>:</th>
+                    <th><?php echo 'Activo desde';?>:</th>
                     <td><?php echo Format::datetime($equipment->getActivationDate()); ?></td>
                 </tr>
                 <?php

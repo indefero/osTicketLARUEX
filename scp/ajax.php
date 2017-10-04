@@ -184,6 +184,7 @@ $dispatcher = patterns('',
         ))
     )),
     url('^/equipments/', patterns('ajax.equipment.php:EquipmentAjaxAPI',
+        url_get('^(?P<tid>\d+)/preview', 'previewEquipment'),
         url_get('^(?P<tid>\d+)/status/(?P<status>\w+)(?:/(?P<sid>\d+))?$', 'changeEquipmentStatus'),
         url_post('^(?P<tid>\d+)/status$', 'setEquipmentStatus'),
         url_get('^status/(?P<status>\w+)(?:/(?P<sid>\d+))?$', 'changeSelectedEquipmentStatus'),

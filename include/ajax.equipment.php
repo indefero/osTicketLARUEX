@@ -178,14 +178,14 @@ class EquipmentAjaxAPI extends AjaxController {
         return $lock->release() ? 1 : 0;
     }
 
-    function previewTicket ($tid) {
+    function previewEquipment ($tid) {
         global $thisstaff;
 
-        if(!$thisstaff || !($ticket=Ticket::lookup($tid))
-                || !$ticket->checkStaffPerm($thisstaff))
-            Http::response(404, __('No such ticket'));
+        if(!$thisstaff || !($equipment=Equipment::lookup($tid))
+                || !$equipment->checkStaffPerm($thisstaff))
+            Http::response(404, __('No such equipment'));
 
-        include STAFFINC_DIR . 'templates/ticket-preview.tmpl.php';
+        include STAFFINC_DIR . 'templates/equipment-preview.tmpl.php';
     }
 
     function viewUser($tid) {

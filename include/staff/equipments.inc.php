@@ -342,7 +342,7 @@ return false;">
                 <td nowrap>
                   <a class="Icon <?php echo strtolower($E['source']); ?>Ticket preview"
                     href="equipment.php?id=<?php echo $E['id']; ?>"
-                    data-preview="#equipment/<?php echo $E['id']; ?>/preview"
+                    data-preview="#equipments/<?php echo $E['id']; ?>/preview"
                     ><?php echo sprintf('<b>%s</b>', str_pad($E['id'], 6, "0", STR_PAD_LEFT)); ?></a>
                 </td>
                 <td nowrap>
