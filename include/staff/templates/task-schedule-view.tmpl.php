@@ -334,7 +334,6 @@ $(function() {
     $(document).off('.task-action');
     $(document).on('click.task-action', 'a.task-action', function(e) {
         e.preventDefault();
-        alert("Sí");
         var url = 'ajax.php/'
         +$(this).attr('href').substr(1)
         +'?_uid='+new Date().getTime();
