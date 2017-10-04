@@ -97,10 +97,12 @@ if (!$errors['err']) {
                  class="icon-file-text-alt"></i> <?php echo __('Thread + Internal Notes'); ?></a>
               </ul>
             </div>-->
-                
+            
             <a href="#post-note" id="post-note" class="post-response action-button"
-            data-placement="bottom" data-toggle="tooltip"
-            title="<?php echo __('Post Internal Note'); ?>"><i class="icon-file-text"></i></a>
+                    data-placement="bottom" data-toggle="tooltip"
+                    title="<?php echo __('Post Internal Note'); ?>">
+                <i class="icon-file-text"></i>
+            </a>
             <?php // Status change options
             echo EquipmentStatus::status_options(array(
                     'status' => $equipment->getStatus()->getState(), 
@@ -208,7 +210,7 @@ foreach (DynamicFormEntry::forEquipment($equipment->getId()) as $form) {
 <?php
 $tcount = $equipment->getThreadEntries($types)->count();
 ?>
-<ul  class="tabs clean threads" id="equipment_tabs" >
+<ul class="tabs clean threads" id="equipment_tabs" >
     <li class="active"><a id="equipment-thread-tab" href="#equipment_thread"><?php
         echo sprintf(__('Hilo del equipamiento (%d)'), $tcount); ?></a></li>
     <?php if ($equipment->isBookable()) { ?>

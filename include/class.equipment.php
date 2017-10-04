@@ -44,7 +44,6 @@ class EquipmentModel extends VerySimpleModel {
     const PERM_CREATE   = 'equipment.create';
     const PERM_EDIT     = 'equipment.edit';
     const PERM_TRANSFER = 'equipment.transfer';
-    const PERM_REPLY    = 'equipment.reply';
     const PERM_RETIRE   = 'equipment.retire';
     const PERM_DELETE   = 'equipment.delete';
     
@@ -64,11 +63,6 @@ class EquipmentModel extends VerySimpleModel {
                 /* @trans */ 'Transfer',
                 'desc'  =>
                 /* @trans */ 'Ability to transfer equipment between departments'),
-            self::PERM_REPLY => array(
-                'title' =>
-                /* @trans */ 'Post Reply',
-                'desc'  =>
-                /* @trans */ 'Ability to post a equipment note'),
             self::PERM_RETIRE => array(
                 'title' =>
                 /* @trans */ 'Retire',
@@ -78,7 +72,7 @@ class EquipmentModel extends VerySimpleModel {
                 'title' =>
                 /* @trans */ 'Delete',
                 'desc'  =>
-                /* @trans */ 'Ability to delete equipment'),
+                /* @trans */ 'Ability to delete equipment')
             );
     
     function getId() {

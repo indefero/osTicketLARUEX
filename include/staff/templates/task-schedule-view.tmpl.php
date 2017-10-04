@@ -89,6 +89,12 @@ $info=($_POST && $errors)?Format::input($_POST):array();
             </h2>
         </div>
         <div class="flush-right">
+            <a href="#post-note" id="post-note" class="post-response action-button"
+                    data-placement="bottom" data-toggle="tooltip"
+                    title="<?php echo __('Post Internal Note'); ?>">
+                <i class="icon-file-text"></i>
+            </a>
+            
             <?php
             // Assign
             unset($actions['claim'], $actions['assign/agents'], $actions['assign/teams']);
@@ -275,18 +281,13 @@ $action = 'stasks.php?id='.$task->getId();
 ?>
 <div id="task_response_options" class="sticky bar stop actions">
     <ul class="tabs" id="response-tabs">
-        <?php
-        if ($role->hasPerm(TaskScheduleModel::PERM_REPLY)) { ?>
-        <li><a id="post-note-tab" href="#task_note"><?php echo __('Post Internal Note');?></a></li>
-        <?php
-        }?>
+        <li class="active">
+            <a id="post-note-tab" href="#task_note"><?php echo __('Post Internal Note');?></a>
+        </li>
     </ul>
-    <?php
-    if ($role->hasPerm(TaskScheduleModel::PERM_REPLY)) { ?>
     <form id="task_note"
         action="<?php echo $action; ?>"
-        class="tab_content spellcheck save <?php
-            echo $role->hasPerm(TaskScheduleModel::PERM_REPLY) ? 'hidden' : ''; ?>"
+        class="tab_content spellcheck save"
         name="task_note"
         method="post" enctype="multipart/form-data">
         <?php csrf_token(); ?>
@@ -317,12 +318,11 @@ $action = 'stasks.php?id='.$task->getId();
            <input type="reset" value="<?php echo __('Reset');?>">
        </p>
     </form>
-    <?php
-    }?>
  </div>
 
 <script type="text/javascript">
 $(function() {
+    
     $(document).off('.tasks-content');
     $(document).on('click.tasks-content', '#all-ticket-tasks', function(e) {
         e.preventDefault();
@@ -334,6 +334,7 @@ $(function() {
     $(document).off('.task-action');
     $(document).on('click.task-action', 'a.task-action', function(e) {
         e.preventDefault();
+        alert("Sí");
         var url = 'ajax.php/'
         +$(this).attr('href').substr(1)
         +'?_uid='+new Date().getTime();
@@ -369,18 +370,13 @@ $(function() {
         .done(function() { })
         .fail(function() { });
      });
-    <?php
-    if ($ticket) { ?>
-    $('#ticket-tasks-count').html(<?php echo $ticket->getNumTasks(); ?>);
-   <?php
-    } ?>
             
-    // Post Reply or Note action buttons.
+    // Post Note action buttons.
     $('a.post-response').click(function (e) {
         var $r = $('ul.tabs > li > a'+$(this).attr('href')+'-tab');
         if ($r.length) {
             // Make sure ticket thread tab is visiable.
-            var $t = $('ul#ticket_tabs > li > a#ticket-thread-tab');
+            var $t = $('ul#task_tabs > li > a#task-thread-tab');
             if ($t.length && !$t.hasClass('active'))
                 $t.trigger('click');
             // Make the target response tab active.

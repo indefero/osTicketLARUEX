@@ -55,7 +55,6 @@ class TaskScheduleModel extends VerySimpleModel {
     const PERM_EDIT     = 'task-schedule.edit';
     const PERM_ASSIGN   = 'task-schedule.assign';
     const PERM_TRANSFER = 'task-schedule.transfer';
-    const PERM_REPLY    = 'task-schedule.reply';
     const PERM_DELETE   = 'task-schedule.delete';
 
     static protected $perms = array(
@@ -79,11 +78,6 @@ class TaskScheduleModel extends VerySimpleModel {
                 /* @trans */ 'Transfer',
                 'desc'  =>
                 /* @trans */ 'Ability to transfer scheduled tasks between departments'),
-            self::PERM_REPLY => array(
-                'title' =>
-                /* @trans */ 'Post Reply',
-                'desc'  =>
-                /* @trans */ 'Ability to post scheduled task internal notes'),
             self::PERM_DELETE    => array(
                 'title' =>
                 /* @trans */ 'Delete',
