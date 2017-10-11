@@ -675,16 +675,6 @@ class Translation extends gettext_reader implements Serializable {
     }
 }
 
-if (!defined('LC_MESSAGES')) {
-    define('LC_ALL', 0);
-    define('LC_CTYPE', 1);
-    define('LC_NUMERIC', 2);
-    define('LC_TIME', 3);
-    define('LC_COLLATE', 4);
-    define('LC_MONETARY', 5);
-    define('LC_MESSAGES', 6);
-}
-
 #Get real path for root dir ---linux and windows
 $here = dirname(__FILE__);
 $here = ($h = realpath($here)) ? $h : $here;
