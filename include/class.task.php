@@ -1370,7 +1370,7 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
         ));
 
         if ($vars['internal_formdata']['dept_id'])
-            $task->dept_id = $vars['internal_formdata']['dept_id'];
+            $task->dept_id = $vars['internal_formdata']['dept_id']->getId();
         if ($vars['internal_formdata']['duedate'])
 	    $task->duedate = date('Y-m-d G:i', Misc::dbtime($vars['internal_formdata']['duedate']));
 

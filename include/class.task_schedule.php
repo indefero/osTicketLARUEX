@@ -1127,7 +1127,7 @@ class TaskSchedule extends TaskScheduleModel implements RestrictedAccess, Thread
         ));
 
         if ($vars['internal_formdata']['department_id'])
-            $task->department_id = $vars['internal_formdata']['department_id'];
+            $task->department_id = $vars['internal_formdata']['department_id']->getId();
         if ($vars['internal_formdata']['start'])
 	    $task->start = date('Y-m-d G:i', Misc::dbtime($vars['internal_formdata']['start']));
         if ($vars['internal_formdata']['regularity'])
