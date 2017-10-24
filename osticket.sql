@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.19, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.20, for Linux (x86_64)
 --
 -- Host: localhost    Database: osticket
 -- ------------------------------------------------------
--- Server version	5.7.19-0ubuntu0.16.04.1
+-- Server version	5.7.20-0ubuntu0.16.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -91,7 +91,7 @@ CREATE TABLE `ost_attachment` (
   `lang` varchar(16) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `file-type` (`object_id`,`file_id`,`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -255,7 +255,7 @@ CREATE TABLE `ost_draft` (
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -440,7 +440,7 @@ CREATE TABLE `ost_equipment` (
   PRIMARY KEY (`id`),
   KEY `status_id` (`status_id`),
   CONSTRAINT `ost_equipment_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `ost_equipment_status` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -449,6 +449,7 @@ CREATE TABLE `ost_equipment` (
 
 LOCK TABLES `ost_equipment` WRITE;
 /*!40000 ALTER TABLE `ost_equipment` DISABLE KEYS */;
+INSERT INTO `ost_equipment` VALUES (1,'Ordenador','Nuevo ordenador',1,1,7,'2017-10-20 07:45:46','2017-10-20 07:45:46',NULL,NULL,NULL,0);
 /*!40000 ALTER TABLE `ost_equipment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -891,7 +892,7 @@ CREATE TABLE `ost_form` (
 
 LOCK TABLES `ost_form` WRITE;
 /*!40000 ALTER TABLE `ost_form` DISABLE KEYS */;
-INSERT INTO `ost_form` VALUES (1,NULL,'U',1,'Contact Information',NULL,'',NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(2,NULL,'T',1,'Ticket Details','Please Describe Your Issue','','This form will be attached to every ticket, regardless of its source.\nYou can add any fields to this form and they will be available to all\ntickets, and will be searchable with advanced search and filterable.','2017-08-01 12:23:24','2017-08-01 12:23:24'),(3,NULL,'C',1,'Company Information','Details available in email templates','',NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(4,NULL,'O',1,'Organization Information','Details on user organization','',NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(5,NULL,'A',1,'Task Details','Please Describe The Issue','','This form is used to create a task.','2017-08-01 12:23:24','2017-08-01 12:23:24'),(6,NULL,'L1',1,'Ticket Status Properties','Properties that can be set on a ticket status.','',NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(7,NULL,'L2',1,'Área Properties',NULL,'',NULL,'2017-08-01 14:59:58','2017-08-01 14:59:58'),(8,NULL,'L3',1,'Categoría Properties',NULL,'',NULL,'2017-08-01 15:01:25','2017-08-01 15:01:25'),(9,NULL,'L4',1,'Tipo de localización Properties',NULL,'',NULL,'2017-08-01 15:02:32','2017-08-01 15:02:32'),(10,NULL,'L5',1,'Localización Properties',NULL,'',NULL,'2017-08-01 15:04:03','2017-08-01 15:04:03'),(11,NULL,'G',1,'Notificación y cierre de desviaciones',NULL,'',NULL,'2017-08-02 08:03:27','2017-08-02 08:03:27'),(12,NULL,'E',1,'Detalles de equipamiento','Please Describe The Equipment','','This form is use to add equipment','2017-08-10 11:52:35','2017-09-29 12:35:07'),(13,NULL,'R',1,'Reservation Information',NULL,'',NULL,'2017-08-25 13:53:58','2017-08-25 13:53:58'),(14,NULL,'S',1,'Task Schedule Information',NULL,'',NULL,'2017-09-19 09:38:01','2017-09-19 09:38:01');
+INSERT INTO `ost_form` VALUES (1,NULL,'U',1,'Contact Information',NULL,'',NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(2,NULL,'T',1,'Detalles del ticket','','','This form will be attached to every ticket, regardless of its source.\r\nYou can add any fields to this form and they will be available to all\r\ntickets, and will be searchable with advanced search and filterable.','2017-08-01 12:23:24','2017-10-23 14:29:10'),(3,NULL,'C',1,'Company Information','Details available in email templates','',NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(4,NULL,'O',1,'Organization Information','Details on user organization','',NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(5,NULL,'A',1,'Task Details','Please Describe The Issue','','This form is used to create a task.','2017-08-01 12:23:24','2017-08-01 12:23:24'),(6,NULL,'L1',1,'Ticket Status Properties','Properties that can be set on a ticket status.','',NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(7,NULL,'L2',1,'Área Properties',NULL,'',NULL,'2017-08-01 14:59:58','2017-08-01 14:59:58'),(8,NULL,'L3',1,'Categoría Properties',NULL,'',NULL,'2017-08-01 15:01:25','2017-08-01 15:01:25'),(9,NULL,'L4',1,'Tipo de localización Properties',NULL,'',NULL,'2017-08-01 15:02:32','2017-08-01 15:02:32'),(10,NULL,'L5',1,'Localización Properties',NULL,'',NULL,'2017-08-01 15:04:03','2017-08-01 15:04:03'),(11,NULL,'G',1,'Notificación y cierre de desviaciones',NULL,'',NULL,'2017-08-02 08:03:27','2017-08-02 08:03:27'),(12,NULL,'E',1,'Detalles de equipamiento','Please Describe The Equipment','','This form is use to add equipment','2017-08-10 11:52:35','2017-09-29 12:35:07'),(13,NULL,'R',1,'Reservation Information',NULL,'',NULL,'2017-08-25 13:53:58','2017-08-25 13:53:58'),(14,NULL,'S',1,'Task Schedule Information',NULL,'',NULL,'2017-09-19 09:38:01','2017-09-19 09:38:01');
 /*!40000 ALTER TABLE `ost_form` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -913,7 +914,7 @@ CREATE TABLE `ost_form_entry` (
   `updated` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `entry_lookup` (`object_type`,`object_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=280 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -922,7 +923,7 @@ CREATE TABLE `ost_form_entry` (
 
 LOCK TABLES `ost_form_entry` WRITE;
 /*!40000 ALTER TABLE `ost_form_entry` DISABLE KEYS */;
-INSERT INTO `ost_form_entry` VALUES (2,3,NULL,'C',1,NULL,'2017-08-01 12:23:25','2017-08-01 12:23:25'),(5,1,2,'U',1,NULL,'2017-08-02 08:29:32','2017-08-02 08:29:32'),(6,1,3,'U',1,NULL,'2017-08-02 08:31:41','2017-08-02 08:31:41'),(7,1,4,'U',1,NULL,'2017-08-02 08:32:46','2017-08-02 08:32:46'),(8,1,5,'U',1,NULL,'2017-08-02 08:33:23','2017-08-02 08:33:23'),(9,1,6,'U',1,NULL,'2017-08-02 08:34:31','2017-08-02 08:34:31'),(10,1,7,'U',1,NULL,'2017-08-02 08:36:14','2017-08-02 08:36:14'),(11,1,8,'U',1,NULL,'2017-08-02 08:37:09','2017-08-02 08:37:09');
+INSERT INTO `ost_form_entry` VALUES (2,3,NULL,'C',1,NULL,'2017-08-01 12:23:25','2017-08-01 12:23:25'),(5,1,2,'U',1,NULL,'2017-08-02 08:29:32','2017-08-02 08:29:32'),(6,1,3,'U',1,NULL,'2017-08-02 08:31:41','2017-08-02 08:31:41'),(7,1,4,'U',1,NULL,'2017-08-02 08:32:46','2017-08-02 08:32:46'),(8,1,5,'U',1,NULL,'2017-08-02 08:33:23','2017-08-02 08:33:23'),(9,1,6,'U',1,NULL,'2017-08-02 08:34:31','2017-08-02 08:34:31'),(10,1,7,'U',1,NULL,'2017-08-02 08:36:14','2017-08-02 08:36:14'),(11,1,8,'U',1,NULL,'2017-08-02 08:37:09','2017-08-02 08:37:09'),(18,12,1,'E',1,NULL,'2017-10-20 07:45:46','2017-10-20 07:45:46');
 /*!40000 ALTER TABLE `ost_form_entry` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -948,7 +949,7 @@ CREATE TABLE `ost_form_entry_values` (
 
 LOCK TABLES `ost_form_entry_values` WRITE;
 /*!40000 ALTER TABLE `ost_form_entry_values` DISABLE KEYS */;
-INSERT INTO `ost_form_entry_values` VALUES (2,23,'LARUEX',NULL),(2,24,NULL,NULL),(2,25,NULL,NULL),(2,26,NULL,NULL),(5,3,NULL,NULL),(5,4,NULL,NULL),(6,3,NULL,NULL),(6,4,NULL,NULL),(7,3,NULL,NULL),(7,4,NULL,NULL),(8,3,NULL,NULL),(8,4,NULL,NULL),(9,3,NULL,NULL),(9,4,NULL,NULL),(10,3,NULL,NULL),(10,4,NULL,NULL),(11,3,NULL,NULL),(11,4,NULL,NULL);
+INSERT INTO `ost_form_entry_values` VALUES (2,23,'LARUEX',NULL),(2,24,NULL,NULL),(2,25,NULL,NULL),(2,26,NULL,NULL),(5,3,NULL,NULL),(5,4,NULL,NULL),(6,3,NULL,NULL),(6,4,NULL,NULL),(7,3,NULL,NULL),(7,4,NULL,NULL),(8,3,NULL,NULL),(8,4,NULL,NULL),(9,3,NULL,NULL),(9,4,NULL,NULL),(10,3,NULL,NULL),(10,4,NULL,NULL),(11,3,NULL,NULL),(11,4,NULL,NULL),(18,46,'Ordenador',NULL),(18,48,'Nuevo ordenador',NULL),(18,49,'1',NULL),(18,52,'Informática',7);
 /*!40000 ALTER TABLE `ost_form_entry_values` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -981,7 +982,7 @@ CREATE TABLE `ost_form_field` (
 
 LOCK TABLES `ost_form_field` WRITE;
 /*!40000 ALTER TABLE `ost_form_field` DISABLE KEYS */;
-INSERT INTO `ost_form_field` VALUES (1,1,489379,'text','Email Address','email','{\"size\":40,\"length\":64,\"validator\":\"email\"}',1,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(2,1,489379,'text','Full Name','name','{\"size\":40,\"length\":64}',2,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(3,1,13057,'phone','Phone Number','phone',NULL,3,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(4,1,12289,'memo','Internal Notes','notes','{\"rows\":4,\"cols\":40}',4,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(20,2,489249,'text','Issue Summary','subject','{\"size\":40,\"length\":50}',1,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(21,2,480547,'thread','Issue Details','message',NULL,2,'Details on the reason(s) for opening the ticket.','2017-08-01 12:23:24','2017-08-01 12:23:24'),(22,2,274609,'priority','Priority Level','priority',NULL,3,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(23,3,291233,'text','Company Name','name','{\"size\":40,\"length\":64}',1,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(24,3,12545,'text','Website','website','{\"size\":40,\"length\":64}',2,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(25,3,12545,'phone','Phone Number','phone','{\"ext\":false}',3,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(26,3,12545,'memo','Address','address','{\"rows\":2,\"cols\":40,\"html\":false,\"length\":100}',4,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(27,4,489379,'text','Name','name','{\"size\":40,\"length\":64}',1,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(28,4,13057,'memo','Address','address','{\"rows\":2,\"cols\":40,\"length\":100,\"html\":false}',2,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(29,4,13057,'phone','Phone','phone',NULL,3,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(30,4,13057,'text','Website','website','{\"size\":40,\"length\":0}',4,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(31,4,12289,'memo','Internal Notes','notes','{\"rows\":4,\"cols\":40}',5,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(32,5,290977,'text','Title','title','{\"size\":40,\"length\":50}',1,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(33,5,282867,'thread','Description','description',NULL,2,'Details on the reason(s) for creating the task.','2017-08-01 12:23:24','2017-08-01 12:23:24'),(34,6,487665,'state','State','state','{\"prompt\":\"State of a ticket\"}',1,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(35,6,471073,'memo','Description','description','{\"rows\":2,\"cols\":40,\"html\":false,\"length\":100}',3,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(36,10,29697,'list-4','Tipo','tipo','{\"multiselect\":false,\"widget\":\"dropdown\",\"validator-error\":\"\",\"prompt\":\"\",\"default\":null}',1,NULL,'2017-08-01 15:04:03','2017-08-01 15:04:30'),(37,10,29697,'list-2','Área','variable','{\"multiselect\":false,\"widget\":\"dropdown\",\"validator-error\":\"\",\"prompt\":\"\",\"default\":null}',2,NULL,'2017-08-01 15:04:03','2017-08-01 15:04:42'),(38,11,30465,'list-3','Categoría','categoria',NULL,1,NULL,'2017-08-02 08:03:27','2017-08-02 08:03:27'),(39,11,30465,'list-5','Localización','localizacion',NULL,2,NULL,'2017-08-02 08:03:27','2017-08-02 08:03:27'),(41,11,769,'assignee','Agente preasignado','agente','{\"prompt\":\"\"}',3,NULL,'2017-08-02 08:03:27','2017-10-05 08:59:26'),(43,11,13057,'memo','Análisis de causas','causas',NULL,6,NULL,'2017-08-02 08:05:15','2017-08-02 08:05:15'),(44,11,13057,'memo','Análisis de consecuencias','consecuencias',NULL,7,NULL,'2017-08-02 08:05:15','2017-08-02 08:05:15'),(45,11,13057,'files','Ficheros adjuntos','adjuntos',NULL,8,NULL,'2017-08-02 08:06:09','2017-08-02 08:06:09'),(46,12,290977,'text','Título','name','{\"size\":40,\"length\":50}',1,NULL,'2017-08-10 11:58:41','2017-09-28 13:53:57'),(48,12,12289,'memo','Descripción','description','{\"size\":\"16\",\"length\":\"30\",\"validator\":\"\",\"regex\":\"\",\"validator-error\":\"\",\"placeholder\":\"\"}',3,NULL,'2017-08-17 09:56:23','2017-09-28 13:53:57'),(49,12,12289,'bool','Permite reservas','bookable',NULL,4,NULL,'2017-08-17 13:41:52','2017-08-17 13:41:52'),(50,14,290977,'text','Title','title','{\"size\":40,\"length\":50}',1,NULL,'2017-09-19 12:48:37','2017-09-19 12:48:37'),(51,14,282867,'thread','Description','description',NULL,2,'Details on the reason(s) for creating the task.','2017-09-19 12:48:37','2017-09-19 12:48:37'),(52,12,28673,'department','Departamento preasignado','dept',NULL,5,NULL,'2017-09-28 11:02:11','2017-09-29 08:46:45');
+INSERT INTO `ost_form_field` VALUES (1,1,489379,'text','Email Address','email','{\"size\":40,\"length\":64,\"validator\":\"email\"}',1,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(2,1,489379,'text','Full Name','name','{\"size\":40,\"length\":64}',2,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(3,1,13057,'phone','Phone Number','phone',NULL,3,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(4,1,12289,'memo','Internal Notes','notes','{\"rows\":4,\"cols\":40}',4,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(20,2,489249,'text','Asunto','subject','{\"size\":\"40\",\"length\":\"50\",\"validator\":\"\",\"regex\":\"\",\"validator-error\":\"\",\"placeholder\":\"\"}',1,NULL,'2017-08-01 12:23:24','2017-10-23 14:32:04'),(21,2,489251,'thread','Descripción','message','{\"attachments\":true,\"size\":2097152,\"mimetypes\":null,\"extensions\":\"\",\"max\":\"\"}',2,'Details on the reason(s) for opening the ticket.','2017-08-01 12:23:24','2017-10-23 14:29:10'),(22,2,275377,'priority','Nivel de prioridad','priority','{\"prompt\":\"\",\"default\":\"\"}',3,NULL,'2017-08-01 12:23:24','2017-10-23 14:31:53'),(23,3,291233,'text','Company Name','name','{\"size\":40,\"length\":64}',1,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(24,3,12545,'text','Website','website','{\"size\":40,\"length\":64}',2,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(25,3,12545,'phone','Phone Number','phone','{\"ext\":false}',3,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(26,3,12545,'memo','Address','address','{\"rows\":2,\"cols\":40,\"html\":false,\"length\":100}',4,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(27,4,489379,'text','Name','name','{\"size\":40,\"length\":64}',1,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(28,4,13057,'memo','Address','address','{\"rows\":2,\"cols\":40,\"length\":100,\"html\":false}',2,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(29,4,13057,'phone','Phone','phone',NULL,3,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(30,4,13057,'text','Website','website','{\"size\":40,\"length\":0}',4,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(31,4,12289,'memo','Internal Notes','notes','{\"rows\":4,\"cols\":40}',5,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(32,5,290977,'text','Title','title','{\"size\":40,\"length\":50}',1,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(33,5,282867,'thread','Description','description',NULL,2,'Details on the reason(s) for creating the task.','2017-08-01 12:23:24','2017-08-01 12:23:24'),(34,6,487665,'state','State','state','{\"prompt\":\"State of a ticket\"}',1,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(35,6,471073,'memo','Description','description','{\"rows\":2,\"cols\":40,\"html\":false,\"length\":100}',3,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(36,10,29697,'list-4','Tipo','tipo','{\"multiselect\":false,\"widget\":\"dropdown\",\"validator-error\":\"\",\"prompt\":\"\",\"default\":null}',1,NULL,'2017-08-01 15:04:03','2017-08-01 15:04:30'),(37,10,29697,'list-2','Área','variable','{\"multiselect\":false,\"widget\":\"dropdown\",\"validator-error\":\"\",\"prompt\":\"\",\"default\":null}',2,NULL,'2017-08-01 15:04:03','2017-08-01 15:04:42'),(38,11,30465,'list-3','Categoría','categoria',NULL,1,NULL,'2017-08-02 08:03:27','2017-08-02 08:03:27'),(39,11,30465,'list-5','Localización','localizacion',NULL,2,NULL,'2017-08-02 08:03:27','2017-08-02 08:03:27'),(41,11,257,'assignee','Preasignación','preasignacion','{\"prompt\":\"\"}',3,NULL,'2017-08-02 08:03:27','2017-10-24 11:41:19'),(43,11,30465,'memo','Análisis de causas','causas','{\"cols\":\"40\",\"rows\":\"4\",\"length\":\"\",\"html\":true,\"placeholder\":\"\"}',5,NULL,'2017-08-02 08:05:15','2017-10-23 14:33:19'),(44,11,30465,'memo','Análisis de consecuencias','consecuencias','{\"cols\":\"40\",\"rows\":\"4\",\"length\":\"\",\"html\":true,\"placeholder\":\"\"}',6,NULL,'2017-08-02 08:05:15','2017-10-23 14:33:27'),(45,11,13057,'files','Ficheros adjuntos','adjuntos','{\"size\":2097152,\"mimetypes\":null,\"extensions\":\"\",\"max\":\"\"}',7,NULL,'2017-08-02 08:06:09','2017-10-23 14:36:56'),(46,12,290977,'text','Título','name','{\"size\":40,\"length\":50}',1,NULL,'2017-08-10 11:58:41','2017-09-28 13:53:57'),(48,12,12289,'memo','Descripción','description','{\"size\":\"16\",\"length\":\"30\",\"validator\":\"\",\"regex\":\"\",\"validator-error\":\"\",\"placeholder\":\"\"}',3,NULL,'2017-08-17 09:56:23','2017-09-28 13:53:57'),(49,12,12289,'bool','Permite reservas','bookable',NULL,4,NULL,'2017-08-17 13:41:52','2017-08-17 13:41:52'),(50,14,290977,'text','Title','title','{\"size\":40,\"length\":50}',1,NULL,'2017-09-19 12:48:37','2017-09-19 12:48:37'),(51,14,282867,'thread','Description','description',NULL,2,'Details on the reason(s) for creating the task.','2017-09-19 12:48:37','2017-09-19 12:48:37'),(52,12,28673,'department','Departamento preasignado','dept',NULL,5,NULL,'2017-09-28 11:02:11','2017-09-29 08:46:45'),(53,11,30465,'memo','Descripción','descripcion',NULL,4,NULL,'2017-10-23 14:32:51','2017-10-23 14:33:00');
 /*!40000 ALTER TABLE `ost_form_field` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1042,7 +1043,7 @@ CREATE TABLE `ost_help_topic` (
   `notes` text,
   `created` datetime NOT NULL,
   `updated` datetime NOT NULL,
-  `close_alert` int(11) unsigned DEFAULT NULL,
+  `close_alert` varchar(12) DEFAULT NULL,
   PRIMARY KEY (`topic_id`),
   UNIQUE KEY `topic` (`topic`,`topic_pid`),
   KEY `topic_pid` (`topic_pid`),
@@ -1051,7 +1052,7 @@ CREATE TABLE `ost_help_topic` (
   KEY `staff_id` (`staff_id`,`team_id`),
   KEY `sla_id` (`sla_id`),
   KEY `page_id` (`page_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1060,7 +1061,7 @@ CREATE TABLE `ost_help_topic` (
 
 LOCK TABLES `ost_help_topic` WRITE;
 /*!40000 ALTER TABLE `ost_help_topic` DISABLE KEYS */;
-INSERT INTO `ost_help_topic` VALUES (12,0,1,0,0,0,0,0,4,0,0,0,0,0,1,'Red de Alerta Radiológica',NULL,'Soporte de la Red de Alerta Radiológica','2017-08-01 14:57:53','2017-09-13 11:32:18',7),(13,12,1,0,0,1,0,0,6,7,0,0,0,3,2,'Incidencia','INC######',NULL,'2017-08-02 08:10:34','2017-09-13 11:55:41',0),(14,12,1,0,0,1,0,0,6,7,0,0,0,4,5,'No conformidad','NC######',NULL,'2017-08-02 08:12:52','2017-10-05 12:15:11',0),(15,13,1,1,0,1,0,0,6,7,0,0,0,3,3,'Hardware','INC######',NULL,'2017-08-02 08:14:12','2017-10-05 12:14:49',0),(16,13,1,1,0,1,0,0,6,7,0,0,0,3,4,'Software','INC######',NULL,'2017-08-02 08:14:59','2017-10-05 12:15:01',0),(17,14,1,1,0,1,0,0,6,7,0,0,0,4,6,'Hardware','NC######',NULL,'2017-08-02 08:15:45','2017-10-05 12:15:19',0),(18,14,1,1,0,1,0,0,6,7,0,0,0,4,7,'Software','NC######',NULL,'2017-08-02 08:16:20','2017-10-05 12:15:26',0);
+INSERT INTO `ost_help_topic` VALUES (12,0,1,0,0,0,0,0,4,0,0,0,0,0,1,'Red de Alerta Radiológica',NULL,'Soporte de la Red de Alerta Radiológica','2017-08-01 14:57:53','2017-10-24 08:30:06','null'),(13,12,1,1,0,1,0,0,6,7,0,0,0,3,2,'Incidencia','INC######',NULL,'2017-08-02 08:10:34','2017-10-24 08:27:07','t1'),(14,12,1,1,0,1,0,0,6,7,0,0,0,4,3,'No conformidad','NC######',NULL,'2017-08-02 08:12:52','2017-10-24 08:27:15','t1');
 /*!40000 ALTER TABLE `ost_help_topic` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1088,7 +1089,7 @@ CREATE TABLE `ost_help_topic_form` (
 
 LOCK TABLES `ost_help_topic_form` WRITE;
 /*!40000 ALTER TABLE `ost_help_topic_form` DISABLE KEYS */;
-INSERT INTO `ost_help_topic_form` VALUES (1,1,2,1,'{\"disable\":[]}'),(2,2,2,1,'{\"disable\":[]}'),(3,10,2,1,'{\"disable\":[]}'),(4,11,2,1,'{\"disable\":[]}'),(5,12,2,1,'{\"disable\":[22]}'),(6,13,2,1,'{\"disable\":[22]}'),(7,12,11,2,'{\"disable\":[38]}'),(8,14,2,1,'{\"disable\":[22]}'),(9,14,11,2,'{\"disable\":[38]}'),(10,15,2,1,'{\"disable\":[22]}'),(11,15,11,2,'{\"disable\":[38]}'),(12,16,2,1,'{\"disable\":[22]}'),(13,16,11,2,'{\"disable\":[38]}'),(14,17,2,1,'{\"disable\":[22]}'),(15,17,11,2,'{\"disable\":[38]}'),(16,18,2,1,'{\"disable\":[22]}'),(17,18,11,2,'{\"disable\":[38]}'),(18,13,11,2,'{\"disable\":[38]}');
+INSERT INTO `ost_help_topic_form` VALUES (1,1,2,1,'{\"disable\":[]}'),(2,2,2,1,'{\"disable\":[]}'),(3,10,2,1,'{\"disable\":[]}'),(4,11,2,1,'{\"disable\":[]}'),(5,12,2,1,'{\"disable\":[21]}'),(6,13,2,1,'{\"disable\":[21]}'),(7,12,11,2,'{\"disable\":[38]}'),(8,14,2,1,'{\"disable\":[21]}'),(9,14,11,2,'{\"disable\":[38]}'),(10,15,2,1,'{\"disable\":[22]}'),(11,15,11,2,'{\"disable\":[38]}'),(12,16,2,1,'{\"disable\":[22]}'),(13,16,11,2,'{\"disable\":[38]}'),(14,17,2,1,'{\"disable\":[22]}'),(15,17,11,2,'{\"disable\":[38]}'),(16,18,2,1,'{\"disable\":[22]}'),(17,18,11,2,'{\"disable\":[38]}'),(18,13,11,2,'{\"disable\":[38]}');
 /*!40000 ALTER TABLE `ost_help_topic_form` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1383,7 +1384,7 @@ CREATE TABLE `ost_sequence` (
 
 LOCK TABLES `ost_sequence` WRITE;
 /*!40000 ALTER TABLE `ost_sequence` DISABLE KEYS */;
-INSERT INTO `ost_sequence` VALUES (1,'General Tickets',1,1,1,'0','0000-00-00 00:00:00'),(2,'Tasks Sequence',1,51,1,'0','2017-10-02 07:56:32'),(3,'Secuencia incidencias',NULL,13,1,'0','2017-10-05 12:16:50'),(4,'Secuencia no conformidades',NULL,4,1,'0','2017-10-05 09:38:39');
+INSERT INTO `ost_sequence` VALUES (1,'General Tickets',1,1,1,'0','0000-00-00 00:00:00'),(2,'Tasks Sequence',1,57,1,'0','2017-10-20 14:40:56'),(3,'Secuencia incidencias',NULL,23,1,'0','2017-10-24 12:46:36'),(4,'Secuencia no conformidades',NULL,7,1,'0','2017-10-24 12:44:49');
 /*!40000 ALTER TABLE `ost_sequence` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1414,7 +1415,7 @@ CREATE TABLE `ost_session` (
 
 LOCK TABLES `ost_session` WRITE;
 /*!40000 ALTER TABLE `ost_session` DISABLE KEYS */;
-INSERT INTO `ost_session` VALUES ('5ps9ghhivlsfpvac1s4rchccl1','csrf|a:2:{s:5:\"token\";s:40:\"c892210e2d7e08d6eafe2acb28ea445bf1e17914\";s:4:\"time\";i:1507206272;}_auth|a:2:{s:4:\"user\";N;s:5:\"staff\";a:2:{s:2:\"id\";i:1;s:3:\"key\";s:12:\"local:carlos\";}}_staff|a:1:{s:4:\"auth\";a:2:{s:4:\"dest\";s:5:\"/scp/\";s:3:\"msg\";s:24:\"Autenticación Requerida\";}}:token|a:1:{s:5:\"staff\";s:76:\"afa62d47720767fc50c1043b317cb2c8:1507206264:efb4e12265ca7e4fc8fc726a9feb90bc\";}::Q:T|s:0:\"\";:QT:open:sort|a:2:{i:0;s:16:\"priority,updated\";i:1;i:0;}:Q:tickets|C:8:\"QuerySet\":4911:{a:16:{s:5:\"model\";s:11:\"TicketModel\";s:11:\"constraints\";a:1:{i:0;C:1:\"Q\":986:{a:3:{i:0;i:0;i:1;i:0;i:2;a:1:{s:13:\"ticket_id__in\";C:8:\"QuerySet\":912:{a:16:{s:5:\"model\";s:11:\"TicketModel\";s:11:\"constraints\";a:2:{i:0;C:1:\"Q\":64:{a:3:{i:0;i:0;i:1;i:0;i:2;a:1:{s:13:\"status__state\";s:4:\"open\";}}}i:1;C:1:\"Q\":317:{a:3:{i:0;i:0;i:1;i:2;i:2;a:1:{i:0;C:1:\"Q\":267:{a:3:{i:0;i:0;i:1;i:2;i:2;a:2:{i:0;C:1:\"Q\":132:{a:3:{i:0;i:0;i:1;i:0;i:2;a:2:{s:13:\"status__state\";s:4:\"open\";i:0;C:1:\"Q\":51:{a:3:{i:0;i:0;i:1;i:2;i:2;a:1:{s:8:\"staff_id\";i:1;}}}}}}s:11:\"dept_id__in\";a:5:{i:0;s:1:\"4\";i:1;s:1:\"5\";i:2;s:1:\"6\";i:3;s:1:\"7\";i:4;s:1:\"8\";}}}}}}}}s:16:\"path_constraints\";a:0:{}s:8:\"ordering\";a:2:{i:0;a:2:{i:0;s:34:\"cdata__:priority__priority_urgency\";i:1;s:3:\"ASC\";}i:1;a:2:{i:0;s:10:\"lastupdate\";i:1;s:4:\"DESC\";}}s:7:\"related\";b:0;s:6:\"values\";a:1:{i:0;s:9:\"ticket_id\";}s:5:\"defer\";a:0:{}s:10:\"aggregated\";b:0;s:11:\"annotations\";a:0:{}s:5:\"extra\";a:0:{}s:8:\"distinct\";a:0:{}s:4:\"lock\";b:0;s:5:\"chain\";a:0:{}s:7:\"options\";a:0:{}s:4:\"iter\";i:3;s:8:\"compiler\";s:13:\"MySqlCompiler\";}}}}}}s:16:\"path_constraints\";a:1:{s:4:\"lock\";a:1:{i:0;C:1:\"Q\":131:{a:3:{i:0;i:0;i:1;i:0;i:2;a:1:{s:16:\"lock__expire__gt\";O:11:\"SqlFunction\":3:{s:5:\"alias\";N;s:4:\"func\";s:3:\"NOW\";s:4:\"args\";a:0:{}}}}}}}s:8:\"ordering\";a:2:{i:0;a:2:{i:0;s:34:\"cdata__:priority__priority_urgency\";i:1;s:3:\"ASC\";}i:1;a:2:{i:0;s:10:\"lastupdate\";i:1;s:4:\"DESC\";}}s:7:\"related\";b:0;s:6:\"values\";a:23:{s:14:\"lock__staff_id\";s:14:\"lock__staff_id\";s:8:\"staff_id\";s:8:\"staff_id\";s:9:\"isoverdue\";s:9:\"isoverdue\";s:7:\"team_id\";s:7:\"team_id\";s:12:\"last_duedate\";s:12:\"last_duedate\";s:9:\"ticket_id\";s:9:\"ticket_id\";s:6:\"number\";s:6:\"number\";s:14:\"cdata__subject\";s:14:\"cdata__subject\";s:28:\"user__default_email__address\";s:28:\"user__default_email__address\";s:6:\"source\";s:6:\"source\";s:32:\"cdata__:priority__priority_color\";s:32:\"cdata__:priority__priority_color\";s:31:\"cdata__:priority__priority_desc\";s:31:\"cdata__:priority__priority_desc\";s:9:\"status_id\";s:9:\"status_id\";s:12:\"status__name\";s:12:\"status__name\";s:13:\"status__state\";s:13:\"status__state\";s:7:\"dept_id\";s:7:\"dept_id\";s:10:\"dept__name\";s:10:\"dept__name\";s:10:\"user__name\";s:10:\"user__name\";s:10:\"lastupdate\";s:10:\"lastupdate\";s:10:\"isanswered\";s:10:\"isanswered\";s:16:\"staff__firstname\";s:16:\"staff__firstname\";s:15:\"staff__lastname\";s:15:\"staff__lastname\";s:10:\"team__name\";s:10:\"team__name\";}s:5:\"defer\";a:0:{}s:10:\"aggregated\";b:0;s:11:\"annotations\";a:3:{s:12:\"collab_count\";C:8:\"QuerySet\":672:{a:16:{s:5:\"model\";s:12:\"TicketThread\";s:11:\"constraints\";a:1:{i:0;C:1:\"Q\":134:{a:3:{i:0;i:0;i:1;i:0;i:2;a:1:{s:17:\"ticket__ticket_id\";O:8:\"SqlField\":3:{s:5:\"level\";i:1;s:5:\"alias\";N;s:5:\"field\";s:9:\"ticket_id\";}}}}}s:16:\"path_constraints\";a:0:{}s:8:\"ordering\";a:0:{}s:7:\"related\";b:0;s:6:\"values\";a:0:{}s:5:\"defer\";a:0:{}s:10:\"aggregated\";b:1;s:11:\"annotations\";a:1:{s:5:\"count\";O:12:\"SqlAggregate\":5:{s:4:\"func\";s:5:\"COUNT\";s:4:\"expr\";s:17:\"collaborators__id\";s:8:\"distinct\";b:0;s:10:\"constraint\";b:0;s:5:\"alias\";s:5:\"count\";}}s:5:\"extra\";a:0:{}s:8:\"distinct\";a:0:{}s:4:\"lock\";b:0;s:5:\"chain\";a:0:{}s:7:\"options\";a:0:{}s:4:\"iter\";i:2;s:8:\"compiler\";s:13:\"MySqlCompiler\";}}s:16:\"attachment_count\";C:8:\"QuerySet\":768:{a:16:{s:5:\"model\";s:12:\"TicketThread\";s:11:\"constraints\";a:2:{i:0;C:1:\"Q\":134:{a:3:{i:0;i:0;i:1;i:0;i:2;a:1:{s:17:\"ticket__ticket_id\";O:8:\"SqlField\":3:{s:5:\"level\";i:1;s:5:\"alias\";N;s:5:\"field\";s:9:\"ticket_id\";}}}}i:1;C:1:\"Q\":72:{a:3:{i:0;i:0;i:1;i:0;i:2;a:1:{s:28:\"entries__attachments__inline\";i:0;}}}}s:16:\"path_constraints\";a:0:{}s:8:\"ordering\";a:0:{}s:7:\"related\";b:0;s:6:\"values\";a:0:{}s:5:\"defer\";a:0:{}s:10:\"aggregated\";b:1;s:11:\"annotations\";a:1:{s:5:\"count\";O:12:\"SqlAggregate\":5:{s:4:\"func\";s:5:\"COUNT\";s:4:\"expr\";s:24:\"entries__attachments__id\";s:8:\"distinct\";b:0;s:10:\"constraint\";b:0;s:5:\"alias\";s:5:\"count\";}}s:5:\"extra\";a:0:{}s:8:\"distinct\";a:0:{}s:4:\"lock\";b:0;s:5:\"chain\";a:0:{}s:7:\"options\";a:0:{}s:4:\"iter\";i:2;s:8:\"compiler\";s:13:\"MySqlCompiler\";}}s:12:\"thread_count\";C:8:\"QuerySet\":749:{a:16:{s:5:\"model\";s:12:\"TicketThread\";s:11:\"constraints\";a:2:{i:0;C:1:\"Q\":134:{a:3:{i:0;i:0;i:1;i:0;i:2;a:1:{s:17:\"ticket__ticket_id\";O:8:\"SqlField\":3:{s:5:\"level\";i:1;s:5:\"alias\";N;s:5:\"field\";s:9:\"ticket_id\";}}}}i:1;C:1:\"Q\":66:{a:3:{i:0;i:1;i:1;i:0;i:2;a:1:{s:22:\"entries__flags__hasbit\";i:4;}}}}s:16:\"path_constraints\";a:0:{}s:8:\"ordering\";a:0:{}s:7:\"related\";b:0;s:6:\"values\";a:0:{}s:5:\"defer\";a:0:{}s:10:\"aggregated\";b:1;s:11:\"annotations\";a:1:{s:5:\"count\";O:12:\"SqlAggregate\":5:{s:4:\"func\";s:5:\"COUNT\";s:4:\"expr\";s:11:\"entries__id\";s:8:\"distinct\";b:0;s:10:\"constraint\";b:0;s:5:\"alias\";s:5:\"count\";}}s:5:\"extra\";a:0:{}s:8:\"distinct\";a:0:{}s:4:\"lock\";b:0;s:5:\"chain\";a:0:{}s:7:\"options\";a:0:{}s:4:\"iter\";i:2;s:8:\"compiler\";s:13:\"MySqlCompiler\";}}}s:5:\"extra\";a:0:{}s:8:\"distinct\";a:0:{}s:4:\"lock\";b:0;s:5:\"chain\";a:0:{}s:7:\"options\";a:0:{}s:4:\"iter\";i:2;s:8:\"compiler\";s:13:\"MySqlCompiler\";}}lastcroncall|i:1507206264;::Q:E|s:0:\"\";:QE::sort|a:2:{i:0;s:10:\"activation\";i:1;i:0;}:Q:equipments|C:8:\"QuerySet\":1736:{a:16:{s:5:\"model\";s:14:\"EquipmentModel\";s:11:\"constraints\";a:1:{i:0;C:1:\"Q\":806:{a:3:{i:0;i:0;i:1;i:0;i:2;a:1:{s:6:\"id__in\";C:8:\"QuerySet\":740:{a:16:{s:5:\"model\";s:14:\"EquipmentModel\";s:11:\"constraints\";a:2:{i:0;C:1:\"Q\":66:{a:3:{i:0;i:0;i:1;i:0;i:2;a:1:{s:13:\"status__state\";s:6:\"active\";}}}i:1;C:1:\"Q\":217:{a:3:{i:0;i:0;i:1;i:2;i:2;a:1:{i:0;C:1:\"Q\":167:{a:3:{i:0;i:0;i:1;i:2;i:2;a:1:{i:0;C:1:\"Q\":117:{a:3:{i:0;i:0;i:1;i:0;i:2;a:1:{s:11:\"dept_id__in\";a:5:{i:0;s:1:\"4\";i:1;s:1:\"5\";i:2;s:1:\"6\";i:3;s:1:\"7\";i:4;s:1:\"8\";}}}}}}}}}}}s:16:\"path_constraints\";a:0:{}s:8:\"ordering\";a:1:{i:0;a:2:{i:0;s:10:\"activation\";i:1;s:4:\"DESC\";}}s:7:\"related\";b:0;s:6:\"values\";a:1:{i:0;s:2:\"id\";}s:5:\"defer\";a:0:{}s:10:\"aggregated\";b:0;s:11:\"annotations\";a:0:{}s:5:\"extra\";a:0:{}s:8:\"distinct\";a:0:{}s:4:\"lock\";b:0;s:5:\"chain\";a:0:{}s:7:\"options\";a:0:{}s:4:\"iter\";i:3;s:8:\"compiler\";s:13:\"MySqlCompiler\";}}}}}}s:16:\"path_constraints\";a:1:{s:4:\"lock\";a:1:{i:0;C:1:\"Q\":131:{a:3:{i:0;i:0;i:1;i:0;i:2;a:1:{s:16:\"lock__expire__gt\";O:11:\"SqlFunction\":3:{s:5:\"alias\";N;s:4:\"func\";s:3:\"NOW\";s:4:\"args\";a:0:{}}}}}}}s:8:\"ordering\";a:1:{i:0;a:2:{i:0;s:10:\"activation\";i:1;s:4:\"DESC\";}}s:7:\"related\";b:0;s:6:\"values\";a:10:{s:10:\"activation\";s:10:\"activation\";s:14:\"lock__staff_id\";s:14:\"lock__staff_id\";s:2:\"id\";s:2:\"id\";s:4:\"name\";s:4:\"name\";s:11:\"description\";s:11:\"description\";s:9:\"status_id\";s:9:\"status_id\";s:12:\"status__name\";s:12:\"status__name\";s:13:\"status__state\";s:13:\"status__state\";s:7:\"updated\";s:7:\"updated\";s:10:\"dept__name\";s:10:\"dept__name\";}s:5:\"defer\";a:0:{}s:10:\"aggregated\";b:0;s:11:\"annotations\";a:0:{}s:5:\"extra\";a:0:{}s:8:\"distinct\";a:0:{}s:4:\"lock\";b:0;s:5:\"chain\";a:0:{}s:7:\"options\";a:0:{}s:4:\"iter\";i:2;s:8:\"compiler\";s:13:\"MySqlCompiler\";}}::Q:A|s:0:\"\";:QA::sort|a:2:{i:0;s:7:\"created\";i:1;i:0;}:Q:tasks|C:8:\"QuerySet\":2240:{a:16:{s:5:\"model\";s:4:\"Task\";s:11:\"constraints\";a:2:{i:0;C:1:\"Q\":106:{a:3:{i:0;i:0;i:1;i:0;i:2;a:1:{i:0;C:1:\"Q\":57:{a:3:{i:0;i:0;i:1;i:0;i:2;a:1:{s:13:\"flags__hasbit\";i:1;}}}}}}i:1;C:1:\"Q\":260:{a:3:{i:0;i:0;i:1;i:2;i:2;a:2:{i:0;C:1:\"Q\":76:{a:3:{i:0;i:0;i:1;i:0;i:2;a:2:{s:13:\"flags__hasbit\";i:1;s:8:\"staff_id\";i:1;}}}i:1;C:1:\"Q\":117:{a:3:{i:0;i:0;i:1;i:0;i:2;a:1:{s:11:\"dept_id__in\";a:5:{i:0;s:1:\"4\";i:1;s:1:\"5\";i:2;s:1:\"6\";i:3;s:1:\"7\";i:4;s:1:\"8\";}}}}}}}}s:16:\"path_constraints\";a:0:{}s:8:\"ordering\";a:1:{i:0;s:8:\"-created\";}s:7:\"related\";b:0;s:6:\"values\";a:11:{s:2:\"id\";s:2:\"id\";s:6:\"number\";s:6:\"number\";s:7:\"created\";s:7:\"created\";s:8:\"staff_id\";s:8:\"staff_id\";s:7:\"team_id\";s:7:\"team_id\";s:16:\"staff__firstname\";s:16:\"staff__firstname\";s:15:\"staff__lastname\";s:15:\"staff__lastname\";s:10:\"team__name\";s:10:\"team__name\";s:10:\"dept__name\";s:10:\"dept__name\";s:12:\"cdata__title\";s:12:\"cdata__title\";s:5:\"flags\";s:5:\"flags\";}s:5:\"defer\";a:0:{}s:10:\"aggregated\";b:0;s:11:\"annotations\";a:3:{s:12:\"collab_count\";O:12:\"SqlAggregate\":5:{s:4:\"func\";s:5:\"COUNT\";s:4:\"expr\";s:21:\"thread__collaborators\";s:8:\"distinct\";b:1;s:10:\"constraint\";b:0;s:5:\"alias\";s:12:\"collab_count\";}s:16:\"attachment_count\";O:12:\"SqlAggregate\":5:{s:4:\"func\";s:5:\"COUNT\";s:4:\"expr\";O:7:\"SqlCase\":5:{s:5:\"cases\";a:1:{i:0;a:2:{i:0;O:8:\"SqlField\":3:{s:5:\"level\";i:0;s:5:\"alias\";N;s:5:\"field\";s:36:\"thread__entries__attachments__inline\";}i:1;N;}}s:4:\"else\";O:8:\"SqlField\":3:{s:5:\"level\";i:0;s:5:\"alias\";N;s:5:\"field\";s:28:\"thread__entries__attachments\";}s:5:\"alias\";N;s:4:\"func\";s:4:\"CASE\";s:4:\"args\";a:0:{}}s:8:\"distinct\";b:1;s:10:\"constraint\";b:0;s:5:\"alias\";s:16:\"attachment_count\";}s:12:\"thread_count\";O:12:\"SqlAggregate\":5:{s:4:\"func\";s:5:\"COUNT\";s:4:\"expr\";O:7:\"SqlCase\":5:{s:5:\"cases\";a:1:{i:0;a:2:{i:0;C:1:\"Q\":74:{a:3:{i:0;i:0;i:1;i:0;i:2;a:1:{s:30:\"thread__entries__flags__hasbit\";i:4;}}}i:1;N;}}s:4:\"else\";O:8:\"SqlField\":3:{s:5:\"level\";i:0;s:5:\"alias\";N;s:5:\"field\";s:19:\"thread__entries__id\";}s:5:\"alias\";N;s:4:\"func\";s:4:\"CASE\";s:4:\"args\";a:0:{}}s:8:\"distinct\";b:1;s:10:\"constraint\";b:0;s:5:\"alias\";s:12:\"thread_count\";}}s:5:\"extra\";a:0:{}s:8:\"distinct\";a:0:{}s:4:\"lock\";b:0;s:5:\"chain\";a:0:{}s:7:\"options\";a:0:{}s:4:\"iter\";i:2;s:8:\"compiler\";s:13:\"MySqlCompiler\";}}:Q:users|C:8:\"QuerySet\":771:{a:16:{s:5:\"model\";s:4:\"User\";s:11:\"constraints\";a:0:{}s:16:\"path_constraints\";a:0:{}s:8:\"ordering\";a:1:{i:0;s:4:\"name\";}s:7:\"related\";b:0;s:6:\"values\";a:7:{s:2:\"id\";s:2:\"id\";s:4:\"name\";s:4:\"name\";s:22:\"default_email__address\";s:22:\"default_email__address\";s:11:\"account__id\";s:11:\"account__id\";s:15:\"account__status\";s:15:\"account__status\";s:7:\"created\";s:7:\"created\";s:7:\"updated\";s:7:\"updated\";}s:5:\"defer\";a:0:{}s:10:\"aggregated\";b:0;s:11:\"annotations\";a:1:{s:12:\"ticket_count\";O:12:\"SqlAggregate\":5:{s:4:\"func\";s:5:\"COUNT\";s:4:\"expr\";s:7:\"tickets\";s:8:\"distinct\";b:0;s:10:\"constraint\";b:0;s:5:\"alias\";s:12:\"ticket_count\";}}s:5:\"extra\";a:0:{}s:8:\"distinct\";a:0:{}s:4:\"lock\";b:0;s:5:\"chain\";a:0:{}s:7:\"options\";a:0:{}s:4:\"iter\";i:2;s:8:\"compiler\";s:13:\"MySqlCompiler\";}}cfg:core|a:1:{s:11:\"db_timezone\";s:13:\"Europe/Berlin\";}','2017-10-06 14:24:33',NULL,'1','172.22.15.53','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0');
+INSERT INTO `ost_session` VALUES ('lh19afkohso9d6j5hm6egico73','csrf|a:2:{s:5:\"token\";s:40:\"e51a27bc1fc4d7efe44589c4dfed6cd8a412f43c\";s:4:\"time\";i:1508843174;}','2017-10-25 13:06:14',NULL,'0','172.22.15.53','Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'),('q39b9q6eht1hed9hbeimqpjbc3','csrf|a:2:{s:5:\"token\";s:40:\"efa1a19fa06a3403a5f1193dd29d643015c2a224\";s:4:\"time\";i:1508843174;}_staff|a:1:{s:4:\"auth\";a:2:{s:4:\"dest\";s:53:\"/scp/logout.php?auth=c44f790dfa13f2b9974c0b41cc467064\";s:3:\"msg\";s:24:\"Autenticación Requerida\";}}_auth|a:2:{s:5:\"staff\";N;s:4:\"user\";a:0:{}}:token|a:0:{}','2017-10-25 13:06:14',NULL,'0','172.22.15.53','Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0');
 /*!40000 ALTER TABLE `ost_session` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1505,7 +1506,7 @@ CREATE TABLE `ost_staff` (
 
 LOCK TABLES `ost_staff` WRITE;
 /*!40000 ALTER TABLE `ost_staff` DISABLE KEYS */;
-INSERT INTO `ost_staff` VALUES (1,4,1,'carlos','Carlos','Núñez','$2a$08$Yz1e7fueJl/g51dIcB/d0e3y12fZbp98v4VRcfEFjReMdAFtWlbDe',NULL,'carlos.nunez@juntaex.es','',NULL,'','',NULL,NULL,'',NULL,1,1,0,0,0,0,0,25,0,'none','Letter','{\"browser_lang\":\"es_ES\",\"def_assn_role\":true}','{\"user.create\":1,\"user.edit\":1,\"user.delete\":1,\"user.manage\":1,\"user.dir\":1,\"org.create\":1,\"org.edit\":1,\"org.delete\":1,\"faq.manage\":1,\"emails.banlist\":1}','2017-08-01 12:23:25','2017-10-05 14:24:24','2017-08-01 14:31:46','2017-10-05 14:24:24'),(2,5,2,'antonio','Antonio','Baeza','$2a$08$1RVtwsax8Yr2KcRyne4KH.0yHQz1hCgNUImjBSSQS4uc8RU/bnaSq',NULL,'tritium@juntaex.es','',NULL,'','',NULL,NULL,NULL,NULL,1,0,1,0,0,0,0,0,0,'none','Letter','{\"def_assn_role\":true,\"browser_lang\":\"es_ES\"}','{\"user.create\":1,\"user.edit\":1,\"user.delete\":1,\"user.manage\":1,\"user.dir\":1,\"org.create\":1,\"org.edit\":1,\"org.delete\":1,\"faq.manage\":1}','2017-08-01 14:41:42','2017-09-07 08:43:58','2017-08-02 11:13:33','2017-09-07 08:43:58'),(3,7,2,'david','David','Valencia','$2a$08$A65NrS.FK1SDU147/Tj55.infi5REYgzEkXwNLLvrgKbVDq4ZKKQ2',NULL,'david@laruex.es','',NULL,'','',NULL,NULL,NULL,NULL,1,0,0,0,0,0,0,0,0,'none','Letter','{\"def_assn_role\":true}','{\"user.create\":1,\"user.edit\":1,\"user.delete\":1,\"user.manage\":1,\"user.dir\":1,\"org.create\":1,\"org.edit\":1,\"org.delete\":1,\"faq.manage\":1}','2017-08-01 14:42:50',NULL,'2017-08-02 11:14:22','2017-08-02 11:14:27'),(4,8,2,'jose','José Ángel','Corbacho','$2a$08$QnZ7rGCByMbKMBQiXVaukegi8KLAvXo8wG3P.gY8gPOfZpUfFJwkG',NULL,'rat_va_pc@juntaex.es','',NULL,'','',NULL,NULL,NULL,NULL,1,0,1,0,0,0,0,0,0,'none','Letter','{\"def_assn_role\":true,\"browser_lang\":\"es_ES\"}','{\"user.create\":1,\"user.edit\":1,\"user.delete\":1,\"user.manage\":1,\"user.dir\":1,\"org.create\":1,\"org.edit\":1,\"org.delete\":1,\"faq.manage\":1}','2017-08-01 14:43:38','2017-10-03 08:28:27','2017-08-02 11:13:11','2017-10-03 08:28:27'),(5,7,2,'juan','Juan','Baeza','$2a$08$0oAuiWbbDSayt7KEORpnYuerUZouOChxNaXCJnzoMq5f8WPksSPB2',NULL,'ratvapc@gmail.com','',NULL,'','',NULL,NULL,NULL,NULL,1,0,0,0,0,0,0,0,0,'none','Letter','{\"def_assn_role\":true,\"browser_lang\":\"es_ES\"}','{\"user.create\":1,\"user.edit\":1,\"user.delete\":1,\"user.manage\":1,\"user.dir\":1,\"org.create\":1,\"org.edit\":1,\"org.delete\":1,\"faq.manage\":1}','2017-08-01 14:44:53','2017-10-03 08:27:42','2017-08-03 14:00:26','2017-10-03 08:27:42'),(6,8,2,'manolo','José Manuel','Caballero',NULL,NULL,'manolo@laruex.es','',NULL,'','',NULL,NULL,NULL,NULL,1,0,0,0,0,0,0,0,0,'none','Letter','{\"def_assn_role\":true}','{\"user.create\":1,\"user.edit\":1,\"user.delete\":1,\"user.manage\":1,\"user.dir\":1,\"org.create\":1,\"org.edit\":1,\"org.delete\":1,\"faq.manage\":1}','2017-08-01 14:45:48',NULL,NULL,'2017-08-02 08:27:55'),(7,6,2,'angeles','Mª Ángeles','Ontalba','$2a$08$BtnMw1AfZQCN5fhal95lbu1uQ6qURWBDRP8kAmCfhJleTXaMITSGm',NULL,'eco2cir@gmail.com','',NULL,'','',NULL,NULL,NULL,NULL,1,0,0,0,0,0,0,0,0,'none','Letter','{\"def_assn_role\":true,\"browser_lang\":\"es_ES\"}','{\"user.create\":1,\"user.edit\":1,\"user.delete\":1,\"user.manage\":1,\"user.dir\":1,\"org.create\":1,\"org.edit\":1,\"org.delete\":1,\"faq.manage\":1}','2017-08-01 14:46:53','2017-10-03 08:29:11','2017-08-02 11:12:19','2017-10-03 08:29:11'),(8,7,2,'pepe','José','Vasco','$2a$08$kc8tsvzqiKnIIB12mnFzi.EbMYsvq24P8GRtJPDV7mzlxfczV07IW',NULL,'eco2cir@juntaex.es','',NULL,'','',NULL,NULL,NULL,NULL,1,0,0,0,0,0,0,0,0,'none','Letter','{\"def_assn_role\":true,\"browser_lang\":\"es_ES\"}','{\"user.create\":1,\"user.edit\":1,\"user.delete\":1,\"user.manage\":1,\"user.dir\":1,\"org.create\":1,\"org.edit\":1,\"org.delete\":1,\"faq.manage\":1}','2017-08-01 14:47:40','2017-09-27 09:31:43','2017-08-02 11:38:55','2017-09-27 09:31:43');
+INSERT INTO `ost_staff` VALUES (1,4,1,'carlos','Carlos','Núñez','$2a$08$Yz1e7fueJl/g51dIcB/d0e3y12fZbp98v4VRcfEFjReMdAFtWlbDe',NULL,'carlos.nunez@juntaex.es','',NULL,'','',NULL,NULL,'',NULL,1,1,0,0,0,0,0,25,0,'none','Letter','{\"browser_lang\":\"es_ES\",\"def_assn_role\":true}','{\"user.create\":1,\"user.edit\":1,\"user.delete\":1,\"user.manage\":1,\"user.dir\":1,\"org.create\":1,\"org.edit\":1,\"org.delete\":1,\"faq.manage\":1,\"emails.banlist\":1}','2017-08-01 12:23:25','2017-10-24 12:47:56','2017-08-01 14:31:46','2017-10-24 12:47:56'),(2,5,2,'antonio','Antonio','Baeza','$2a$08$1RVtwsax8Yr2KcRyne4KH.0yHQz1hCgNUImjBSSQS4uc8RU/bnaSq',NULL,'tritium@juntaex.es','',NULL,'','',NULL,NULL,NULL,NULL,1,0,1,0,0,0,0,0,0,'none','Letter','{\"def_assn_role\":true,\"browser_lang\":\"es_ES\"}','{\"user.create\":1,\"user.edit\":1,\"user.delete\":1,\"user.manage\":1,\"user.dir\":1,\"org.create\":1,\"org.edit\":1,\"org.delete\":1,\"faq.manage\":1}','2017-08-01 14:41:42','2017-09-07 08:43:58','2017-08-02 11:13:33','2017-09-07 08:43:58'),(3,7,2,'david','David','Valencia','$2a$08$A65NrS.FK1SDU147/Tj55.infi5REYgzEkXwNLLvrgKbVDq4ZKKQ2',NULL,'david@laruex.es','',NULL,'','',NULL,NULL,NULL,NULL,1,0,0,0,0,0,0,0,0,'none','Letter','{\"def_assn_role\":true,\"browser_lang\":\"es_ES\"}','{\"user.create\":1,\"user.edit\":1,\"user.delete\":1,\"user.manage\":1,\"user.dir\":1,\"org.create\":1,\"org.edit\":1,\"org.delete\":1,\"faq.manage\":1}','2017-08-01 14:42:50','2017-10-24 12:41:31','2017-08-02 11:14:22','2017-10-24 12:41:31'),(4,8,2,'jose','José Ángel','Corbacho','$2a$08$QnZ7rGCByMbKMBQiXVaukegi8KLAvXo8wG3P.gY8gPOfZpUfFJwkG',NULL,'rat_va_pc@juntaex.es','',NULL,'','',NULL,NULL,NULL,NULL,1,0,1,0,0,0,0,0,0,'none','Letter','{\"def_assn_role\":true,\"browser_lang\":\"es_ES\"}','{\"user.create\":1,\"user.edit\":1,\"user.delete\":1,\"user.manage\":1,\"user.dir\":1,\"org.create\":1,\"org.edit\":1,\"org.delete\":1,\"faq.manage\":1}','2017-08-01 14:43:38','2017-10-20 14:40:02','2017-08-02 11:13:11','2017-10-20 14:40:02'),(5,7,2,'juan','Juan','Baeza','$2a$08$0oAuiWbbDSayt7KEORpnYuerUZouOChxNaXCJnzoMq5f8WPksSPB2',NULL,'ratvapc@gmail.com','',NULL,'','',NULL,NULL,NULL,NULL,1,0,0,0,0,0,0,0,0,'none','Letter','{\"def_assn_role\":true,\"browser_lang\":\"es_ES\"}','{\"user.create\":1,\"user.edit\":1,\"user.delete\":1,\"user.manage\":1,\"user.dir\":1,\"org.create\":1,\"org.edit\":1,\"org.delete\":1,\"faq.manage\":1}','2017-08-01 14:44:53','2017-10-03 08:27:42','2017-08-03 14:00:26','2017-10-03 08:27:42'),(6,8,2,'manolo','José Manuel','Caballero',NULL,NULL,'manolo@laruex.es','',NULL,'','',NULL,NULL,NULL,NULL,1,0,0,0,0,0,0,0,0,'none','Letter','{\"def_assn_role\":true}','{\"user.create\":1,\"user.edit\":1,\"user.delete\":1,\"user.manage\":1,\"user.dir\":1,\"org.create\":1,\"org.edit\":1,\"org.delete\":1,\"faq.manage\":1}','2017-08-01 14:45:48',NULL,NULL,'2017-08-02 08:27:55'),(7,6,2,'angeles','Mª Ángeles','Ontalba','$2a$08$tIh8tt6Ss4k8ZnGrtTPfg.2MFcYHaRinCLLf4w5V8ZQcEyxMeDwSu',NULL,'eco2cir@gmail.com','',NULL,'','',NULL,NULL,NULL,NULL,1,0,0,0,0,0,0,0,0,'none','Letter','{\"def_assn_role\":true,\"browser_lang\":\"es_ES\"}','{\"user.create\":1,\"user.edit\":1,\"user.delete\":1,\"user.manage\":1,\"user.dir\":1,\"org.create\":1,\"org.edit\":1,\"org.delete\":1,\"faq.manage\":1}','2017-08-01 14:46:53','2017-10-20 14:41:28','2017-10-11 13:49:50','2017-10-20 14:41:28'),(8,7,2,'pepe','José','Vasco','$2a$08$kc8tsvzqiKnIIB12mnFzi.EbMYsvq24P8GRtJPDV7mzlxfczV07IW',NULL,'eco2cir@juntaex.es','',NULL,'','',NULL,NULL,NULL,NULL,1,0,0,0,0,0,0,0,0,'none','Letter','{\"def_assn_role\":true,\"browser_lang\":\"es_ES\"}','{\"user.create\":1,\"user.edit\":1,\"user.delete\":1,\"user.manage\":1,\"user.dir\":1,\"org.create\":1,\"org.edit\":1,\"org.delete\":1,\"faq.manage\":1}','2017-08-01 14:47:40','2017-10-24 11:50:06','2017-08-02 11:38:55','2017-10-24 11:50:06');
 /*!40000 ALTER TABLE `ost_staff` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1554,7 +1555,7 @@ CREATE TABLE `ost_syslog` (
   `updated` datetime NOT NULL,
   PRIMARY KEY (`log_id`),
   KEY `log_type` (`log_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1593,7 +1594,7 @@ CREATE TABLE `ost_task` (
   KEY `team_id` (`team_id`),
   KEY `created` (`created`),
   KEY `object` (`object_id`,`object_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1650,7 +1651,7 @@ CREATE TABLE `ost_task_schedule` (
   KEY `staff_id` (`staff_id`),
   CONSTRAINT `ost_task_schedule_ibfk_1` FOREIGN KEY (`department_id`) REFERENCES `ost_department` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `ost_task_schedule_ibfk_2` FOREIGN KEY (`staff_id`) REFERENCES `ost_staff` (`staff_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1659,6 +1660,7 @@ CREATE TABLE `ost_task_schedule` (
 
 LOCK TABLES `ost_task_schedule` WRITE;
 /*!40000 ALTER TABLE `ost_task_schedule` DISABLE KEYS */;
+INSERT INTO `ost_task_schedule` VALUES (13,'Trimestral',3,'2017-10-31 08:00:00',8,NULL,'2017-10-20 08:06:22','2017-10-20 08:06:22',NULL);
 /*!40000 ALTER TABLE `ost_task_schedule` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1680,7 +1682,7 @@ CREATE TABLE `ost_team` (
   PRIMARY KEY (`team_id`),
   UNIQUE KEY `name` (`name`),
   KEY `lead_id` (`lead_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1689,6 +1691,7 @@ CREATE TABLE `ost_team` (
 
 LOCK TABLES `ost_team` WRITE;
 /*!40000 ALTER TABLE `ost_team` DISABLE KEYS */;
+INSERT INTO `ost_team` VALUES (1,7,1,'Calidad',NULL,'2017-10-23 12:35:49','2017-10-23 12:35:57');
 /*!40000 ALTER TABLE `ost_team` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1713,6 +1716,7 @@ CREATE TABLE `ost_team_member` (
 
 LOCK TABLES `ost_team_member` WRITE;
 /*!40000 ALTER TABLE `ost_team_member` DISABLE KEYS */;
+INSERT INTO `ost_team_member` VALUES (1,3,1),(1,7,1);
 /*!40000 ALTER TABLE `ost_team_member` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1734,7 +1738,7 @@ CREATE TABLE `ost_thread` (
   PRIMARY KEY (`id`),
   KEY `object_id` (`object_id`),
   KEY `object_type` (`object_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1743,6 +1747,7 @@ CREATE TABLE `ost_thread` (
 
 LOCK TABLES `ost_thread` WRITE;
 /*!40000 ALTER TABLE `ost_thread` DISABLE KEYS */;
+INSERT INTO `ost_thread` VALUES (4,1,'E',NULL,NULL,NULL,'2017-10-20 07:45:46');
 /*!40000 ALTER TABLE `ost_thread` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1806,7 +1811,7 @@ CREATE TABLE `ost_thread_entry` (
   KEY `thread_id` (`thread_id`),
   KEY `staff_id` (`staff_id`),
   KEY `type` (`type`)
-) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1869,7 +1874,7 @@ CREATE TABLE `ost_thread_event` (
   PRIMARY KEY (`id`),
   KEY `ticket_state` (`thread_id`,`state`,`timestamp`),
   KEY `ticket_stats` (`timestamp`,`state`)
-) ENGINE=InnoDB AUTO_INCREMENT=135 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1878,6 +1883,7 @@ CREATE TABLE `ost_thread_event` (
 
 LOCK TABLES `ost_thread_event` WRITE;
 /*!40000 ALTER TABLE `ost_thread_event` DISABLE KEYS */;
+INSERT INTO `ost_thread_event` VALUES (10,4,0,0,7,0,'created',NULL,'carlos',1,'S',0,'2017-10-20 07:45:46');
 /*!40000 ALTER TABLE `ost_thread_event` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1926,7 +1932,7 @@ CREATE TABLE `ost_ticket` (
   KEY `duedate` (`duedate`),
   KEY `topic_id` (`topic_id`),
   KEY `sla_id` (`sla_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1989,7 +1995,7 @@ CREATE TABLE `ost_ticket_priority` (
 
 LOCK TABLES `ost_ticket_priority` WRITE;
 /*!40000 ALTER TABLE `ost_ticket_priority` DISABLE KEYS */;
-INSERT INTO `ost_ticket_priority` VALUES (1,'low','Low','#DDFFDD',4,1),(2,'normal','Normal','#FFFFF0',3,1),(3,'high','High','#FEE7E7',2,1),(4,'emergency','Emergency','#FEE7E7',1,1);
+INSERT INTO `ost_ticket_priority` VALUES (1,'low','Baja','#DDFFDD',4,1),(2,'normal','Normal','#FFFFF0',3,1),(3,'high','Alta','#FEE7E7',2,1),(4,'emergency','Emergencia','#FEE7E7',1,1);
 /*!40000 ALTER TABLE `ost_ticket_priority` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2146,7 +2152,7 @@ CREATE TABLE `ost_user_account` (
 
 LOCK TABLES `ost_user_account` WRITE;
 /*!40000 ALTER TABLE `ost_user_account` DISABLE KEYS */;
-INSERT INTO `ost_user_account` VALUES (1,2,1,'Europe/Berlin',NULL,NULL,'$2a$08$OMpeDl1igHTExQGJP7b8xOlJMWgl1UQRTjyOttKJnJiZVv3GKE6KO',NULL,NULL,'2017-08-02 06:30:20'),(2,3,1,'Europe/Berlin',NULL,NULL,'$2a$08$mt7oKRQXg4iEHXgzEw6sDO/ysORaQrMPYg3DAJT8dhCQom1qkGaGS',NULL,NULL,'2017-08-02 06:32:04'),(3,4,1,'Europe/Berlin',NULL,NULL,'$2a$08$LW41fRzA69EvbHzudvUWzO9v2foCW8OVjVyU3BIggItWBhxvlowEG',NULL,NULL,'2017-08-02 06:32:58'),(4,5,1,'Europe/Berlin',NULL,NULL,'$2a$08$w7njTtgxLMCmT1mEJ1AN.OujL3h8iTQ09jyyAW8igopCY.Be72nqS',NULL,'{\"browser_lang\":\"es_ES\"}','2017-08-02 06:33:42'),(5,6,1,'Europe/Berlin',NULL,NULL,'$2a$08$SPv7EnsNz1qa8EdOW17nTePqvulaaPlHBKYZYR0OQ2lHzziHocnT.',NULL,NULL,'2017-08-02 06:34:49'),(6,7,1,'Europe/Berlin',NULL,NULL,'$2a$08$aoxkX1qHDCKDh8RsoLICXODT.L9cWk7svw/kKiIinNnGkPXmU9OcK',NULL,NULL,'2017-08-02 06:36:30'),(7,8,1,'Europe/Berlin',NULL,NULL,'$2a$08$63lBB11Z3Lz.h9yEL.zUNeeSIYgT7OEnvM97xne8C.pWILPN0FsvS',NULL,'{\"browser_lang\":\"es_ES\"}','2017-08-02 06:37:25');
+INSERT INTO `ost_user_account` VALUES (1,2,1,'Europe/Berlin',NULL,'antonio','$2a$08$OMpeDl1igHTExQGJP7b8xOlJMWgl1UQRTjyOttKJnJiZVv3GKE6KO',NULL,NULL,'2017-08-02 06:30:20'),(2,3,1,'Europe/Berlin',NULL,'david','$2a$08$mt7oKRQXg4iEHXgzEw6sDO/ysORaQrMPYg3DAJT8dhCQom1qkGaGS',NULL,NULL,'2017-08-02 06:32:04'),(3,4,1,'Europe/Berlin',NULL,'jose','$2a$08$LW41fRzA69EvbHzudvUWzO9v2foCW8OVjVyU3BIggItWBhxvlowEG',NULL,NULL,'2017-08-02 06:32:58'),(4,5,1,'Europe/Berlin',NULL,'juan','$2a$08$PfPfN68QEG0ETWk4o5Z5feBKug11.Bv0uLU9kw9N33m0JE7i1iIKW',NULL,'{\"browser_lang\":\"es_ES\"}','2017-08-02 06:33:42'),(5,6,1,'Europe/Berlin',NULL,'manolo','$2a$08$SB.rklDpfSCIGenHNlRXWOpKOcDfIcUIZb/5ywvSvE13tvdcqUpb6',NULL,NULL,'2017-08-02 06:34:49'),(6,7,1,'Europe/Berlin',NULL,'angeles','$2a$08$aoxkX1qHDCKDh8RsoLICXODT.L9cWk7svw/kKiIinNnGkPXmU9OcK',NULL,NULL,'2017-08-02 06:36:30'),(7,8,1,'Europe/Berlin',NULL,'pepe','$2a$08$63lBB11Z3Lz.h9yEL.zUNeeSIYgT7OEnvM97xne8C.pWILPN0FsvS',NULL,'{\"browser_lang\":\"es_ES\"}','2017-08-02 06:37:25');
 /*!40000 ALTER TABLE `ost_user_account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2187,4 +2193,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-10-05 14:24:57
+-- Dump completed on 2017-10-24 13:06:21

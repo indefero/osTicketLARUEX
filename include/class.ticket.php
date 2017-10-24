@@ -103,6 +103,7 @@ class TicketModel extends VerySimpleModel {
     const PERM_DELETE   = 'ticket.delete';
 
     const TEXTO_PREASIGNACION_AGENTE = "Preasignación de agente hecha por el usuario";
+    const TEXTO_PREASIGNACION_EQUIPO = "Preasignación de equipo hecha por el usuario";
 
     static protected $perms = array(
             self::PERM_CREATE => array(
@@ -1746,7 +1747,8 @@ implements RestrictedAccess, Threadable {
         $user_comments = (bool) $comments;
         $comments = $comments ?: _S('Ticket Assignment');
         $assigner = $thisstaff ?: _S('SYSTEM (Auto Assignment)');
-        if ($comments == self::TEXTO_PREASIGNACION_AGENTE) {
+        if ($comments == self::TEXTO_PREASIGNACION_AGENTE
+                || $comments == self::TEXTO_PREASIGNACION_EQUIPO) {
             $assigner = $this->getUser()->getFullName();
         }
 
@@ -3455,13 +3457,11 @@ implements RestrictedAccess, Threadable {
         $form->save();
 
         // Save the form data from the help-topic form, if any
-        $idAgente = "";
-        $nombreAgente = null;
+        $idPreasignacion = "";
         foreach ($topic_forms as $topic_form) {
-            if ($campoAgente = $topic_form->getField("agente")) {
-                $agente = $campoAgente->getWidget()->getValue();
-                $idAgente = array_keys($agente)[0];
-                $nombreAgente = $agente[$idAgente];
+            if ($campoAgente = $topic_form->getField("preasignacion")) {
+                $preasignacion = $campoAgente->getWidget()->getValue();
+                $idPreasignacion = array_keys($preasignacion)[0];
             }
             $topic_form->setTicketId($ticket->getId());
             $topic_form->save();
@@ -3521,12 +3521,20 @@ implements RestrictedAccess, Threadable {
         if ($ticket->isOpen()) {
             // Asigno el ticket al agente que escoge el usuario o si no...
             // Assign ticket to staff or team (new ticket by staff)
-            if ($idAgente != "") {
-                if (substr($idAgente, 0, 1) == 's') {
-                    $agente = Staff::lookup(substr($idAgente, 1, 1));
+            if ($idPreasignacion != "") {
+                if (substr($idPreasignacion, 0, 1) == 's') {
+                    $agente = Staff::lookup(substr($idPreasignacion, 1));
                     $ticket->assignToStaff($agente->getId(), 
                             self::TEXTO_PREASIGNACION_AGENTE);
                     $ticket->setDeptId($agente->getDeptId());
+                } elseif (substr($idPreasignacion, 0, 1) == 't') {
+                    $equipo = Team::lookup(substr($idPreasignacion, 1));
+                    $ticket->assignToTeam($equipo->getId(), 
+                            self::TEXTO_PREASIGNACION_EQUIPO);
+                    if ($lider = $equipo->getTeamLead()) {
+                        $ticket->setDeptId($lider->getDeptId());
+                    }
+                    //$ticket->setDeptId($agente->getDeptId());
                 }
             } elseif ($vars['assignId']) {
                 $asnform = $ticket->getAssignmentForm(array(
