@@ -1237,18 +1237,31 @@ implements RestrictedAccess, Threadable {
                         array('comments' => $comments)
                     );
                     $tipoTicket = $this->getTopic();
-                    $idAgente = null;
+                    $idNotificacion = null;
                     // Buscamos el id del agente de forma recursiva recorriendo los tipos de
                     // tickets de abajo a arriba hasta encontrar uno o determinar que no hay
-                    while (!$idAgente && $tipoTicket) {
-                        $idAgente = $tipoTicket->getCloseAlert();
+                    while (!$idNotificacion && $tipoTicket) {
+                        $idNotificacion = $tipoTicket->getCloseAlert();
                         $tipoTicket = $tipoTicket->getParent();
                     }
                     // Si se encontró alguno se notifica el cierre
-                    if ($idAgente) {
-                        $agente = Staff::lookup($idAgente);
-                        $alert = $this->replaceVars($msg, array('recipient' => $agente));
-                        $email->sendAlert($agente, $alert['subj'], $alert['body'], null);
+                    if ($idNotificacion) {
+                        if ($idNotificacion[0] == 's') {
+                            $agente = Staff::lookup(substr($idNotificacion, 1));
+                            $alert = $this->replaceVars($msg, array('recipient' => $agente));
+                            $email->sendAlert($agente, $alert['subj'], $alert['body'], null);
+                        } elseif ($idNotificacion[0] == 't') {
+                            $recipients = array();
+                            $equipo = Team::lookup(substr($idNotificacion, 1));
+                            if ($lead=$equipo->getTeamLead())
+                                $recipients[] = $lead;
+                            elseif ($members=$equipo->getMembers())
+                                $recipients = array_merge($recipients, $members);
+                            foreach ($recipients as $recipient) {
+                                $alert = $this->replaceVars($msg, array('recipient' => $recipient));
+                                $email->sendAlert($recipient, $alert['subj'], $alert['body'], null);
+                            }
+                        }
                     }
                 }
 
