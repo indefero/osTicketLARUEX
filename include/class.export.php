@@ -58,21 +58,44 @@ class Export {
         }
         // Reset the $sql query
         $tickets = $sql->models()
-            ->select_related('user', 'user__default_email', 'dept', 'staff',
-                'team', 'staff', 'cdata', 'topic', 'status', 'cdata__:priority')
+            ->select_related('user', /*'user__default_email',*/ /*'dept',*/ 'staff',
+                'team', 'staff', 'cdata', /*'topic',*/ 'status', 'cdata__:priority')
             ->options(QuerySet::OPT_NOCACHE)
             ->annotate(array(
-                'collab_count' => TicketThread::objects()
+                /*'collab_count' => TicketThread::objects()
                     ->filter(array('ticket__ticket_id' => new SqlField('ticket_id', 1)))
-                    ->aggregate(array('count' => SqlAggregate::COUNT('collaborators__id'))),
-                'attachment_count' => TicketThread::objects()
+                    ->aggregate(array('count' => SqlAggregate::COUNT('collaborators__id'))),*/
+                /*'attachment_count' => TicketThread::objects()
                     ->filter(array('ticket__ticket_id' => new SqlField('ticket_id', 1)))
                     ->filter(array('entries__attachments__inline' => 0))
-                    ->aggregate(array('count' => SqlAggregate::COUNT('entries__attachments__id'))),
-                'thread_count' => TicketThread::objects()
+                    ->aggregate(array('count' => SqlAggregate::COUNT('entries__attachments__id'))),*/
+                /*'thread_count' => TicketThread::objects()
                     ->filter(array('ticket__ticket_id' => new SqlField('ticket_id', 1)))
                     ->exclude(array('entries__flags__hasbit' => ThreadEntry::FLAG_HIDDEN))
-                    ->aggregate(array('count' => SqlAggregate::COUNT('entries__id'))),
+                    ->aggregate(array('count' => SqlAggregate::COUNT('entries__id'))),*/
+                'descripcion' => DynamicFormEntry::objects()
+                    ->values('answers__value')
+                    ->filter(array('answers__field__name' => 'descripcion',
+                            'object_id' => new SqlField('ticket_id', 1),
+                            'object_type' => 'T',
+                            'form__title' => 'Notificación y cierre de desviaciones')),  // OJO! No se puede cambiar el nombre en la web!!
+                'causas' => DynamicFormEntry::objects()
+                    ->values('answers__value')
+                    ->filter(array('answers__field__name' => 'causas',
+                            'object_id' => new SqlField('ticket_id', 1),
+                            'object_type' => 'T',
+                            'form__title' => 'Notificación y cierre de desviaciones')),  // OJO! No se puede cambiar el nombre en la web!!
+                'consecuencias' => DynamicFormEntry::objects()
+                    ->values('answers__value')
+                    ->filter(array('answers__field__name' => 'consecuencias',
+                            'object_id' => new SqlField('ticket_id', 1),
+                            'object_type' => 'T',
+                            'form__title' => 'Notificación y cierre de desviaciones')),  // OJO! No se puede cambiar el nombre en la web!!
+                'comentarios' => TicketThread::objects()
+                    ->values('entries__body')
+                    ->filter(array('ticket__ticket_id' => new SqlField('ticket_id', 1)))
+                    ->order_by('-entries__created')
+                    ->limit(1)
             ));
 
         // Fetch staff information
@@ -82,24 +105,29 @@ class Export {
 
         return self::dumpQuery($tickets,
             array(
-                'number' =>         __('Ticket Number'),
-                'created' =>        __('Date Created'),
+                'number' =>         __('Number'),
+                'created' =>        __('Fecha Desviación'),
                 'cdata.subject' =>  __('Subject'),
-                'user.name' =>      __('From'),
-                'user.default_email.address' => __('From Email'),
-                'cdata.:priority.priority_desc' => __('Priority'),
-                'dept::getLocalName' => __('Department'),
-                'topic::getName' => __('Help Topic'),
-                'source' =>         __('Source'),
-                'status::getName' =>__('Current Status'),
-                'lastupdate' =>     __('Last Updated'),
-                'est_duedate' =>    __('Due Date'),
-                'isoverdue' =>      __('Overdue'),
-                'isanswered' =>     __('Answered'),
+                'descripcion' => __('Description'),
+                'causas' => 'Causas',
+                'consecuencias' => 'Consecuencias',
+                'user.name' =>      __('Detectada por'),
                 'staff::getName' => __('Agent Assigned'),
                 'team::getName' =>  __('Team Assigned'),
-                'thread_count' =>   __('Thread Count'),
-                'attachment_count' => __('Attachment Count'),
+                //'user.default_email.address' => __('From Email'),
+                'cdata.:priority.priority_desc' => __('Priority'),
+                //'dept::getLocalName' => __('Department'),
+                //'topic::getName' => __('Help Topic'),
+                //'source' =>         __('Source'),
+                'status::getName' =>__('Current Status'),
+                //'lastupdate' =>     __('Last Updated'),
+                //'est_duedate' =>    __('Due Date'),
+                //'isoverdue' =>      __('Overdue'),
+                //'isanswered' =>     __('Answered'),
+                //'thread_count' =>   __('Thread Count'),
+                //'attachment_count' => __('Attachment Count'),
+                'comentarios' => 'Último comentario',
+                'closed' => 'Fecha Cierre'
             ) + $cdata,
             $how,
             array('modify' => function(&$record, $keys) use ($fields) {
@@ -303,7 +331,12 @@ class ResultSetExporter {
             // Evaluate dotted ORM path
             if ($field) {
                 foreach ($path as $P) {
-                    $current = $current->{$P};
+                    try {
+                        $current = $current->{$P};
+                    } catch (OrmException $e) {
+                        error_log($e->getMessage());
+                        $current = "";  // Para que deje seguir aunque no exista el campo
+                    }
                 }
             }
             // Evalutate :: function call on target current
