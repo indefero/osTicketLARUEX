@@ -567,9 +567,8 @@ if ($errors['err'] && isset($_POST['a'])) {
                     $emailReply = (!isset($info['emailreply']) || $info['emailreply']);
                     ?>
                     <select id="emailreply" name="emailreply">
-                        <option value="1" <?php echo $emailReply ?  'selected="selected"' : ''; ?>><?php echo $to; ?></option>
-                        <option value="0" <?php echo !$emailReply ? 'selected="selected"' : ''; ?>
-                        >&mdash; <?php echo __('Do Not Email Reply'); ?> &mdash;</option>
+                        <option value="0" selected="selected">&mdash; <?php echo __('Do Not Email Reply'); ?> &mdash;</option>
+                        <option value="1"><?php echo $to; ?></option>
                     </select>
                 </td>
             </tr>
