@@ -66,8 +66,15 @@ if ($settings['status'])
     default:
         $status = 'open';
     case 'open':
+        $results_type = __('Open Tickets');
+        $basic_filter->filter(array('status__state' => $status, 'status__state' => 'solved'));
+        break;
+    case 'solved':
+        $results_type = __('Solved Tickets');
+        $basic_filter->filter(array('status__state' => $status));
+        break;
     case 'closed':
-		$results_type = ($status == 'closed') ? __('Closed Tickets') : __('Open Tickets');
+        $results_type = __('Closed Tickets');
         $basic_filter->filter(array('status__state' => $status));
         break;
 }

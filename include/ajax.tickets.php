@@ -825,6 +825,9 @@ class TicketsAjaxAPI extends AjaxController {
         $info = array();
         $state = null;
         switch($status) {
+            case 'solve':
+                $state = 'solved';
+                break;
             case 'open':
             case 'reopen':
                 $state = 'open';
@@ -881,6 +884,8 @@ class TicketsAjaxAPI extends AjaxController {
                             && !$role->hasPerm(TicketModel::PERM_CREATE))
                         $errors['err'] = sprintf(__('You do not have permission %s'),
                                 __('to reopen tickets'));
+                    break;
+                case 'solved':
                     break;
                 case 'closed':
                     if (!$role->hasPerm(TicketModel::PERM_CLOSE))
@@ -943,6 +948,9 @@ class TicketsAjaxAPI extends AjaxController {
         $state = null;
         $info = array();
         switch($status) {
+            case 'solve':
+                $state = 'solved';
+                break;
             case 'open':
             case 'reopen':
                 $state = 'open';

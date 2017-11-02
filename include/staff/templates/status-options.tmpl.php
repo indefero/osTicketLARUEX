@@ -11,9 +11,14 @@ $actions= array(
             'icon'  => 'icon-undo',
             'action' => 'reopen'
             ),
+        'solved' => array(
+            'icon'  => 'icon-ok-circle',
+            'action' => 'solve'
+            ),
         );
 
 $states = array('open');
+$states[] = 'solved';
 if ($thisstaff->getRole($ticket ? $ticket->getDeptId() : null)->hasPerm(TicketModel::PERM_CLOSE)
         && (!$ticket || !$ticket->getMissingRequiredFields()))
     $states = array_merge($states, array('closed'));

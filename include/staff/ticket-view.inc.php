@@ -704,6 +704,7 @@ if ($errors['err'] && isset($_POST['a'])) {
                     <?php
                     $statusId = $info['reply_status_id'] ?: $ticket->getStatusId();
                     $states = array('open');
+                    $states[] = 'solved';
                     if ($role->hasPerm(TicketModel::PERM_CLOSE) && !$outstanding)
                         $states = array_merge($states, array('closed'));
 
@@ -792,6 +793,7 @@ if ($errors['err'] && isset($_POST['a'])) {
                         <?php
                         $statusId = $info['note_status_id'] ?: $ticket->getStatusId();
                         $states = array('open');
+                        $states[] = 'solved';
                         if ($ticket->isCloseable() === true
                                 && $role->hasPerm(TicketModel::PERM_CLOSE))
                             $states = array_merge($states, array('closed'));

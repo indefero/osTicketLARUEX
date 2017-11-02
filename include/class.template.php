@@ -140,6 +140,14 @@ class EmailTemplateGroup {
                 'ticket', 'recipient', 'comments',
             ),
         ),
+        'ticket.solved'=>array(
+            'group'=>'b.ticket.staff',
+            'name'=>/* @trans */ 'Solved Ticket Alert',
+            'desc'=>/* @trans */ 'Alert sent to agents on solved tickets.',
+            'context' => array(
+                'ticket', 'recipient', 'comments',
+            ),
+        ),
         'task.alert' => array(
             'group'=>'c.task',
             'name'=>/* @trans */ 'New Task Alert',
@@ -359,6 +367,10 @@ class EmailTemplateGroup {
     
     function getClosedAlertMsgTemplate() {
         return $this->getMsgTemplate('ticket.closed');
+    }
+    
+    function getSolvedAlertMsgTemplate() {
+        return $this->getMsgTemplate('ticket.solved');
     }
 
     /* Tasks templates */

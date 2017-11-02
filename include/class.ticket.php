@@ -293,7 +293,11 @@ implements RestrictedAccess, Threadable {
     }
 
     function isOpen() {
-        return $this->hasState('open');
+        return $this->hasState('open') || $this->isSolved();
+    }
+    
+    function isSolved() {
+        return $this->hasState('solved');
     }
 
     function isReopened() {
@@ -1209,6 +1213,15 @@ implements RestrictedAccess, Threadable {
         $hadStatus = $this->getStatusId();
         if ($this->getStatusId() == $status->getId())
             return true;
+        
+        // Buscamos al responsable de forma recursiva recorriendo los tipos de
+        // tickets de abajo a arriba hasta encontrar uno o determinar que no hay
+        $tipoTicket = $this->getTopic();
+        $idNotificacion = null;
+        while (!$idNotificacion && $tipoTicket) {
+            $idNotificacion = $tipoTicket->getCloseAlert();
+            $tipoTicket = $tipoTicket->getParent();
+        }
 
         // Perform checks on the *new* status, _before_ the status changes
         $ecb = null;
@@ -1228,7 +1241,7 @@ implements RestrictedAccess, Threadable {
                     $this->staff = $thisstaff;
                 $this->clearOverdue(false);
                 
-                // Notificar el cierre al agente correspondiente según el tipo de ticket
+                // Notificar el cierre según el tipo de ticket
                 if (($dept = $this->getDept())
                         && ($tpl = $dept->getTemplate())
                         && ($msg = $tpl->getClosedAlertMsgTemplate())
@@ -1236,39 +1249,43 @@ implements RestrictedAccess, Threadable {
                     $msg = $this->replaceVars($msg->asArray(),
                         array('comments' => $comments)
                     );
-                    $tipoTicket = $this->getTopic();
-                    $idNotificacion = null;
-                    // Buscamos el id del agente de forma recursiva recorriendo los tipos de
-                    // tickets de abajo a arriba hasta encontrar uno o determinar que no hay
-                    while (!$idNotificacion && $tipoTicket) {
-                        $idNotificacion = $tipoTicket->getCloseAlert();
-                        $tipoTicket = $tipoTicket->getParent();
-                    }
-                    // Si se encontró alguno se notifica el cierre
-                    if ($idNotificacion) {
-                        if ($idNotificacion[0] == 's') {
-                            $agente = Staff::lookup(substr($idNotificacion, 1));
-                            $alert = $this->replaceVars($msg, array('recipient' => $agente));
-                            $email->sendAlert($agente, $alert['subj'], $alert['body'], null);
-                        } elseif ($idNotificacion[0] == 't') {
-                            $recipients = array();
-                            $equipo = Team::lookup(substr($idNotificacion, 1));
-                            if ($lead=$equipo->getTeamLead())
-                                $recipients[] = $lead;
-                            elseif ($members=$equipo->getMembers())
-                                $recipients = array_merge($recipients, $members);
-                            foreach ($recipients as $recipient) {
-                                $alert = $this->replaceVars($msg, array('recipient' => $recipient));
-                                $email->sendAlert($recipient, $alert['subj'], $alert['body'], null);
-                            }
-                        }
-                    }
+                    
+                    // Si se encontró algún responsable se notifica el cierre
+                    $this->notificarResponsable($idNotificacion, $msg, $email);
                 }
 
                 $ecb = function($t) use ($status) {
                     $t->logEvent('closed', array('status' => array($status->getId(), $status->getName())));
                     $t->deleteDrafts();
                 };
+                break;
+            case 'solved':
+                // TODO: impedir esta transición en la medida de lo posible
+                if ($this->isClosed()) {
+                    $this->closed = null;
+                    $this->lastupdate = $this->reopened = SqlFunction::NOW();
+                    $ecb = function ($t) {
+                        $t->logEvent('reopened', false, null, 'closed');
+                    };
+                }
+                
+                // Notificamos por correo
+                if (($dept = $this->getDept())
+                        && ($tpl = $dept->getTemplate())
+                        && ($msg = $tpl->getSolvedAlertMsgTemplate())
+                        && ($email = $dept->getAlertEmail())) {
+                    $msg = $this->replaceVars($msg->asArray(),
+                        array('comments' => $comments)
+                    );
+
+                    // Si se encontró algún responsable se notifica la resolución
+                    $this->notificarResponsable($idNotificacion, $msg, $email);
+                }
+
+                // If the ticket is not open then clear answered flag
+                if (!$this->isOpen())
+                    $this->isanswered = 0;
+                
                 break;
             case 'open':
                 // TODO: check current status if it allows for reopening
@@ -1333,10 +1350,29 @@ implements RestrictedAccess, Threadable {
         // FIXME: Throw and excception and add test cases
         return false;
     }
-
-
-
-
+    
+    function notificarResponsable($idNotificacion, $msg, $email) {
+        // Si se encontró algún responsable se notifica el cierre
+        if ($idNotificacion) {
+            if ($idNotificacion[0] == 's') {
+                $agente = Staff::lookup(substr($idNotificacion, 1));
+                $alert = $this->replaceVars($msg, array('recipient' => $agente));
+                $email->sendAlert($agente, $alert['subj'], $alert['body'], null);
+            } elseif ($idNotificacion[0] == 't') {
+                $recipients = array();
+                $equipo = Team::lookup(substr($idNotificacion, 1));
+                if ($lead=$equipo->getTeamLead())
+                    $recipients[] = $lead;
+                elseif ($members=$equipo->getMembers())
+                    $recipients = array_merge($recipients, $members);
+                foreach ($recipients as $recipient) {
+                    $alert = $this->replaceVars($msg, array('recipient' => $recipient));
+                    $email->sendAlert($recipient, $alert['subj'], $alert['body'], null);
+                }
+            }
+        }
+    }
+    
     function setAnsweredState($isanswered) {
         $this->isanswered = $isanswered;
         return $this->save();
@@ -3043,6 +3079,18 @@ implements RestrictedAccess, Threadable {
                 // Assigned to my team but uassigned to an agent
                 $stats['assigned'] += $S['count'];
         }
+        
+        $blocks = Ticket::objects()
+            ->filter(Q::any($visibility))
+            ->filter(array('status__state' => 'solved'))
+            ->aggregate(array('count' => SqlAggregate::COUNT('ticket_id')));
+        foreach ($blocks as $S) {
+            if ($showanswered || !$S['isanswered']) {
+                if (!($hideassigned && ($S['staff_id'] || $S['team_id'])))
+                    $stats['solved'] += $S['count'];
+            }
+        }
+        
         return $stats;
     }
 
@@ -3780,5 +3828,6 @@ implements RestrictedAccess, Threadable {
 
         require STAFFINC_DIR.'templates/tickets-actions.tmpl.php';
     }
+    
 }
 ?>

@@ -246,7 +246,8 @@ class  EndUser extends BaseAuthenticatedUser {
     }
 
     function getNumOpenTickets($forMyOrg=false) {
-        return $this->getNumTickets($forMyOrg, 'open') ?: 0;
+        return $this->getNumTickets($forMyOrg, 'open') ?: 0
+                + $this->getNumTickets($forMyOrg, 'solved') ?: 0;
     }
 
     function getNumClosedTickets($forMyOrg=false) {
@@ -272,7 +273,9 @@ class  EndUser extends BaseAuthenticatedUser {
         foreach ($stats[$section] as $row) {
             if ($topic_id != $row['topic_id'])
                 continue;
-            if ($state && $state != $row['status__state'])
+            // He añadido las dos últimas condiciones para que cuando se piden
+            // los tickets abiertos también se incluyan los resueltos
+            if ($state && ($state != $row['status__state'] && !($state == 'open' && $row['status__state'] == 'solved')))
                 continue;
             $count += $row['count'];
         }

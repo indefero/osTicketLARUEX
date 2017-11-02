@@ -89,6 +89,13 @@ case 'closed':
     $queue_sort_options = array('closed', 'priority,due', 'due',
         'priority,updated', 'priority,created', 'answered', 'number', 'hot');
     break;
+case 'solved':
+    $status='solved';
+    $results_type = 'Tickets Resueltos';
+    $queue_sort_options = array('priority,updated', 'updated',
+        'priority,due', 'due', 'priority,created', 'answered', 'number',
+        'hot');
+    break;
 case 'overdue':
     $status='open';
     $results_type=__('Overdue Tickets');

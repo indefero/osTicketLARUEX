@@ -2542,6 +2542,10 @@ class TicketStateField extends ChoiceField {
             'closed' => array(
                 'name' => /* @trans, @context "ticket state name" */ 'Closed',
                 'verb' => /* @trans, @context "ticket state action" */ 'Close'
+                ),
+            'solved' => array(
+                'name' => /* @trans, @context "ticket state name" */ 'Solved',
+                'verb' => /* @trans, @context "ticket state action" */ 'Solve'
                 )
             );
     // Private states

@@ -429,6 +429,17 @@ if (isset($_SESSION['advsearch'])) {
                         (!$_REQUEST['status'] || $_REQUEST['status']=='search'));
 }
 
+if($stats['solved']) {
+    $nav->addSubMenu(array('desc'=>'Resuelto ('.number_format($stats['solved']).')',
+                           'title'=>'Tickets resueltos',
+                           'href'=>'tickets.php?status=solved',
+                           'iconclass'=>'closedTickets'),
+                        ($_REQUEST['status']=='solved'));
+
+    if(!$sysnotice && $stats['solved']>10)
+        $sysnotice=sprintf(__('%d solved tickets!'),$stats['solved']);
+}
+
 $nav->addSubMenu(array('desc' => __('Closed'),
                        'title'=>__('Closed Tickets'),
                        'href'=>'tickets.php?status=closed',
