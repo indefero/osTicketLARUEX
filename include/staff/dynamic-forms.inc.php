@@ -59,6 +59,7 @@ $showing=$pageNav->showing().' '._N('form','forms',$count);
         'C' => 'icon-building',
         'O' => 'icon-group',
         'E' => 'icon-tasks',    // Equipamiento
+        'S' => 'icon-tasks',    // Programación de tareas
     );
     foreach (DynamicForm::objects()
             ->filter(array('type__in'=>array_keys($forms)))
