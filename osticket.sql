@@ -100,6 +100,7 @@ CREATE TABLE `ost_attachment` (
 
 LOCK TABLES `ost_attachment` WRITE;
 /*!40000 ALTER TABLE `ost_attachment` DISABLE KEYS */;
+INSERT INTO `ost_attachment` VALUES (3,139411025,'E',3,NULL,0,NULL);
 /*!40000 ALTER TABLE `ost_attachment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -738,6 +739,7 @@ CREATE TABLE `ost_file` (
 
 LOCK TABLES `ost_file` WRITE;
 /*!40000 ALTER TABLE `ost_file` DISABLE KEYS */;
+INSERT INTO `ost_file` VALUES (3,'T','D','text/plain',204,'Pp8xE5BcDW-lG9m1iqTRxqVlFHNZawH4','5BcDW-lG9m1iqTRxa6WtQPQV_rw6ffmn','new 1.txt',NULL,'2017-10-24 13:55:00');
 /*!40000 ALTER TABLE `ost_file` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -762,6 +764,7 @@ CREATE TABLE `ost_file_chunk` (
 
 LOCK TABLES `ost_file_chunk` WRITE;
 /*!40000 ALTER TABLE `ost_file_chunk` DISABLE KEYS */;
+INSERT INTO `ost_file_chunk` VALUES (3,0,'Antonio				-> tritium@juntaex.es\r\nMª Ángeles			-> eco2cir@gmail.com\r\nJuan				-> ratvapc@gmail.com\r\nPepe				-> eco2cir@juntaex.es		gravatar\r\nDavid				-> \r\nJose				-> rat_va_pc@juntaex.es\r\nManolo				-> \r\n');
 /*!40000 ALTER TABLE `ost_file_chunk` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -922,7 +925,7 @@ CREATE TABLE `ost_form_entry` (
 
 LOCK TABLES `ost_form_entry` WRITE;
 /*!40000 ALTER TABLE `ost_form_entry` DISABLE KEYS */;
-INSERT INTO `ost_form_entry` VALUES (2,3,NULL,'C',1,NULL,'2017-08-01 12:23:25','2017-08-01 12:23:25'),(5,1,2,'U',1,NULL,'2017-08-02 08:29:32','2017-08-02 08:29:32'),(6,1,3,'U',1,NULL,'2017-08-02 08:31:41','2017-08-02 08:31:41'),(7,1,4,'U',1,NULL,'2017-08-02 08:32:46','2017-08-02 08:32:46'),(8,1,5,'U',1,NULL,'2017-08-02 08:33:23','2017-08-02 08:33:23'),(9,1,6,'U',1,NULL,'2017-08-02 08:34:31','2017-08-02 08:34:31'),(10,1,7,'U',1,NULL,'2017-08-02 08:36:14','2017-08-02 08:36:14'),(11,1,8,'U',1,NULL,'2017-08-02 08:37:09','2017-08-02 08:37:09');
+INSERT INTO `ost_form_entry` VALUES (2,3,NULL,'C',1,NULL,'2017-08-01 12:23:25','2017-08-01 12:23:25'),(5,1,2,'U',1,NULL,'2017-08-02 08:29:32','2017-08-02 08:29:32'),(6,1,3,'U',1,NULL,'2017-08-02 08:31:41','2017-08-02 08:31:41'),(7,1,4,'U',1,NULL,'2017-08-02 08:32:46','2017-08-02 08:32:46'),(8,1,5,'U',1,NULL,'2017-08-02 08:33:23','2017-08-02 08:33:23'),(9,1,6,'U',1,NULL,'2017-08-02 08:34:31','2017-08-02 08:34:31'),(10,1,7,'U',1,NULL,'2017-08-02 08:36:14','2017-08-02 08:36:14'),(11,1,8,'U',1,NULL,'2017-08-02 08:37:09','2017-08-02 08:37:09'),(18,12,1,'E',1,NULL,'2017-10-20 07:45:46','2017-10-20 07:45:46');
 /*!40000 ALTER TABLE `ost_form_entry` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -948,7 +951,7 @@ CREATE TABLE `ost_form_entry_values` (
 
 LOCK TABLES `ost_form_entry_values` WRITE;
 /*!40000 ALTER TABLE `ost_form_entry_values` DISABLE KEYS */;
-INSERT INTO `ost_form_entry_values` VALUES (2,23,'LARUEX',NULL),(2,24,NULL,NULL),(2,25,NULL,NULL),(2,26,NULL,NULL),(5,3,NULL,NULL),(5,4,NULL,NULL),(6,3,NULL,NULL),(6,4,NULL,NULL),(7,3,NULL,NULL),(7,4,NULL,NULL),(8,3,NULL,NULL),(8,4,NULL,NULL),(9,3,NULL,NULL),(9,4,NULL,NULL),(10,3,NULL,NULL),(10,4,NULL,NULL),(11,3,NULL,NULL),(11,4,NULL,NULL);
+INSERT INTO `ost_form_entry_values` VALUES (2,23,'LARUEX',NULL),(2,24,NULL,NULL),(2,25,NULL,NULL),(2,26,NULL,NULL),(5,3,NULL,NULL),(5,4,NULL,NULL),(6,3,NULL,NULL),(6,4,NULL,NULL),(7,3,NULL,NULL),(7,4,NULL,NULL),(8,3,NULL,NULL),(8,4,NULL,NULL),(9,3,NULL,NULL),(9,4,NULL,NULL),(10,3,NULL,NULL),(10,4,NULL,NULL),(11,3,NULL,NULL),(11,4,NULL,NULL),(18,46,'Ordenador',NULL),(18,48,'Nuevo ordenador',NULL),(18,49,'1',NULL),(18,52,'Informática',7);
 /*!40000 ALTER TABLE `ost_form_entry_values` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1624,6 +1627,7 @@ CREATE TABLE `ost_task__cdata` (
 
 LOCK TABLES `ost_task__cdata` WRITE;
 /*!40000 ALTER TABLE `ost_task__cdata` DISABLE KEYS */;
+INSERT INTO `ost_task__cdata` VALUES (1,'Tarea de prueba'),(2,'');
 /*!40000 ALTER TABLE `ost_task__cdata` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1879,6 +1883,7 @@ CREATE TABLE `ost_thread_event` (
 
 LOCK TABLES `ost_thread_event` WRITE;
 /*!40000 ALTER TABLE `ost_thread_event` DISABLE KEYS */;
+INSERT INTO `ost_thread_event` VALUES (10,0,0,0,7,0,'created',NULL,'carlos',1,'S',0,'2017-10-20 07:45:46'),(43,0,0,0,6,13,'created',NULL,'Juan Baeza',5,'U',0,'2017-10-24 13:55:06'),(44,0,7,0,6,13,'assigned','{\"staff\":7}','ratvapc@gmail.com',NULL,'S',0,'2017-10-24 13:55:08'),(45,0,0,0,6,14,'created',NULL,'Juan Baeza',5,'U',0,'2017-10-24 13:57:07'),(46,0,7,0,6,14,'assigned','{\"staff\":7}','ratvapc@gmail.com',NULL,'S',0,'2017-10-24 13:57:09'),(47,0,0,0,6,13,'created',NULL,'José Vasco',8,'U',0,'2017-10-24 13:58:51'),(48,0,3,0,6,13,'assigned','{\"staff\":3}','eco2cir@juntaex.es',NULL,'S',0,'2017-10-24 13:58:52'),(49,0,0,0,6,14,'created',NULL,'David Valencia',3,'U',0,'2017-10-24 14:03:32'),(50,0,0,1,6,14,'assigned','{\"team\":1}','david@laruex.es',NULL,'S',0,'2017-10-24 14:03:32'),(51,0,0,0,7,13,'transferred',NULL,'angeles',7,'S',0,'2017-10-24 14:38:12'),(52,0,8,0,7,13,'assigned','{\"staff\":[8,\"Jos\\u00e9 Vasco\"]}','angeles',7,'S',0,'2017-10-24 14:38:44'),(53,0,0,0,8,14,'transferred',NULL,'angeles',7,'S',0,'2017-10-24 14:41:27'),(54,0,4,0,8,14,'assigned','{\"staff\":[4,\"Jos\\u00e9 \\u00c1ngel Corbacho\"]}','angeles',7,'S',0,'2017-10-24 14:41:47'),(55,0,7,0,7,13,'closed','{\"status\":[3,\"Cerrado\"]}','angeles',7,'S',1,'2017-10-25 09:18:44'),(56,0,4,0,8,14,'overdue',NULL,'SYSTEM',NULL,'S',0,'2017-10-30 09:31:42'),(57,0,3,0,7,13,'overdue',NULL,'SYSTEM',NULL,'S',0,'2017-10-30 09:31:45'),(58,0,0,1,6,14,'overdue',NULL,'SYSTEM',NULL,'S',0,'2017-10-30 09:31:46'),(59,0,7,0,7,13,'reopened',NULL,'carlos',1,'S',0,'2017-10-30 12:09:05'),(60,0,1,0,7,13,'closed','{\"status\":[3,\"Cerrado\"]}','carlos',1,'S',0,'2017-10-30 12:11:53'),(61,0,0,0,0,0,'created',NULL,'carlos',1,'S',0,'2017-10-30 14:45:40'),(62,0,0,0,0,0,'created',NULL,'SYSTEM',NULL,'S',0,'2017-10-31 08:03:24'),(63,0,3,1,7,13,'assigned','{\"team\":1}','carlos',1,'S',0,'2017-10-31 08:50:26'),(64,0,4,0,8,14,'edited','{\"status\":6}','jose',4,'S',0,'2017-10-31 09:26:07'),(65,0,4,0,8,14,'edited','{\"status\":1}','jose',4,'S',0,'2017-10-31 09:50:36'),(66,0,4,0,8,14,'edited','{\"status\":6}','jose',4,'S',0,'2017-10-31 09:51:15'),(67,0,0,1,7,13,'edited','{\"status\":6}','david',3,'S',0,'2017-10-31 10:59:27'),(68,0,0,1,7,13,'edited','{\"status\":1}','carlos',1,'S',0,'2017-10-31 11:06:01'),(69,0,0,1,7,13,'edited','{\"status\":6}','carlos',1,'S',0,'2017-10-31 11:06:28'),(70,0,0,1,7,13,'edited','{\"status\":1}','carlos',1,'S',0,'2017-10-31 11:11:50'),(71,0,0,1,7,13,'edited','{\"status\":6}','carlos',1,'S',0,'2017-10-31 11:12:40'),(72,0,0,1,7,13,'edited','{\"status\":1}','carlos',1,'S',0,'2017-10-31 11:14:11'),(73,0,0,1,7,13,'edited','{\"status\":6}','carlos',1,'S',0,'2017-10-31 11:20:38'),(74,0,0,1,7,13,'edited','{\"status\":1}','carlos',1,'S',0,'2017-10-31 11:23:35'),(75,0,0,1,7,13,'edited','{\"status\":6}','carlos',1,'S',0,'2017-10-31 11:23:50'),(76,0,0,0,6,13,'created',NULL,'Juan Baeza',5,'U',0,'2017-10-31 13:56:45'),(77,0,7,0,6,13,'assigned','{\"staff\":7}','juanbaeza@laruex.es',NULL,'S',0,'2017-10-31 13:56:47'),(78,0,0,0,8,13,'transferred',NULL,'angeles',7,'S',0,'2017-10-31 13:58:06'),(79,0,4,0,8,13,'assigned','{\"staff\":[4,\"Jos\\u00e9 \\u00c1ngel Corbacho\"]}','angeles',7,'S',0,'2017-10-31 13:58:18'),(80,0,4,0,8,13,'overdue',NULL,'SYSTEM',NULL,'S',0,'2017-10-31 14:01:27'),(81,0,4,0,8,13,'edited','{\"status\":6}','jose',4,'S',0,'2017-10-31 14:20:58'),(82,0,4,0,8,13,'edited','{\"status\":1}','jose',4,'S',0,'2017-10-31 14:22:08'),(83,0,4,0,8,13,'edited','{\"status\":6}','jose',4,'S',0,'2017-10-31 14:22:30'),(84,0,7,1,6,14,'overdue',NULL,'SYSTEM',NULL,'S',0,'2017-11-02 08:46:11'),(85,0,7,1,6,14,'overdue',NULL,'SYSTEM',NULL,'S',0,'2017-11-02 11:36:05');
 /*!40000 ALTER TABLE `ost_thread_event` ENABLE KEYS */;
 UNLOCK TABLES;
 
