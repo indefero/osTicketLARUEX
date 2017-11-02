@@ -1178,7 +1178,8 @@ class TaskSchedule extends TaskScheduleModel implements RestrictedAccess, Thread
         if (!parent::delete())
             return false;
 
-        $thread->delete();
+        if ($thread)
+            $thread->delete();
 
         Draft::deleteForNamespace('schedule.%.' . $this->getId());
 
