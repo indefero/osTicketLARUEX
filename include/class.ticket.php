@@ -1918,10 +1918,18 @@ implements RestrictedAccess, Threadable {
             }
             // Ahora añadimos la notificación al agente especificado en el SLA
             if ($sla && ($alertStaffId = $sla->getAlertStaff())) {
-                $alertStaff = Staff::lookup($alertStaffId);
-                // Da igual que se repita el agente en la lista porque después
-                // se comprueba que no se repitan correos electrónicos.
-                $recipients[]=$alertStaff;
+                if ($alertStaffId[0] == 's') {
+                    $alertStaff = Staff::lookup(substr($alertStaffId, 1));
+                    // Da igual que se repita el agente en la lista porque después
+                    // se comprueba que no se repitan correos electrónicos.
+                    $recipients[]=$alertStaff;
+                } elseif ($alertStaffId[0] == 't') {
+                    $alertTeam = Team::lookup(substr($alertStaffId, 1));
+                    if ($lead=$alertTeam->getTeamLead())
+                        $recipients[] = $lead;
+                    elseif ($members=$alertTeam->getMembers())
+                        $recipients = array_merge($recipients, $members);
+                }
             }
             $sentlist = array();
             foreach ($recipients as $k=>$staff) {

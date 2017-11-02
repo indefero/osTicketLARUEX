@@ -104,15 +104,29 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
                             echo sprintf('<OPTGROUP label="%s">',
                                     sprintf(__('Agents (%d)'), count($users)));
                             foreach ($users as $id => $name) {
-                                $selected = ($info['alert_staff']==$id)?' selected="selected"':'';
+                                $k="s$id";
+                                $selected = ($info['alert_staff']==$k)?' selected="selected"':'';
                                 ?>
-                                <option value="<?php echo $id; ?>"<?php echo $selected; ?>><?php echo $name; ?></option>
+                                <option value="<?php echo $k; ?>"<?php echo $selected; ?>><?php echo $name; ?></option>
 
                             <?php
                             }
                             echo '</OPTGROUP>';
                         }
-                        ?>
+                        if ($teams = Team::getTeams()) { ?>
+                            <optgroup data-quick-add="team" label="<?php
+                              echo sprintf(__('Teams (%d)'), count($teams)); ?>"><?php
+                              foreach ($teams as $id => $name) {
+                                  $k="t$id";
+                                  $selected = $info['alert_staff']==$k ? 'selected="selected"' : '';
+                                  ?>
+                                  <option value="<?php echo $k; ?>"<?php echo $selected; ?>><?php echo $name; ?></option>
+                              <?php
+                              } ?>
+                              <option value="0" data-quick-add data-id-prefix="t">— <?php echo __('Add New Team'); ?> —</option>
+                            </optgroup>
+                        <?php
+                        } ?>
                     </select>
                     &nbsp;<span class="error">&nbsp;<?php echo $errors['alert_staff']; ?></span>
                     <i class="help-tip icon-question-sign" href="#alert_staff"></i>
