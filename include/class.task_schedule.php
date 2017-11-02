@@ -1300,15 +1300,24 @@ class TaskSchedule extends TaskScheduleModel implements RestrictedAccess, Thread
                     $vars['duedate'] = $duedate;
                     
                     // OJO con el código del formulario (el 14). Que corresponda con la BDD!
-                    $sql='select value from ost_form_entry ofe inner join ost_form_entry_values ofev on ofe.id = ofev.entry_id '
+                    $sql='select off.name, value from ost_form_entry ofe '
+                            .'inner join ost_form_entry_values ofev on ofe.id = ofev.entry_id '
                             .'inner join ost_form_field off on ofev.field_id = off.id '
                             ."where ofe.form_id = 14 and object_type = '".ObjectModel::OBJECT_TYPE_TASK_SCHEDULE."' "
-                                ."and off.name = 'title' and object_id = ".$taskSchedule->getId().';';
+                                ."and object_id = ".$taskSchedule->getId().';';
                     if (($res2 = db_query($sql)) && db_num_rows($res2)) {
-                        list($title) = db_fetch_row($res2);
-                        $vars['title'] = $title;
+                        while (list($name, $value) = db_fetch_row($res2)) {
+                            switch ($name) {
+                                case "localizacion":
+                                    $vars[$name] = array_keys(json_decode($value, true))[0];
+                                    break;
+                                default:
+                                    $vars[$name] = $value;
+                            }
+                        }
                     }
                     
+                    // La descripción se saca por otro lado al ser de tipo thread entry
                     $sql="select body "
                             ."from ost_thread ot inner join ost_thread_entry ote on ot.id = ote.thread_id "
                             ."where object_id = ".$taskSchedule->getId()." "

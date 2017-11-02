@@ -1432,7 +1432,8 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
             return false;
         
         // Add dynamic data
-        $task->addDynamicData(array('title' => $vars['title'], 
+        $task->addDynamicData(array('title' => $vars['title'],
+                'localizacion' => $vars['localizacion'],
                 'description' => $vars['description']));
 
         // Create a thread + message.
