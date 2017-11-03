@@ -3,6 +3,22 @@ global $thisstaff, $cfg;
 
 $schedules = TaskSchedule::objects()->order_by('start');
 
+// Impose visibility constraints
+// ------------------------------------------------------------
+// -- Open and assigned to me
+$visibility = array(
+    new Q(array('staff_id' => $thisstaff->getId()))
+);
+// -- Routed to a department of mine
+if ($depts=$thisstaff->getDepts())
+    $visibility[] = new Q(array('department_id__in' => $depts));
+// -- Open and assigned to a team of mine
+if (($teams = $thisstaff->getTeams()) && count(array_filter($teams)))
+    $visibility[] = new Q(array(
+        'team_id__in' => array_filter($teams)
+    ));
+$schedules->filter(Q::any($visibility));
+
 $count = $schedules->count();
 $pageNav = new Pagenate($count,1, 100000); //TODO: support ajax based pages
 $showing = $pageNav->showing().' '._N('item', 'items', $count);

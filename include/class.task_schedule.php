@@ -109,6 +109,14 @@ class TaskScheduleModel extends VerySimpleModel {
     function getStaff() {
         return $this->staff;
     }
+    
+    function getTeamId() {
+        return $this->team_id;
+    }
+
+    function getTeam() {
+        return $this->team;
+    }
 
     function getDeptId() {
         return $this->department_id;
@@ -179,7 +187,6 @@ class TaskSchedule extends TaskScheduleModel implements RestrictedAccess, Thread
 
         // Check access based on department or assignment
         if (!$staff->canAccessDept($this->getDeptId())
-                && $this->isOpen()
                 && $staff->getId() != $this->getStaffId()
                 && !$staff->isTeamMember($this->getTeamId()))
             return false;
@@ -199,7 +206,7 @@ class TaskSchedule extends TaskScheduleModel implements RestrictedAccess, Thread
 
     function getAssignee() {
 
-        if (!$this->isOpen() || !$this->isAssigned())
+        if (!$this->isAssigned())
             return false;
 
         if ($this->staff)
@@ -779,7 +786,6 @@ class TaskSchedule extends TaskScheduleModel implements RestrictedAccess, Thread
         // TODO: add auto claim setting for tasks.
         // Claim on response bypasses the department assignment restrictions
         if ($thisstaff
-            && $this->isOpen()
             && !$this->getStaffId()
             && $cfg->autoClaimTasks)
         ) {
@@ -864,10 +870,6 @@ class TaskSchedule extends TaskScheduleModel implements RestrictedAccess, Thread
             if ($due = $this->getEstDueDate())
                 return new FormattedDate($due);
             break;
-        case 'close_date':
-            if ($this->isClosed())
-                return new FormattedDate($this->getCloseDate());
-            break;
         case 'last_update':
             return new FormattedDate($this->last_update);
         default:
@@ -945,7 +947,7 @@ class TaskSchedule extends TaskScheduleModel implements RestrictedAccess, Thread
             if (isset($vars['assignee'])
                     && $vars['assignee'] instanceof Staff)
                  $recipients[] = $vars['assignee'];
-            elseif ($this->isOpen() && ($assignee = $this->getStaff()))
+            elseif ($assignee = $this->getStaff())
                 $recipients[] = $assignee;
 
             if ($team = $this->getTeam())
@@ -975,7 +977,6 @@ class TaskSchedule extends TaskScheduleModel implements RestrictedAccess, Thread
                     'activity' => $vars['activity'],
                     'message' => $vars['message']));
 
-        $isClosed = $this->isClosed();
         $sentlist=array();
         foreach ($recipients as $k=>$staff) {
             if (!is_object($staff)
@@ -985,8 +986,6 @@ class TaskSchedule extends TaskScheduleModel implements RestrictedAccess, Thread
                 || $staffId == $staff->getId()
                 // No duplicates.
                 || isset($sentlist[$staff->getEmail()])
-                // Make sure staff has access to task
-                || ($isClosed && !$this->checkStaffPerm($staff))
             ) {
                 continue;
             }
@@ -1228,15 +1227,12 @@ class TaskSchedule extends TaskScheduleModel implements RestrictedAccess, Thread
             return null;
 
         $where = array('(task.staff_id='.db_input($staff->getId())
-                    .sprintf(' AND task.flags & %d != 0 ', TaskModel::ISOPEN)
                     .') ');
         $where2 = '';
 
         if(($teams=$staff->getTeams()))
             $where[] = ' ( task.team_id IN('.implode(',', db_input(array_filter($teams)))
-                        .') AND '
-                        .sprintf('task.flags & %d != 0 ', TaskModel::ISOPEN)
-                        .')';
+                        .'))';
 
         if(!$staff->showAssignedOnly() && ($depts=$staff->getDepts())) //Staff with limited access just see Assigned tasks.
             $where[] = 'task.department_id IN('.implode(',', db_input($depts)).') ';
@@ -1246,24 +1242,20 @@ class TaskSchedule extends TaskScheduleModel implements RestrictedAccess, Thread
 
         $sql =  'SELECT \'open\', count(task.id ) AS tasks '
                 .'FROM ' . TASK_TABLE . ' task '
-                . sprintf(' WHERE task.flags & %d != 0 ', TaskModel::ISOPEN)
                 . $where . $where2
 
                 .'UNION SELECT \'overdue\', count( task.id ) AS tasks '
                 .'FROM ' . TASK_TABLE . ' task '
-                . sprintf(' WHERE task.flags & %d != 0 ', TaskModel::ISOPEN)
                 . sprintf(' AND task.flags & %d != 0 ', TaskModel::ISOVERDUE)
                 . $where
 
                 .'UNION SELECT \'assigned\', count( task.id ) AS tasks '
                 .'FROM ' . TASK_TABLE . ' task '
-                . sprintf(' WHERE task.flags & %d != 0 ', TaskModel::ISOPEN)
                 .'AND task.staff_id = ' . db_input($staff->getId()) . ' '
                 . $where
 
                 .'UNION SELECT \'closed\', count( task.id ) AS tasks '
                 .'FROM ' . TASK_TABLE . ' task '
-                . sprintf(' WHERE task.flags & %d = 0 ', TaskModel::ISOPEN)
                 . $where;
 
         $res = db_query($sql);
