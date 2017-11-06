@@ -33,6 +33,15 @@ if ($role->hasPerm(TaskSchedule::PERM_ASSIGN)) {
                 'label' => __('Assign to Agent'),
                 'redirect' => 'stasks.php'
             ));
+    
+    $actions += array(
+            'assign/teams' => array(
+                'href' => sprintf('#task-schedule/%d/assign/teams', $task->getId()),
+                'icon' => 'icon-user',
+                'label' => __('Assign to Team'),
+                'redirect' => 'tasks.php'
+            ));
+    
 }
 
 if ($role->hasPerm(TaskSchedule::PERM_TRANSFER)) {
@@ -128,6 +137,10 @@ $info=($_POST && $errors)?Format::input($_POST):array();
                     data-redirect="stasks.php"
                     href="#task-schedule/<?php echo $task->getId(); ?>/assign/agents"><i
                     class="icon-user"></i> <?php echo __('Agent'); ?></a>
+                 <li><a class="no-pjax task-action"
+                        data-redirect="tasks.php"
+                        href="#task-schedule/<?php echo $task->getId(); ?>/assign/teams"><i
+                        class="icon-group"></i> <?php echo __('Team'); ?></a>
               </ul>
             </div>
             <?php

@@ -56,7 +56,6 @@ class TaskModel extends VerySimpleModel {
                 ),
                 'list' => true,
             ),
-
             'ticket' => array(
                 'constraint' => array(
                     'object_type' => "'T'",
@@ -1424,6 +1423,10 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
         
         if ($vars['staff_id']) {
             $params['staff_id'] = $vars['staff_id'];
+        }
+        
+        if ($vars['team_id']) {
+            $params['team_id'] = $vars['team_id'];
         }
 
         $task = new static($params);

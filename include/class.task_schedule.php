@@ -33,6 +33,10 @@ class TaskScheduleModel extends VerySimpleModel {
                 'constraint' => array('staff_id' => 'Staff.staff_id'),
                 'null' => true,
             ),
+            'team' => array(
+                'constraint' => array('team_id' => 'Team.team_id'),
+                'null' => true,
+            ),
             'thread' => array(
                 'constraint' => array(
                     'id'  => 'TaskScheduleThread.object_id',
@@ -237,6 +241,10 @@ class TaskSchedule extends TaskScheduleModel implements RestrictedAccess, Thread
         $assignees=array();
         if ($this->staff)
             $assignees[] = $this->staff->getName();
+        
+        //Add team assignment
+        if ($this->team)
+            $assignees[] = $this->team->getName();
 
         return $assignees;
     }
@@ -1277,17 +1285,18 @@ class TaskSchedule extends TaskScheduleModel implements RestrictedAccess, Thread
      * Método que crea las tareas en función de la programación actual
      */
     static function CreateTasks() {
-        $sql='select id, department_id, staff_id, '
+        $sql='select id, department_id, staff_id, team_id, '
                 .'GetProximaFechaCreacion(regularity, last_created_task, start) create_date, '
                 .'date_add(GetProximaFechaCreacion(regularity, last_created_task, start), interval period day) duedate '
                 .'from '.TASK_SCHEDULE_TABLE.' '
                 .'where start <= now() '
                 .'and GetProximaFechaCreacion(regularity, last_created_task, start) <= now();';
         if (($res = db_query($sql)) && db_num_rows($res)) {
-            while (list($id, $dept_id, $staff_id, $create_date, $duedate) = db_fetch_row($res)) {
+            while (list($id, $dept_id, $staff_id, $team_id, $create_date, $duedate) = db_fetch_row($res)) {
                 if ($taskSchedule = TaskSchedule::lookup($id)) {
                     $vars['dept_id'] = $dept_id;
                     $vars['staff_id'] = $staff_id;
+                    $vars['team_id'] = $team_id;
                     $vars['created'] = $create_date;
                     $vars['duedate'] = $duedate;
                     
