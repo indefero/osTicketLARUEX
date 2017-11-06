@@ -224,5 +224,18 @@ implements TemplateVariable {
         $sla->save();
         return $sla;
     }
+    
+    static function getSLAsEnlazados() {
+        $slas = self::objects()
+           ->values_flat('id', 'next_sla');
+
+        $entries = array();
+        foreach ($slas as $row) {
+            if ($row[1])
+                $entries[$row[1]]++;
+        }
+
+        return $entries;
+    }
 }
 ?>

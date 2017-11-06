@@ -96,9 +96,11 @@ if($_POST){
                         break;
                     case 'delete':
                         $i=0;
+                        $SLAsEnlazados = SLA::getSLAsEnlazados();
                         foreach ($_POST['ids'] as $k => $v) {
                             if (($p=SLA::lookup($v))
                                 && $p->getId() != $cfg->getDefaultSLAId()
+                                && !$SLAsEnlazados[$p->getId()]
                                 && $p->delete())
                                 $i++;
                         }
