@@ -67,7 +67,7 @@ if ($settings['status'])
         $status = 'open';
     case 'open':
         $results_type = __('Open Tickets');
-        $basic_filter->filter(array('status__state' => $status, 'status__state' => 'solved'));
+        $basic_filter->filter(array('status__state__in' => array($status,'solved')));
         break;
     case 'solved':
         $results_type = __('Solved Tickets');

@@ -246,8 +246,8 @@ class  EndUser extends BaseAuthenticatedUser {
     }
 
     function getNumOpenTickets($forMyOrg=false) {
-        return $this->getNumTickets($forMyOrg, 'open') ?: 0
-                + $this->getNumTickets($forMyOrg, 'solved') ?: 0;
+        return ($this->getNumTickets($forMyOrg, 'open') ?: 0) 
+                + ($this->getNumTickets($forMyOrg, 'solved') ?: 0);
     }
 
     function getNumClosedTickets($forMyOrg=false) {
