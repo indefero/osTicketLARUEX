@@ -20,7 +20,13 @@ implements TemplateVariable {
     static $meta = array(
         'table' => PRIORITY_TABLE,
         'pk' => array('priority_id'),
-        'ordering' => array('-priority_urgency')
+        'ordering' => array('-priority_urgency'),
+        'joins' => array(
+            'sla' => array(
+                'constraint' => array('sla_id' => 'Sla.id'),
+                'null' => true,
+            )
+        )
     );
 
     function getId() {
@@ -41,6 +47,14 @@ implements TemplateVariable {
 
     function getUrgency() {
         return $this->priority_urgency;
+    }
+    
+    function getSLAId() {
+        return $this->sla_id;
+    }
+
+    function getSLA() {
+        return $this->sla;
     }
 
     function isPublic() {

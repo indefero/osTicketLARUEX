@@ -3463,6 +3463,7 @@ implements RestrictedAccess, Threadable {
             //set default sla.
             if (isset($vars['slaId']))
                 $vars['slaId'] = $vars['slaId'] ?: $cfg->getDefaultSLAId();
+            //elseif ($priority)  
             elseif ($topic && $topic->getSLAId())
                 $vars['slaId'] = $topic->getSLAId();
         }
@@ -3576,7 +3577,14 @@ implements RestrictedAccess, Threadable {
         }
 
         // Configure service-level-agreement for this ticket
-        $ticket->selectSLAId($vars['slaId']);
+        $priority = $form->getAnswer('priority');
+        if ($priority && ($priorityId = $priority->getIdValue())
+                && ($p = Priority::lookup($priorityId))
+                && ($slaId = $p->getSLAId())) {
+            $ticket->selectSLAId($slaId);
+        } else {
+            $ticket->selectSLAId($vars['slaId']);
+        }
 
         // Set status
         $status = TicketStatus::lookup($statusId);
