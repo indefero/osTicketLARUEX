@@ -570,6 +570,7 @@ class DynamicFormField extends VerySimpleModel {
     const FLAG_ENABLED          = 0x00001;
     const FLAG_EXT_STORED       = 0x00002; // Value stored outside of form_entry_value
     const FLAG_CLOSE_REQUIRED   = 0x00004;
+    const FLAG_SOLVE_REQUIRED   = 0x00008;
 
     const FLAG_MASK_CHANGE      = 0x00010;
     const FLAG_MASK_DELETE      = 0x00020;

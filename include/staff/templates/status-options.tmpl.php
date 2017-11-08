@@ -18,7 +18,9 @@ $actions= array(
         );
 
 $states = array('open');
-$states[] = 'solved';
+if (!$ticket || (!$ticket->getMissingFieldsRequiredToSolve() && $ticket->isSolveable())) {
+    $states[] = 'solved';
+}
 if ($thisstaff->getRole($ticket ? $ticket->getDeptId() : null)->hasPerm(TicketModel::PERM_CLOSE)
         && (!$ticket || !$ticket->getMissingRequiredFields()))
     $states = array_merge($states, array('closed'));

@@ -694,17 +694,24 @@ if ($errors['err'] && isset($_POST['a'])) {
                 </td>
                 <td>
                     <?php
+                    $outstanding2 = false;
+                    if (is_string($warning=$ticket->isSolveable())) {
+                        $outstanding2 = true;
+                        echo sprintf('<div class="warning-banner">%s</div>', $warning);
+                    }
                     $outstanding = false;
                     if ($role->hasPerm(TicketModel::PERM_CLOSE)
                             && is_string($warning=$ticket->isCloseable())) {
-                        $outstanding =  true;
+                        $outstanding = true;
                         echo sprintf('<div class="warning-banner">%s</div>', $warning);
-                    } ?>
+                    }
+                    ?>
                     <select name="reply_status_id">
                     <?php
                     $statusId = $info['reply_status_id'] ?: $ticket->getStatusId();
                     $states = array('open');
-                    $states[] = 'solved';
+                    if (!$outstanding2)
+                        $states[] = 'solved';
                     if ($role->hasPerm(TicketModel::PERM_CLOSE) && !$outstanding)
                         $states = array_merge($states, array('closed'));
 

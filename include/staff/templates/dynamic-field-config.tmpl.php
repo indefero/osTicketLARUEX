@@ -99,18 +99,33 @@
     <hr class="faded"/>
 
     <div class="span4">
-        <div style="margin-bottom:5px"><strong><?php echo __('Data Integrity');
-    ?></strong>
+        <div style="margin-bottom:5px"><strong><?php echo 'Requerido para cerrar'; ?></strong>
         <i class="help-tip icon-question-sign"
-            data-title="<?php echo __('Required to close a thread'); ?>"
-            data-content="<?php echo __('Optionally, this field can prevent closing a thread until it has valid data.'); ?>"></i>
+            data-title="<?php echo 'Requerido para cerrar un ticket'; ?>"
+            data-content="<?php echo 'Es opcional configurar este campo como obligatorio para cerrar un ticket.'; ?>"></i>
         </div>
     </div>
     <div class="span6">
         <input type="checkbox" name="flags[]" value="<?php
             echo DynamicFormField::FLAG_CLOSE_REQUIRED; ?>" <?php
             if ($field->hasFlag(DynamicFormField::FLAG_CLOSE_REQUIRED)) echo 'checked="checked"';
-        ?>> <?php echo __('Require entry to close a thread'); ?><br/>
+        ?>> <?php echo 'Requiere entrada para cerrar un ticket'; ?><br/>
+    </div>
+<?php } ?>
+    
+<?php if (in_array($field->get('form')->get('type'), array('G'))) { ?>
+    <div class="span4">
+        <div style="margin-bottom:5px"><strong><?php echo 'Requerido para resolver'; ?></strong>
+            <i class="help-tip icon-question-sign"
+                data-title="<?php echo 'Requerido para resolver un ticket'; ?>"
+                data-content="<?php echo 'Es opcional configurar este campo como obligatorio para resolver un ticket.'; ?>"></i>
+        </div>
+    </div>
+    <div class="span6">
+        <input type="checkbox" name="flags[]" value="<?php
+            echo DynamicFormField::FLAG_SOLVE_REQUIRED; ?>" <?php
+            if ($field->hasFlag(DynamicFormField::FLAG_SOLVE_REQUIRED)) echo 'checked="checked"';
+        ?>> <?php echo 'Requiere entrada para resolver un ticket'; ?><br/>
     </div>
 <?php } ?>
 <?php } ?>

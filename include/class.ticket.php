@@ -330,6 +330,29 @@ implements RestrictedAccess, Threadable {
 
         return $warning ?: true;
     }
+    
+    function isSolveable() {
+
+        if ($this->isSolved())
+            return true;
+
+        $warning = null;
+        
+        if ($this->isClosed())
+            $warning = 'Este ticket está cerrado';
+
+        if ($this->getMissingFieldsRequiredToSolve()) {
+            $warning = sprintf(
+                    __( '%1$s is missing data on %2$s one or more required fields %3$s and cannot be solved'),
+                    __('This ticket'),
+                    '', '');
+        } elseif (($num=$this->getNumOpenTasks())) {
+            $warning = sprintf(__('%1$s has %2$d open tasks and cannot be solved'),
+                    __('This ticket'), $num);
+        }
+
+        return $warning ?: true;
+    }
 
     function isArchived() {
          return $this->hasState('archived');
@@ -982,7 +1005,6 @@ implements RestrictedAccess, Threadable {
     }
 
     function getMissingRequiredFields() {
-
         return $this->getDynamicFields(array(
                     'answers__field__flags__hasbit' => DynamicFormField::FLAG_ENABLED,
                     'answers__field__flags__hasbit' => DynamicFormField::FLAG_CLOSE_REQUIRED,
@@ -992,6 +1014,19 @@ implements RestrictedAccess, Threadable {
 
     function getMissingRequiredField() {
         $fields = $this->getMissingRequiredFields();
+        return $fields ? $fields[0] : null;
+    }
+    
+    function getMissingFieldsRequiredToSolve() {
+        return $this->getDynamicFields(array(
+                    'answers__field__flags__hasbit' => DynamicFormField::FLAG_ENABLED,
+                    'answers__field__flags__hasbit' => DynamicFormField::FLAG_SOLVE_REQUIRED,
+                    'answers__value__isnull' => true,
+                    ));
+    }
+    
+    function getMissingFieldRequiredToSolve() {
+        $fields = $this->getMissingFieldsRequiredToSolve();
         return $fields ? $fields[0] : null;
     }
 
@@ -1260,14 +1295,13 @@ implements RestrictedAccess, Threadable {
                 };
                 break;
             case 'solved':
-                // TODO: impedir esta transición en la medida de lo posible
-                if ($this->isClosed()) {
-                    $this->closed = null;
-                    $this->lastupdate = $this->reopened = SqlFunction::NOW();
-                    $ecb = function ($t) {
-                        $t->logEvent('reopened', false, null, 'closed');
-                    };
-                }
+                // Check if ticket is solveable
+                $solveable = $this->isSolveable();
+                if ($solveable !== true)
+                    $errors['err'] = $solveable ?: sprintf(__('%s cannot be solved'), __('This ticket'));
+
+                if ($errors)
+                    return false;
                 
                 // Notificamos por correo
                 if (($dept = $this->getDept())

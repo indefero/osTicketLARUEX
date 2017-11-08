@@ -1000,6 +1000,8 @@ class TicketsAjaxAPI extends AjaxController {
                         $errors['err'] = sprintf(__('You do not have permission %s'),
                                 __('to reopen tickets'));
                     break;
+                case 'solved':
+                    break;
                 case 'closed':
                     if (!$thisstaff->hasPerm(TicketModel::PERM_CLOSE, false))
                         $errors['err'] = sprintf(__('You do not have permission %s'),
