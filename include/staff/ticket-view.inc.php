@@ -202,6 +202,15 @@ if($ticket->isOverdue())
                     echo __('Delete Ticket'); ?></a></li>
                 <?php
                  }
+                 if ($ticket->isClosed() && $role->hasPerm(TicketModel::PERM_VERIFY)
+                         && !$ticket->isVerified()) {
+                     ?>
+                    <li class="danger"><a class="ticket-action" href="#tickets/<?php
+                    echo $ticket->getId(); ?>/verify"
+                    data-redirect="tickets.php?id=<?php echo $ticket->getId(); ?>"><i class="icon-check"></i> <?php
+                    echo __('Verify Ticket'); ?></a></li>
+                <?php
+                 }
                 ?>
               </ul>
             </div>
@@ -408,10 +417,18 @@ if($ticket->isOverdue())
                     <td><?php echo Format::datetime($ticket->getEstDueDate()?:$ticket->getLastDueDate()); // Se ha añadido la última fecha de vencimiento ?></td>
                 </tr>
                 <?php
-                }else { ?>
+                } else { ?>
                 <tr>
                     <th><?php echo __('Close Date');?>:</th>
-                    <td><?php echo Format::datetime($ticket->getCloseDate()); ?></td>
+                    <td><?php 
+                        echo Format::datetime($ticket->getCloseDate()); 
+                    ?></td>
+                </tr>
+                <tr>
+                    <th><?php echo __('Verify Date');?>:</th>
+                    <td><?php 
+                        echo Format::datetime($ticket->getVerifyDate()); 
+                    ?></td>
                 </tr>
                 <?php
                 }

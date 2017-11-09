@@ -1579,6 +1579,7 @@ class ThreadEvent extends VerySimpleModel {
     const STATUS    = 'status';
     const TRANSFERRED = 'transferred';
     const VIEWED    = 'viewed';
+    const VERIFIED  = 'verified';
 
     const MODE_STAFF = 1;
     const MODE_CLIENT = 2;
@@ -1611,6 +1612,10 @@ class ThreadEvent extends VerySimpleModel {
             'closed'    => 'thumbs-up-alt',
             'reopened'  => 'rotate-right',
             'resent'    => 'reply-all icon-flip-horizontal',
+            'equipment_retirement' => 'off',
+            'reserved'  => 'tag',
+            'unreserved' => 'remove-circle',
+            'verified'  => 'check',
         );
         return @$icons[$this->state] ?: 'chevron-sign-right';
     }
@@ -1776,7 +1781,7 @@ class ThreadEvents extends InstrumentedList {
      * $object - Object to log activity for
      * $state - State name of the activity (one of 'created', 'edited',
      *      'deleted', 'closed', 'reopened', 'error', 'collab', 'resent',
-     *      'assigned', 'transferred')
+     *      'assigned', 'transferred', 'verified')
      * $data - (array?) Details about the state change
      * $user - (string|User|Staff) user triggering the state change
      * $annul - (state) a corresponding state change that is annulled by
@@ -1874,8 +1879,17 @@ class CloseEvent extends ThreadEvent {
     }
 }
 
+class VerifyEvent extends ThreadEvent {
+    static $icon = 'check';
+    static $state = 'verified';
+
+    function getDescription($mode=self::MODE_STAFF) {
+        return $this->template(__('Verified by <b>{somebody}</b> {timestamp}'));
+    }
+}
+
 class EquipmentRetirementEvent extends ThreadEvent {
-    static $icon = 'thumbs-up-alt';
+    static $icon = 'off';
     static $state = 'equipment_retirement';
 
     function getDescription($mode=self::MODE_STAFF) {
@@ -1887,7 +1901,7 @@ class EquipmentRetirementEvent extends ThreadEvent {
 }
 
 class EquipmentReservationEvent extends ThreadEvent {
-    static $icon = 'thumbs-up-alt';
+    static $icon = 'tag';
     static $state = 'reserved';
 
     function getDescription($mode=self::MODE_STAFF) {
@@ -1896,7 +1910,7 @@ class EquipmentReservationEvent extends ThreadEvent {
 }
 
 class EquipmentUnreservationEvent extends ThreadEvent {
-    static $icon = 'thumbs-up-alt';
+    static $icon = 'remove-circle';
     static $state = 'unreserved';
 
     function getDescription($mode=self::MODE_STAFF) {

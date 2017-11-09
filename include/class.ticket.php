@@ -101,6 +101,7 @@ class TicketModel extends VerySimpleModel {
     const PERM_REPLY    = 'ticket.reply';
     const PERM_CLOSE    = 'ticket.close';
     const PERM_DELETE   = 'ticket.delete';
+    const PERM_VERIFY   = 'ticket.verify';
 
     const TEXTO_PREASIGNACION_AGENTE = "Preasignación de agente hecha por el usuario";
     const TEXTO_PREASIGNACION_EQUIPO = "Preasignación de equipo hecha por el usuario";
@@ -141,6 +142,11 @@ class TicketModel extends VerySimpleModel {
                 /* @trans */ 'Delete',
                 'desc'  =>
                 /* @trans */ 'Ability to delete tickets'),
+            self::PERM_VERIFY => array(
+                'title' =>
+                /* @trans */ 'Verify',
+                'desc'  =>
+                /* @trans */ 'Ability to verify tickets'),
             );
 
     // Ticket Sources
@@ -298,6 +304,10 @@ implements RestrictedAccess, Threadable {
     
     function isSolved() {
         return $this->hasState('solved');
+    }
+    
+    function isVerified() {
+        return $this->verified;
     }
 
     function isReopened() {
@@ -553,6 +563,30 @@ implements RestrictedAccess, Threadable {
 
     function getCloseDate() {
         return $this->closed;
+    }
+    
+    function getVerifyDate() {
+        return $this->verified;
+    }
+    
+    function verify($comments) {
+        if (!$this->isClosed()) {
+            return false;   // No se puede verificar un ticket abierto
+        } elseif ($this->isVerified()) {
+            return false;   // No se puede verificar un ticket ya verificado
+        }
+        $this->setVerifyDate($comments);
+        return true;
+    }
+    
+    function setVerifyDate($comments) {
+        global $thisstaff;
+        $this->verified = SqlFunction::NOW();
+        $this->logEvent('verified', null, $thisstaff);
+        if ($comments = ThreadEntryBody::clean($comments)) {
+            $this->logNote('Ticket verificado', $comments, $thisstaff, false);
+        }
+        return $this->save();
     }
 
     function getStatusId() {

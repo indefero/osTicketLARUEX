@@ -556,6 +556,9 @@ class TicketsAjaxAPI extends AjaxController {
                 'close' => array(
                     'verbed' => __('closed'),
                     ),
+                'verify' => array(
+                    'verbed' => __('verified'),
+                    ),
                 );
 
         if (!isset($actions[$action]))
@@ -756,6 +759,39 @@ class TicketsAjaxAPI extends AjaxController {
                 }
             }
             break;
+        case 'verify':
+            $inc = 'verify.tmpl.php';
+            $info[':action'] = '#tickets/mass/verify';
+            $info[':title'] = sprintf(__('Verify %s'),
+                    _N('selected ticket', 'selected tickets', $count));
+
+            $info[':placeholder'] = sprintf(__(
+                        'Optional reason for verifying %s'),
+                    _N('selected ticket', 'selected tickets', $count));
+
+            // Generic permission check.
+            if (!$thisstaff->hasPerm(Ticket::PERM_VERIFY, false))
+                $errors['err'] = sprintf(
+                        __('You do not have permission %s'),
+                        __('to verify tickets'));
+
+            if ($_POST && !$errors) {
+                foreach ($_POST['tids'] as $tid) {
+                    if (($t=Ticket::lookup($tid))
+                            && $t->checkStaffPerm($thisstaff, Ticket::PERM_VERIFY)
+                            && $t->verify($_POST['comments'])
+                            )
+                        $i++;
+                }
+
+                if (!$i) {
+                    $info['error'] = sprintf(
+                            __('Unable to %1$s %2$s'),
+                            __('verify'),
+                            _N('selected ticket', 'selected tickets', $count));
+                }
+            }
+            break;
         default:
             Http::response(404, __('Unknown action'));
         }
@@ -856,6 +892,43 @@ class TicketsAjaxAPI extends AjaxController {
         $info['status_id'] = $id ?: $ticket->getStatusId();
 
         return self::_changeTicketStatus($ticket, $state, $info);
+    }
+    
+    function verify($tid) {
+        global $thisstaff;
+        
+        if (!thisstaff)
+            Http::response(403, 'Access denied');
+        elseif (!$tid
+                || !($ticket=Ticket::lookup($tid))
+                || !$ticket->checkStaffPerm($thisstaff)) {
+            Http::response(404, 'Unknown ticket #');
+        }
+        
+        include(STAFFINC_DIR . 'templates/ticket-verify.tmpl.php');
+    }
+    
+    function setVerifyDate($tid) {
+        global $thisstaff;
+        
+        if (!thisstaff)
+            Http::response(403, 'Access denied');
+        elseif (!$tid
+                || !($ticket=Ticket::lookup($tid))
+                || !$ticket->checkStaffPerm($thisstaff)) {
+            Http::response(404, 'Unknown ticket #');
+        }
+        
+        $role = $thisstaff->getRole($ticket->getDeptId());
+        if (!$role->hasPerm(TicketModel::PERM_VERIFY))
+                Http::response(403, 'Access denied');
+
+        $ticket->setVerifyDate($_REQUEST['comments']);
+        $_SESSION['::sysmsgs']['msg'] = sprintf('%s %s',
+                sprintf(__('Ticket #%s'), $ticket->getNumber()),
+                __('verified sucessfully')
+                );
+        Http::response(201, 'Successfully processed');
     }
 
     function setTicketStatus($tid) {

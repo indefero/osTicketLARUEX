@@ -3,7 +3,7 @@ global $thisstaff, $ticket;
 // Map states to actions
 $actions= array(
         'closed' => array(
-            'icon'  => 'icon-ok-circle',
+            'icon'  => 'icon-thumbs-up-alt',
             'action' => 'close',
             'href' => 'tickets.php'
             ),
@@ -12,7 +12,7 @@ $actions= array(
             'action' => 'reopen'
             ),
         'solved' => array(
-            'icon'  => 'icon-ok-circle',
+            'icon'  => 'icon-gears',
             'action' => 'solve'
             ),
         );
