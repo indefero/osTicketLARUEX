@@ -1612,7 +1612,7 @@ class ThreadEvent extends VerySimpleModel {
             'closed'    => 'thumbs-up-alt',
             'reopened'  => 'rotate-right',
             'resent'    => 'reply-all icon-flip-horizontal',
-            'equipment_retirement' => 'off',
+            'equipment_retirement' => 'minus-sign',
             'reserved'  => 'tag',
             'unreserved' => 'remove-circle',
             'verified'  => 'check',
@@ -1889,7 +1889,7 @@ class VerifyEvent extends ThreadEvent {
 }
 
 class EquipmentRetirementEvent extends ThreadEvent {
-    static $icon = 'off';
+    static $icon = 'minus-sign';
     static $state = 'equipment_retirement';
 
     function getDescription($mode=self::MODE_STAFF) {

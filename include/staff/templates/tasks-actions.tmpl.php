@@ -37,7 +37,7 @@ if ($agent->hasPerm(Task::PERM_CLOSE, false)) {
                 <li>
                     <a class="no-pjax tasks-action"
                         href="#tasks/mass/close"><i
-                        class="icon-fixed-width icon-ok-circle"></i> <?php
+                        class="icon-fixed-width icon-thumbs-up-alt"></i> <?php
                         echo __('Close');?> </a>
                 </li>
                 <?php
@@ -55,7 +55,7 @@ if ($agent->hasPerm(Task::PERM_CLOSE, false)) {
 
         $actions += array(
                 'close' => array(
-                    'icon' => 'icon-ok-circle',
+                    'icon' => 'icon-thumbs-up-alt',
                     'action' => __('Close')
                 ));
     }

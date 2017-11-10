@@ -3,17 +3,17 @@ global $thisstaff, $equipment;
 // Map states to actions
 $actions= array(
         'retired' => array(
-            'icon'  => 'icon-ok-circle',
+            'icon'  => 'icon-minus-sign',
             'action' => 'retire',
             'href' => 'equipment.php'
             ),
         'inactive' => array(
-            'icon'  => 'icon-ok-circle',
+            'icon'  => 'icon-warning-sign',
             'action' => 'deactivate',
             'href' => 'equipment.php'
             ),
         'active' => array(
-            'icon'  => 'icon-undo',
+            'icon'  => 'icon-ok-sign',
             'action' => 'activate'
             ),
         );

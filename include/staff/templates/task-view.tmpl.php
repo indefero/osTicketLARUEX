@@ -159,7 +159,7 @@ if ($task->isOverdue())
                     <li>
                         <a class="no-pjax task-action"
                             href="#tasks/<?php echo $task->getId(); ?>/close"><i
-                            class="icon-fixed-width icon-ok-circle"></i> <?php
+                            class="icon-fixed-width icon-thumbs-up-alt"></i> <?php
                             echo __('Close');?> </a>
                     </li>
                     <?php
@@ -217,7 +217,7 @@ if ($task->isOverdue())
                         <li>
                             <a class="no-pjax task-action"
                                 href="#tasks/<?php echo $task->getId(); ?>/close"><i
-                                class="icon-fixed-width icon-ok-circle"></i> <?php
+                                class="icon-fixed-width icon-thumbs-up-alt"></i> <?php
                                 echo __('Close');?> </a>
                         </li>
                         <?php
