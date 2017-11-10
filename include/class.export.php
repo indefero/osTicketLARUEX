@@ -65,10 +65,10 @@ class Export {
                 /*'collab_count' => TicketThread::objects()
                     ->filter(array('ticket__ticket_id' => new SqlField('ticket_id', 1)))
                     ->aggregate(array('count' => SqlAggregate::COUNT('collaborators__id'))),*/
-                /*'attachment_count' => TicketThread::objects()
+                'attachment_count' => TicketThread::objects()
                     ->filter(array('ticket__ticket_id' => new SqlField('ticket_id', 1)))
                     ->filter(array('entries__attachments__inline' => 0))
-                    ->aggregate(array('count' => SqlAggregate::COUNT('entries__attachments__id'))),*/
+                    ->aggregate(array('count' => SqlAggregate::COUNT('entries__attachments__id'))),
                 /*'thread_count' => TicketThread::objects()
                     ->filter(array('ticket__ticket_id' => new SqlField('ticket_id', 1)))
                     ->exclude(array('entries__flags__hasbit' => ThreadEntry::FLAG_HIDDEN))
@@ -126,8 +126,11 @@ class Export {
                 //'isanswered' =>     __('Answered'),
                 //'thread_count' =>   __('Thread Count'),
                 //'attachment_count' => __('Attachment Count'),
-                'comentarios' => 'Último comentario',
-                'closed' => 'Fecha Cierre'
+                'comentarios' => 'Acciones realizadas',
+                'attachment_count' => 'Documentos',
+                'sla.grace_period' => 'Plazo Cierre',
+                'closed' => 'Fecha Cierre',
+                'verified' => 'Fecha V.B.'
             ) + $cdata,
             $how,
             array('modify' => function(&$record, $keys) use ($fields) {
