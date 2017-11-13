@@ -109,7 +109,7 @@ implements TemplateVariable {
     static function getVarScope() {
         return array(
             'name' => __('Service Level Agreement'),
-            'graceperiod' => __("Grace Period (hrs)"),
+            'graceperiod' => __('Grace Period (days)'),
         );
     }
 
@@ -118,7 +118,7 @@ implements TemplateVariable {
         if (!$vars['grace_period'])
             $errors['grace_period'] = __('Grace period required');
         elseif (!is_numeric($vars['grace_period']))
-            $errors['grace_period'] = __('Numeric value required (in hours)');
+            $errors['grace_period'] = __('Numeric value required (in days)');
 
         if (!$vars['name'])
             $errors['name'] = __('Name is required');

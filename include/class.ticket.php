@@ -542,7 +542,7 @@ implements RestrictedAccess, Threadable {
                 $dt = new DateTime($this->getLastDueDate());
             }
             return $dt
-                ->add(new DateInterval('PT' . $sla->getGracePeriod() . 'H'))
+                ->add(new DateInterval('P' . $sla->getGracePeriod() . 'D'))
                 ->format('Y-m-d H:i:s');
         }
     }
@@ -3889,10 +3889,10 @@ implements RestrictedAccess, Threadable {
             .' LEFT JOIN '.SLA_TABLE.' T2 ON (T1.sla_id=T2.id AND T2.flags & 1 = 1) '
             .' WHERE (duedate is NOT NULL AND duedate<NOW()) '
             .' OR (isoverdue = 0 '
-            .' AND ((reopened is NULL AND duedate is NULL AND TIME_TO_SEC(TIMEDIFF(NOW(),T1.created))>=T2.grace_period*3600) '
-            .' OR (reopened is NOT NULL AND duedate is NULL AND TIME_TO_SEC(TIMEDIFF(NOW(),reopened))>=T2.grace_period*3600))) '
+            .' AND ((reopened is NULL AND duedate is NULL AND TIME_TO_SEC(TIMEDIFF(NOW(),T1.created))>=T2.grace_period*3600*24) '
+            .' OR (reopened is NOT NULL AND duedate is NULL AND TIME_TO_SEC(TIMEDIFF(NOW(),reopened))>=T2.grace_period*3600*24))) '
             .' OR (isoverdue > 0 ' 
-            .' AND (duedate is NULL AND TIME_TO_SEC(TIMEDIFF(NOW(),T1.last_duedate))>=T2.grace_period*3600)) '
+            .' AND (duedate is NULL AND TIME_TO_SEC(TIMEDIFF(NOW(),T1.last_duedate))>=T2.grace_period*3600*24)) '
             .' ORDER BY T1.created LIMIT 50'; //Age upto 50 tickets at a time?
 
         if(($res=db_query($sql)) && db_num_rows($res)) {

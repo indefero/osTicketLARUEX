@@ -22,10 +22,10 @@ name:
 grace_period:
     title: Grace Period
     content: >
-        Determine the number of hours after a ticket is created that it will
+        Determine the number of days after a ticket is created that it will
         be automatically marked as overdue.
         <br><br>
-        <em>Hours are counted from ticket create time.</em>
+        <em>Days are counted from ticket create time.</em>
 
 transient:
     title: Transient
