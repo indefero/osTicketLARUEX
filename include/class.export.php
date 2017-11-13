@@ -91,11 +91,12 @@ class Export {
                             'object_id' => new SqlField('ticket_id', 1),
                             'object_type' => 'T',
                             'form__title' => 'Notificación y cierre de desviaciones')),  // OJO! No se puede cambiar el nombre en la web!!
-                'comentarios' => TicketThread::objects()
-                    ->values('entries__body')
-                    ->filter(array('ticket__ticket_id' => new SqlField('ticket_id', 1)))
-                    ->order_by('-entries__created')
-                    ->limit(1)
+                'acciones' => DynamicFormEntry::objects()
+                    ->values('answers__value')
+                    ->filter(array('answers__field__name' => 'acciones',
+                            'object_id' => new SqlField('ticket_id', 1),
+                            'object_type' => 'T',
+                            'form__title' => 'Notificación y cierre de desviaciones'))  // OJO! No se puede cambiar el nombre en la web!!
             ));
 
         // Fetch staff information
@@ -126,7 +127,7 @@ class Export {
                 //'isanswered' =>     __('Answered'),
                 //'thread_count' =>   __('Thread Count'),
                 //'attachment_count' => __('Attachment Count'),
-                'comentarios' => 'Acciones realizadas',
+                'acciones' => 'Acciones realizadas',
                 'attachment_count' => 'Documentos',
                 'sla.grace_period' => 'Plazo Cierre',
                 'closed' => 'Fecha Cierre',
