@@ -2417,8 +2417,12 @@ class AssigneeField extends ChoiceField {
 
     function getWidget($widgetClass=false) {
         $widget = parent::getWidget($widgetClass);
-        if (is_object($widget->value))
-            $widget->value = $widget->value->getId();
+        if (is_object($widget->value)) {
+            if ($widget->value instanceof Staff)
+                $widget->value = 's'.$widget->value->getId();
+            elseif ($widget->value instanceof Team)
+                $widget->value = 't'.$widget->value->getId();
+        }
         return $widget;
     }
 
