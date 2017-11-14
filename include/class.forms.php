@@ -1791,8 +1791,6 @@ class DatetimeField extends FormField {
             $this->min = $config['min']
                 ? Format::parseDateTime($config['min']) : false;
         }
-        
-        error_log($this->min->GetTimezone()->getName());
 
         return $this->min;
     }
