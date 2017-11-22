@@ -1205,7 +1205,7 @@ class OpenClosedTicketStatusList extends TicketStatusList {
         $rv = array();
         $base = parent::getItems($criteria);
         foreach ($base as $idx=>$S) {
-            if (in_array($S->state, array('open', 'closed')))
+            if (in_array($S->state, array('open', 'solved', 'closed')))
                 $rv[$idx] = $S;
         }
         return $rv;
