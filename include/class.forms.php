@@ -2504,9 +2504,15 @@ class AssigneeField extends ChoiceField {
 
 
     function to_database($value) {
-        return (is_object($value))
-            ? array($value->getName(), $value->getId())
-            : $value;
+        if (is_object($value)) {
+            $letra = '';
+            if ($value instanceof Staff)
+                $letra = 's';
+            elseif ($value instanceof Team)
+                $letra = 't';
+            return array($value->getName(), $letra.$value->getId ());
+        } else
+            return $value;
     }
 
     function toString($value) {
