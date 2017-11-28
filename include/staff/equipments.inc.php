@@ -80,7 +80,7 @@ case 'search':
         // Use an index if possible
         if ($_REQUEST['search-type'] == 'typeahead') {
             if ($_REQUEST['query']) {
-                $tickets = $tickets->filter(array(
+                $equipments = $equipments->filter(array(
                     'number' => $_REQUEST['query'],
                 ));
             }
@@ -90,12 +90,12 @@ case 'search':
             && strlen($q) > 2
         ) {
             // [Search] click, consider keywords
-            $__tickets = $ost->searcher->find($q, $tickets);
-            if (!count($__tickets) && preg_match('`\w$`u', $q)) {
+            $__equipments = $ost->searcher->find($q, $equipments);
+            if (!count($__equipments) && preg_match('`\w$`u', $q)) {
                 // Do wildcard search if no hits
-                $__tickets = $ost->searcher->find($q.'*', $tickets);
+                $__equipments = $ost->searcher->find($q.'*', $equipments);
             }
-            $tickets = $__tickets;
+            $equipments = $__equipments;
             $has_relevance = true;
         }
         // Clear sticky search queue
@@ -103,7 +103,7 @@ case 'search':
         break;
     } elseif (isset($_SESSION['advsearch'])) {
         $form = $search->getFormFromSession('advsearch');
-        $tickets = $search->mangleQuerySet($tickets, $form);
+        $equipments = $search->mangleQuerySet($equipments, $form);
         $results_type=__('Advanced Search')
             . '<a class="action-button" style="font-size: 15px;" href="?clear_filter"><i style="top:0" class="icon-ban-circle"></i> <em>' . __('clear') . '</em></a>';
         foreach ($form->getFields() as $sf) {
@@ -359,7 +359,7 @@ return false;">
             <?php
             } //end of foreach
         if (!$total)
-            $ferror=__('There are no tickets matching your criteria.');
+            $ferror=__('There is no equipment matching your criteria.');
         ?>
     </tbody>
     <tfoot>
