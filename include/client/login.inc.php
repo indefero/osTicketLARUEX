@@ -21,6 +21,7 @@ if ($content) {
     <?php csrf_token(); ?>
 <div style="display:table-row">
     <div class="login-box">
+    <b><?php echo __("I'm a user"); ?></b>
     <strong><?php echo Format::htmlchars($errors['login']); ?></strong>
     <div>
         <input id="username" placeholder="<?php echo __('Email or Username'); ?>" type="text" name="luser" size="30" value="<?php echo $email; ?>" class="nowarn">
@@ -55,8 +56,8 @@ if ($cfg && $cfg->isClientRegistrationEnabled()) {
     </div>
 <?php } ?>
     <div>
-    <b><?php echo __("I'm an agent"); ?></b> —
-    <a href="<?php echo ROOT_PATH; ?>scp/"><?php echo __('sign in here'); ?></a>
+        <a href="<?php echo ROOT_PATH; ?>scp/" style="display:block" class="green button"><?php
+                echo __("I'm an agent");?></a>
     </div>
     </div>
 </div>
