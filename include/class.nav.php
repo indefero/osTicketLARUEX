@@ -352,9 +352,9 @@ class UserNav {
                                            'href'=>sprintf('tickets.php?id=%d',$user->getTicketId()),
                                            'title'=>__('View ticket status'));
                 }
-            } else {
+            } /*else {
                 $navs['status']=array('desc'=>__('Check Ticket Status'),'href'=>'view.php','title'=>'');
-            }
+            }*/
             $this->navs=$navs;
         }
 
