@@ -15,13 +15,17 @@
 **********************************************************************/
 require('client.inc.php');
 
+if (!$thisclient) {
+    Http::redirect('login.php');
+}
+
 require_once INCLUDE_DIR . 'class.page.php';
 
 $section = 'home';
 require(CLIENTINC_DIR.'header.inc.php');
 ?>
 <div id="landing_page">
-<?php include CLIENTINC_DIR.'templates/sidebar.tmpl.php'; ?>
+<?php //include CLIENTINC_DIR.'templates/sidebar.tmpl.php'; // No creo que sea necesaria la barra lateral ?>
 <div class="main-content">
 <?php
 if ($cfg && $cfg->isKnowledgebaseEnabled()) { ?>
