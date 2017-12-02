@@ -132,11 +132,16 @@ if($ticket && $ticket->checkUserAccess($thisclient)) {
     }
     else
         $inc='view.inc.php';
-} elseif($thisclient->getNumTickets($thisclient->canSeeOrgTickets())) {
-    $inc='tickets.inc.php';
+/*} elseif($thisclient->getNumTickets($thisclient->canSeeOrgTickets())) {
+    $inc='tickets.inc.php';*/
 } else {
-    $nav->setActiveNav('new');
-    $inc='open.inc.php';
+    /* He comentado las dos líneas de arriba y las dos de abajo, y he añadido
+     * la siguiente para que, en lugar de redirigir a la apertura de tickets,
+     * si no hay ninguno se muestre una lista vacía. Creo que queda más claro.
+     */
+    /*$nav->setActiveNav('new');
+    $inc='open.inc.php';*/
+    $inc='tickets.inc.php';
 }
 include(CLIENTINC_DIR.'header.inc.php');
 include(CLIENTINC_DIR.$inc);
