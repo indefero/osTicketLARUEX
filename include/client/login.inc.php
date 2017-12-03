@@ -36,7 +36,7 @@ if ($content) {
 <?php } ?>
     </p>
     </div>
-    <div style="display:table-cell;padding: 15px;vertical-align:top">
+    <div style="display:table-cell;padding: 15px; vertical-align: middle; text-align: center">
 <?php
 
 $ext_bks = array();
@@ -56,7 +56,7 @@ if ($cfg && $cfg->isClientRegistrationEnabled()) {
     </div>
 <?php } ?>
     <div>
-        <a href="<?php echo ROOT_PATH; ?>scp/" style="display:block" class="green button"><?php
+        <a href="<?php echo ROOT_PATH; ?>scp/" style="display:inline" class="green button"><?php
                 echo __("I'm an agent");?></a>
     </div>
     </div>
