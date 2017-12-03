@@ -71,15 +71,23 @@ if ($count) { ?>
             } ?>
             <th width="40"><?php echo __('Number'); ?></th>
             <th width="300"><?php echo __('Title'); ?></th>
+            <th width="70"><?php echo 'Localización'; ?></th>
             <th width="70"><?php echo 'Periodicidad'; ?></th>
             <th width="70"><?php echo __('Inicio'); ?></th>
-            <th width="70"><?php echo __('Created'); ?></th>
         </tr>
     </thead>
     <tbody class="reservations">
     <?php
     foreach($schedules as $schedule) {
         $id = $schedule->getId();
+        $localizacion = "";
+        foreach (DynamicFormEntry::forObject($schedule->getId(), ObjectModel::OBJECT_TYPE_TASK_SCHEDULE) as $form) {
+            $answers = $form->getAnswers()->filter(Q::any(array(
+                    'field__name__exact' => "Localización")));
+            if (!$answers || count($answers) == 0)
+                continue;
+            $localizacion = $answers->one()->display();
+        }
         ?>
         <tr id="<?php echo $id; ?>">
             <td class="nohover">
@@ -95,11 +103,11 @@ if ($count) { ?>
             <td nowrap>
                 <a href="stasks.php?id=<?php echo $id; ?>"><?php echo $schedule->getTitle(); ?></a>
             </td>
+            <td nowrap>
+                <a href="stasks.php?id=<?php echo $id; ?>"><?php echo $localizacion; ?></a>
+            </td>
             <td nowrap><?php echo $schedule->regularity; ?></td>
-            <td nowrap><?php echo
-            Format::datetime($schedule->start); ?></td>
-            <td nowrap><?php echo
-            Format::datetime($schedule->created); ?></td>
+            <td nowrap><?php echo Format::datetime($schedule->start); ?></td>
         </tr>
    <?php
     }
