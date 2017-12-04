@@ -44,10 +44,14 @@ $queue_columns = array(
             'heading' => __('Title'),
             'sort_col' => 'cdata__title',
             ),
-        'dept' => array(
+        /*'dept' => array(
             'width' => '16%',
             'heading' => __('Department'),
             'sort_col'  => 'dept__name',
+            ),*/
+        'location' => array(
+            'width' => '16%',
+            'heading' => 'Localización',
             ),
         'assignee' => array(
             'width' => '16%',
@@ -391,6 +395,15 @@ if ($thisstaff->hasPerm(Task::PERM_DELETE, false)) {
                 $number = sprintf('<b>%s</b>', $number);
 
             $title = Format::truncate($title_field->display($title_field->to_php($T['cdata__title'])), 40);
+            
+            $localizacion = "";
+            foreach (DynamicFormEntry::forObject($T["id"], ObjectModel::OBJECT_TYPE_TASK) as $form) {
+                $answers = $form->getAnswers()->filter(Q::any(array(
+                        'field__name__exact' => "Localización")));
+                if (!$answers || count($answers) == 0)
+                    continue;
+                $localizacion = $answers->one()->display();
+            }
             ?>
             <tr id="<?php echo $T['id']; ?>">
                 <?php
@@ -424,7 +437,10 @@ if ($thisstaff->hasPerm(Task::PERM_DELETE, false)) {
                             echo '<i class="icon-fixed-width icon-paperclip"></i>&nbsp;';
                     ?>
                 </td>
-                <td nowrap>&nbsp;<?php echo Format::truncate($dept, 40); ?></td>
+                <td nowrap>&nbsp;<?php 
+                    /*echo Format::truncate($dept, 40);*/
+                    echo $localizacion;
+                ?></td>
                 <td nowrap>&nbsp;<?php echo $assignee; ?></td>
             </tr>
             <?php
