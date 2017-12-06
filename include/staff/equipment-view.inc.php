@@ -125,7 +125,10 @@ if (!$errors['err']) {
             <table border="0" cellspacing="" cellpadding="4" width="100%">
                 <tr>
                     <th width="100"><?php echo __('Status');?>:</th>
-                    <td><?php echo ($S = $equipment->getStatus()) ? $S->display() : ''; ?></td>
+                    <td><?php 
+                        //echo ($S = $equipment->getStatus()) ? $S->display() : '';
+                        echo ($S = $equipment->getStatus()) ? $S->getName() : '';
+                    ?></td>
                 </tr>
                 <tr>
                     <th><?php echo __('Create Date');?>:</th>
