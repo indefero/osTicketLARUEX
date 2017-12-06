@@ -32,14 +32,18 @@ $queue_columns = array(
             'sort_col' => 'id',
             ),
         'name' => array(
-            'width' => '60%',
+            'width' => '50%',
             'heading' => __('Name'),
             'sort_col' => 'name',
             ),
         'dept' => array(
-            'width' => '20%',
+            'width' => '15%',
             'heading' => __('Department'),
             'sort_col' => 'dept_id',
+            ),
+        'location' => array(
+            'width' => '15%',
+            'heading' => 'Localización',
             ),
         'date' => array(
             'width' => '10%',
@@ -327,6 +331,15 @@ return false;">
 
             $lc='';
             $tid=$E['name'];
+            
+            $localizacion = "";
+            foreach (DynamicFormEntry::forObject($E["id"], ObjectModel::OBJECT_TYPE_EQUIPMENT) as $form) {
+                $answers = $form->getAnswers()->filter(Q::any(array(
+                        'field__name__exact' => "Localización")));
+                if (!$answers || count($answers) == 0)
+                    continue;
+                $localizacion = $answers->one()->display();
+            }
             ?>
             <tr id="<?php echo $E['id']; ?>">
                 <?php
@@ -351,6 +364,9 @@ return false;">
                 </td>
                 <td align="center" nowrap><?php
                     echo $E['dept__name'];
+                ?></td>
+                <td align="center" nowrap><?php
+                    echo $localizacion;
                 ?></td>
                 <td align="center" nowrap><?php 
                     echo Format::datetime($E[$date_col ?: 'updated']) ?: $date_fallback;
