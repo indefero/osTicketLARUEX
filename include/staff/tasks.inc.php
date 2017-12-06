@@ -55,7 +55,7 @@ $queue_columns = array(
             ),
         'assignee' => array(
             'width' => '16%',
-            'heading' => __('Agent'),
+            'heading' => __('Assigned To'),
             ),
         );
 
