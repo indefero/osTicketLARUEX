@@ -315,15 +315,7 @@ if (!$ticket) { ?>
                         <td><?php echo Format::datetime($task->getCreateDate()); ?></td>
                     </tr>
                     <?php
-                    if($task->isOpen()){ ?>
-                    <tr>
-                        <th><?php echo __('Due Date');?>:</th>
-                        <td><?php echo $task->duedate ?
-                        Format::datetime($task->duedate) : '<span
-                        class="faded">&mdash; '.__('None').' &mdash;</span>'; ?></td>
-                    </tr>
-                    <?php
-                    }else { ?>
+                    if(!$task->isOpen()){ ?>
                     <tr>
                         <th><?php echo __('Completed');?>:</th>
                         <td><?php echo Format::datetime($task->getCloseDate()); ?></td>

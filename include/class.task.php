@@ -1318,6 +1318,14 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
         $changes = array();
         foreach ($forms as $f) {
             $changes += $f->getChanges();
+            // Miramos los cambios por si se modifica el vencimiento
+            foreach ($changes as $fieldId => $values) {
+                // Si se modifica lo actualizamos en el objeto task
+                if (($field = DynamicFormField::lookup($fieldId))
+                        && $field->get('name') == 'duedate') {
+                    $this->duedate = $values[1]; // El valor nuevo
+                }
+            }
             $f->save();
         }
 
@@ -1370,8 +1378,8 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
 
         if ($vars['internal_formdata']['dept_id'])
             $task->dept_id = $vars['internal_formdata']['dept_id']->getId();
-        if ($vars['internal_formdata']['duedate'])
-	    $task->duedate = date('Y-m-d G:i', Misc::dbtime($vars['internal_formdata']['duedate']));
+        if ($vars['default_formdata']['duedate'])
+	    $task->duedate = date('Y-m-d G:i', Misc::dbtime($vars['default_formdata']['duedate']));
 
         if (!$task->save(true))
             return false;
@@ -1656,18 +1664,7 @@ extends AbstractForm {
                     'label' => __('Assignee'),
                     'required' => false,
                     'layout' => new GridFluidCell(6),
-                    )),
-                'duedate'  =>  new DatetimeField(array(
-                    'id' => 3,
-                    'label' => __('Due Date'),
-                    'required' => false,
-                    'configuration' => array(
-                        'min' => Misc::gmtime(),
-                        'time' => true,
-                        'gmt' => false,
-                        'future' => true,
-                        ),
-                    )),
+                    ))
 
             );
 
