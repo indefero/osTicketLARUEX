@@ -838,7 +838,7 @@ class TasksAjaxAPI extends AjaxController {
                         && $desc->isAttachmentsEnabled()
                         && ($attachments=$desc->getWidget()->getAttachments()))
                     $vars['cannedattachments'] = $attachments->getClean();*/
-                $vars['staff_id'] = $thisstaff->getId();
+                $vars['staffId'] = $thisstaff->getId();
                 $vars['poster'] = $thisstaff;
                 $vars['ip_address'] = $_SERVER['REMOTE_ADDR'];
                 if (($taskSchedule= TaskSchedule::create($vars, $errors))) {
