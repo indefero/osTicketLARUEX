@@ -1216,7 +1216,7 @@ class TaskSchedule extends TaskScheduleModel implements RestrictedAccess, Thread
         $i18n = new Internationalization();
         $tpl = $i18n->getTemplate('form.yaml');
         foreach ($tpl->getData() as $f) {
-            if ($f['type'] == ObjectModel::OBJECT_TYPE_TASK) {
+            if ($f['type'] == ObjectModel::OBJECT_TYPE_TASK_SCHEDULE) {
                 $form = DynamicForm::create($f);
                 $form->save();
                 break;
