@@ -1322,7 +1322,8 @@ class TaskSchedule extends TaskScheduleModel implements RestrictedAccess, Thread
                     $sql="select body "
                             ."from ost_thread ot inner join ost_thread_entry ote on ot.id = ote.thread_id "
                             ."where object_id = ".$taskSchedule->getId()." "
-                            ."and object_type = '".ObjectModel::OBJECT_TYPE_TASK_SCHEDULE."' and pid = 0;";
+                            ."and object_type = '".ObjectModel::OBJECT_TYPE_TASK_SCHEDULE."' "
+                            ."order by pid desc;";  // Se coge la entrada con PID más alto (la más reciente si se ha editado).
                     if (($res2 = db_query($sql)) && db_num_rows($res2)) {
                         list($description) = db_fetch_row($res2);
                         $vars['description'] = $description;
