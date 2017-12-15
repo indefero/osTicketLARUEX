@@ -827,12 +827,18 @@ implements Threadable {
             'created' => SqlFunction::NOW(),
             'updated' => SqlFunction::NOW());
         
-        // Y ahora los visibles
+        // Y ahora los visibles                                 // TODO: Eliminar
         foreach ($form->getFields() as $field) {
-            if (is_a($field->getClean(), "VerySimpleModel"))
-                $campos[$field->getSelectName()] = $field->getClean()->getId();
-            else
-                $campos[$field->getSelectName()] = $field->getClean();
+            $nombre = $field->getSelectName();
+            switch ($nombre) {
+                case "name":
+                case "bookable":
+                        $campos[$nombre] = $field->getClean();
+                    break;
+                case "dept_id":
+                    $campos[$nombre] = $field->getClean()->getId();
+                    break;
+            }
         }
         
         //We are ready son...hold on to the rails.
@@ -841,6 +847,10 @@ implements Threadable {
         if (!$equipment->save()) {
             return null;
         }
+        
+        if ($vars['default_formdata']['bookable'])
+            $task->bookable = $vars['default_formdata']['bookable'];
+        
         if (!($thread = EquipmentThread::create($equipment->getId()))) {
             return null;
         }

@@ -223,8 +223,8 @@ $_SESSION[':Q:equipments'] = $equipments;
 
 // Select pertinent columns
 // ------------------------------------------------------------
-$equipments->values('lock__staff_id', 'id', 'name', 'description',
-'status_id', 'status__name', 'status__state', 'updated', 'dept__name');
+$equipments->values('lock__staff_id', 'id', 'name', 'status_id', 'status__name',
+        'status__state', 'updated', 'dept__name');
 
 
 // Make sure we're only getting active locks
