@@ -183,24 +183,12 @@ $info=($_POST && $errors)?Format::input($_POST):array();
     <tr>
         <td width="50%">
             <table border="0" cellspacing="" cellpadding="4" width="100%">
-                <tr>
-                    <th><?php echo 'Periodicidad';?>:</th>
-                    <td><?php echo $task->regularity; ?></td>
-                </tr>
-                <tr>
-                    <th><?php echo 'Tiempo de resolución';?>:</th>
-                    <td><?php echo $task->period." días"; ?></td>
-                </tr>
                 <?php if ($task->last_created_task) { ?>
                     <tr>
                         <th><?php echo 'Última tarea creada';?>:</th>
                         <td><?php echo Format::datetime($task->last_created_task); ?></td>
                     </tr>
                 <?php } ?>
-                <tr>
-                    <th><?php echo 'Inicio (fecha creación de primera tarea)';?>:</th>
-                    <td><?php echo Format::datetime($task->start); ?></td>
-                </tr>
                 <tr>
                     <th><?php echo __('Created');?>:</th>
                     <td><?php echo Format::datetime($task->getCreateDate()); ?></td>

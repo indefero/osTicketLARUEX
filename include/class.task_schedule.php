@@ -67,11 +67,11 @@ class TaskScheduleModel extends VerySimpleModel {
                 /* @trans */ 'Create',
                 'desc'  =>
                 /* @trans */ 'Ability to schedule tasks'),
-            /*self::PERM_EDIT      => array(
+            self::PERM_EDIT      => array(
                 'title' =>
-                /* @trans  'Edit',
+                /* @trans */ 'Edit',
                 'desc'  =>
-                /* @trans  'Ability to edit scheduled tasks'),*/
+                /* @trans */ 'Ability to edit scheduled tasks'),
             self::PERM_ASSIGN    => array(
                 'title' =>
                 /* @trans */ 'Assign',
@@ -1086,6 +1086,25 @@ class TaskSchedule extends TaskScheduleModel implements RestrictedAccess, Thread
         $changes = array();
         foreach ($forms as $f) {
             $changes += $f->getChanges();
+            // Miramos los cambios por si se modifican los campos que tenemos reflejados
+            // en la tabla ost_task_schedule (start, regularity y period)
+            foreach ($changes as $fieldId => $values) {
+                // Si se modifica lo actualizamos en el objeto task
+                if ($field = DynamicFormField::lookup($fieldId)) {
+                    switch ($field->get('name')) {
+                        case 'start':
+                            $this->start = $values[1];
+                            break;
+                        case 'regularity':
+                            $valor = json_decode($values[1],true);
+                            $this->regularity = $valor[array_keys($valor)[0]];
+                            break;
+                        case 'period':
+                            $this->period = $values[1];
+                            break;
+                    }
+                }
+            }
             $f->save();
         }
 
@@ -1135,12 +1154,14 @@ class TaskSchedule extends TaskScheduleModel implements RestrictedAccess, Thread
 
         if ($vars['internal_formdata']['department_id'])
             $task->department_id = $vars['internal_formdata']['department_id']->getId();
-        if ($vars['internal_formdata']['start'])
-	    $task->start = date('Y-m-d G:i', Misc::dbtime($vars['internal_formdata']['start']));
-        if ($vars['internal_formdata']['regularity'])
-	    $task->regularity = $vars['internal_formdata']['regularity'];
-        if ($vars['internal_formdata']['period'])
-	    $task->period = $vars['internal_formdata']['period'];
+        if ($vars['default_formdata']['start'])
+	    $task->start = date('Y-m-d G:i', Misc::dbtime($vars['default_formdata']['start']));
+        if ($vars['default_formdata']['regularity']) {
+            $valor = $vars['default_formdata']['regularity'];
+	    $task->regularity = $valor[array_keys($valor)[0]];
+        }
+        if ($vars['default_formdata']['period'])
+	    $task->period = $vars['default_formdata']['period'];
 
         if (!$task->save(true))
             return false;
@@ -1409,18 +1430,6 @@ extends AbstractForm {
     function buildFields() {
 
         $fields = array(
-                'regularity' => new ChoiceField(array(
-                    'id'=>1, 'label'=>'Periodicidad', 'required'=>true, 'default'=>'',
-                    'choices' => array('','Anual','Semestral','Cuatrimestral','Trimestral','Bimensual','Mensual','Quincenal','Semanal'),
-                    //'hint'=>'',
-                    'configuration'=>array('size'=>20, 'length'=>40),
-                    'layout' => new GridFluidCell(6)
-                    )),
-                'period' => new TextboxField(array(
-                    'id'=>2, 'label'=>'Tiempo de resolución (días)', 'required'=>true,
-                    'configuration' => array('size'=>20, 'validator'=>'number', 'size'=>2),
-                    'layout' => new GridFluidCell(6)
-                )),
                 'department_id' => new DepartmentField(array(
                     'id'=>3,
                     'label' => __('Department'),
@@ -1432,19 +1441,7 @@ extends AbstractForm {
                     'label' => __('Assignee'),
                     'required' => false,
                     'layout' => new GridFluidCell(6),
-                    )),
-                'start'  =>  new DatetimeField(array(
-                    'id' => 5,
-                    'label' => 'Inicio',
-                    'hint' => 'Fecha de creación de la primera tarea',
-                    'required' => true,
-                    'configuration' => array(
-                        'min' => Misc::gmtime(),
-                        'time' => true,
-                        'gmt' => false,
-                        'future' => true,
-                        ),
-                    )),
+                    ))
 
             );
 

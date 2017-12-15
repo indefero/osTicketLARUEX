@@ -782,30 +782,6 @@ class TasksAjaxAPI extends AjaxController {
             // Internal form
             $iform = TaskScheduleForm::getInternalForm($_POST);
             
-            // Se añade un validador de fechas de comienzo
-            $iform->addValidator(function($form) {
-                $start=$form->getField('start');
-                // Se comprueba que la fecha de comienzo sea posterior a
-                // la actual
-                if (strcmp($start->getValue(), date("Y-m-d H:i:s")) < 0) {
-                    $start->addError('El comienzo de la programación debe ser posterior al actual');
-                    return;
-                }
-            });
-            
-            // Se añade un validador de tiempo de respuesta
-            $iform->addValidator(function($form) {
-                $period=$form->getField('period');
-                // Se comprueba que el periodo no sea superior a 255 (admite un byte)
-                if ($period->getValue() >= 256) {
-                    $period->addError('El tiempo de respuesta debe ser inferior a 256 días');
-                    return;
-                } elseif ($period->getValue() < 1) {
-                    $period->addError('El tiempo de respuesta debe ser al menos un día');
-                    return;
-                }
-            });
-            
             // Se añade un validador de agente asignado
             $iform->addValidator(function($form) {
                 $assigneeField = $form->getField('assignee');

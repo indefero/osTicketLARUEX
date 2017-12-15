@@ -28,7 +28,7 @@ if ($info['error']) {
                 );
 
         $iform = TaskScheduleForm::getInternalForm();
-        echo $iform->asTable(__("Detalles de la programación"));
+        echo $iform->asTable("Visibilidad y asignación de las tareas");
 ?>
     <hr>
     <p class="full-width">

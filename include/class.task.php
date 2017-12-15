@@ -1442,10 +1442,16 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
         if (!$task->save(true))
             return false;
         
+        // Para añadir la fecha a ost_form_entry_values necesitamos la zona horaria
+        $dateTime = new DateTime();
+        $dateTime->setTimeZone(new DateTimeZone($cfg->getTimezone()));
+        $timezoneAbbr = $dateTime->format('T'); 
+        
         // Add dynamic data
         $task->addDynamicData(array('title' => $vars['title'],
                 'localizacion' => $vars['localizacion'],
-                'description' => $vars['description']));
+                'description' => $vars['description'],
+                'duedate' => $vars['duedate'].' '.$timezoneAbbr));
 
         // Create a thread + message.
         $thread = TaskThread::create($task);
