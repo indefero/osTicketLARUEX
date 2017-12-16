@@ -71,7 +71,16 @@ if (!$errors['err']) {
             
             <?php
             if ($role->hasPerm(EquipmentModel::PERM_EDIT)) { ?>
-                <span class="action-button pull-right"><a data-placement="bottom" data-toggle="tooltip" title="<?php echo __('Edit'); ?>" href="equipment.php?id=<?php echo $equipment->getId(); ?>&a=edit"><i class="icon-edit"></i></a></span>
+                <span class="action-button pull-right">
+                    <a class="equipment-action"
+                       data-dialog-config="{'size':'large'}"
+                       data-placement="bottom" 
+                       data-toggle="tooltip" 
+                       title="<?php echo __('Edit'); ?>" 
+                       href="#equipments/<?php echo $equipment->getId(); ?>/edit">
+                        <i class="icon-edit"></i>
+                    </a>
+                </span>
             <?php
             }
             
@@ -443,6 +452,24 @@ $(function() {
 
             $('html, body').animate({scrollTop: $stop}, 'fast');
         }
+
+        return false;
+    });
+    
+    $(document).off('.equipment-action');
+    $(document).on('click.equipment-action', 'a.equipment-action', function(e) {
+        e.preventDefault();
+        var url = 'ajax.php/'
+        +$(this).attr('href').substr(1)
+        +'?_uid='+new Date().getTime();
+        var $options = $(this).data('dialogConfig');
+        var $redirect = $(this).data('redirect');
+        $.dialog(url, [201], function (xhr) {
+            if (!!$redirect)
+                window.location.href = $redirect;
+            else
+                $.pjax.reload('#pjax-container');
+        }, $options);
 
         return false;
     });

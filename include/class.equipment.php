@@ -685,17 +685,55 @@ implements Threadable {
         return parent::save($this->dirty || $refetch);
     }
 
-    function update($vars, &$errors) {
+    function update($forms, $vars, &$errors) {
         global $cfg, $thisstaff;
-
-        $fields = array();
-        if (!Validator::process($fields, $vars, $errors) && !$errors['err'])
-            $errors['err'] = sprintf('%s — %s',
-                __('Missing or invalid data'),
-                __('Correct any errors below and try again'));
+        
+        if (!$forms || !$this->checkStaffPerm($thisstaff, Equipment::PERM_EDIT))
+            return false;
+        
+        foreach ($forms as $form) {
+            $form->setSource($vars);
+            if (!$form->isValid(function($f) {
+                return $f->isVisibleToStaff() && $f->isEditableToStaff();
+            }, array('mode'=>'edit'))) {
+                $errors = array_merge($errors, $form->errors());
+            }
+        }
 
         if ($errors)
             return false;
+        
+        // Update dynamic meta-data
+        $changes = array();
+        foreach ($forms as $f) {
+            $changes += $f->getChanges();
+            // Miramos los cambios por si se modifica el nombre o el flag reservable
+            foreach ($changes as $fieldId => $values) {
+                // Si se modifica lo actualizamos en el objeto equipment
+                if (($field = DynamicFormField::lookup($fieldId))) {
+                    if ($field->get('name') == 'name') {
+                        $this->name = $values[1]; // El valor nuevo
+                    }
+                    if ($field->get('name') == 'bookable') {
+                        $this->bookable = $values[1]; // El valor nuevo
+                    }
+                }
+            }
+            $f->save();
+        }
+        
+        if ($vars['note']) {
+            $_errors = array();
+            $this->postNote(array(
+                        'note' => $vars['note'],
+                        'title' => _S('Equipment Updated'),
+                        ),
+                    $_errors,
+                    $thisstaff);
+        }
+
+        if ($changes)
+            $this->logEvent('edited', array('fields' => $changes));
 
         Signal::send('model.updated', $this);
         return $this->save();

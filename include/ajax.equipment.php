@@ -327,6 +327,36 @@ class EquipmentAjaxAPI extends AjaxController {
 
         Http::response(201, 'Successfully managed');
     }
+    
+    function edit($tid) {
+        global $thisstaff;
+
+        if(!($equipment=Equipment::lookup($tid)))
+            Http::response(404, __('No such equipment'));
+
+        if (!$equipment->checkStaffPerm($thisstaff, Equipment::PERM_EDIT))
+            Http::response(403, __('Permission denied'));
+
+        $info = $errors = array();
+        $forms = DynamicFormEntry::forObject($equipment->getId(),
+                ObjectModel::OBJECT_TYPE_EQUIPMENT);
+
+        if ($_POST && $forms) {
+            // TODO: Validate internal form
+
+            // Validate dynamic meta-data
+            if ($equipment->update($forms, $_POST, $errors)) {
+                Http::response(201, 'Equipment updated successfully');
+            } elseif(!$errors['err']) {
+                $errors['err'] = sprintf('%s %s',
+                    sprintf(__('Unable to update %s.'), __('this task')),
+                    __('Correct any errors below and try again.'));
+            }
+            $info = Format::htmlchars($_POST);
+        }
+
+        include STAFFINC_DIR . 'templates/equipment-edit.tmpl.php';
+    }
 
     function cannedResponse($tid, $cid, $format='text') {
         global $thisstaff, $cfg;
