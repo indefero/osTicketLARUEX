@@ -2029,8 +2029,13 @@ class DatetimeField extends FormField {
     function getSearchQ($method, $value, $name=false) {
         $name = $name ?: $this->get('name');
         $config = $this->getConfiguration();
+        // Si es un entero se convierte a fecha
         $value = is_int($value)
             ? DateTime::createFromFormat('U', !$config['gmt'] ? Misc::gmtime($value) : $value) ?: $value
+            : $value;
+        // Si es un string se convierte a fecha
+        $value = is_string($value)
+            ? DateTime::createFromFormat('Y-m-d H:i:s T', $value)
             : $value;
         switch ($method) {
         case 'equal':
