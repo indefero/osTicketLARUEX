@@ -2068,13 +2068,13 @@ class DatetimeField extends FormField {
                 "{$name}__lte" => $value['right'],
             ));
         case 'ndaysago':
-            $now = Misc::gmtime();
+            $now = DateTime::createFromFormat('U', Misc::dbtime());
             return new Q(array(
                 "{$name}__lt" => $now,
                 "{$name}__gte" => SqlExpression::minus($now, SqlInterval::DAY($value['until'])),
             ));
         case 'ndays':
-            $now = Misc::gmtime();
+            $now = DateTime::createFromFormat('U', Misc::dbtime());
             return new Q(array(
                 "{$name}__gt" => $now,
                 "{$name}__lte" => SqlExpression::plus($now, SqlInterval::DAY($value['until'])),
