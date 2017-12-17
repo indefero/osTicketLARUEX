@@ -940,6 +940,8 @@ class SavedSearch extends VerySimpleModel {
                         $formField = DynamicFormField::lookup($id);
                         if ($formField->get('type') == 'assignee') {
                             $name = 'entries__answers__value_id';
+                        } elseif (strpos($formField->get('type'), 'list-') == 0) {
+                            $name = 'entries__answers__value_id';
                         } else {
                             $name = 'entries__answers__value';
                         }
