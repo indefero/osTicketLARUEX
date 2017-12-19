@@ -99,6 +99,8 @@ RolePermission::register(/* @trans */ 'Equipment', EquipmentModel::getPermission
 class Equipment extends EquipmentModel
 implements Threadable {
     
+    var $_entries;
+    
     function __onload() {
         $this->loadDynamicData();
     }
@@ -190,6 +192,14 @@ implements Threadable {
     
     function getDeactivationDate() {
         return $this->deactivation;
+    }
+    
+    function getDynamicData() {
+        if (!isset($this->_entries)) {
+            $this->_entries = DynamicFormEntry::forObject($this->id, 'E')->all();
+        }
+
+        return $this->_entries ?: array();
     }
     
     function getRetireDate() {
@@ -662,6 +672,11 @@ implements Threadable {
             return false;
 
         $t->delete();
+        
+        // Drop dynamic data
+        foreach ($this->getDynamicData() as $entry) {
+            $entry->delete();
+        }
 
         // Log delete
         $log = sprintf(__('Equipment #%1$s deleted by %2$s'),
