@@ -196,7 +196,7 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
                 <td>
                   <input type="checkbox" name="task_assignment_alert_staff" <?php echo
                   $config['task_assignment_alert_staff'] ? 'checked="checked"' : ''; ?>>
-                  <?php echo __('Assigned Agent / Team'); ?>
+                  <?php echo __('Assigned Agent'); ?>
                 </td>
             </tr>
             <tr>
