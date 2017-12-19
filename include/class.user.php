@@ -523,7 +523,8 @@ implements TemplateVariable {
                 $this->updated = SqlFunction::NOW();
             }
         }
-
+        
+        Signal::send('model.updated', $this);
         return $this->save();
     }
 
