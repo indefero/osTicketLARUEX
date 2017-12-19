@@ -223,7 +223,8 @@ implements TemplateVariable {
 
             try {
                 $user->save(true);
-                $user->emails->add($user->default_email);
+                // Quito esto para que no se duplique el correo en ost__search
+                // $user->emails->add($user->default_email);
                 // Attach initial custom fields
                 $user->addDynamicData($vars);
             }
