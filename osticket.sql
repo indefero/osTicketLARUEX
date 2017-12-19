@@ -38,7 +38,7 @@ CREATE TABLE `ost__search` (
 
 LOCK TABLES `ost__search` WRITE;
 /*!40000 ALTER TABLE `ost__search` DISABLE KEYS */;
-INSERT INTO `ost__search` VALUES ('U',2,'Antonio Baeza',' tritium@juntaex.es\ntritium@juntaex.es'),('U',3,'David Valencia',' ratvapc@gmail.com\r ratvapc@gmail.com'),('U',4,'José Ángel Corbacho',' rat_va_pc@juntaex.es\nrat_va_pc@juntaex.es'),('U',5,'Juan Baeza','juanbaeza@laruex.es juanbaeza@laruex.es'),('U',6,'José Manuel Caballero',' josemanuel@laruex.es\njosemanuel@laruex.es'),('U',7,'Mª Ángeles Ontalba',' eco2cir@gmail.com\neco2cir@gmail.com'),('U',8,'José Vasco',' eco2cir@juntaex.es\neco2cir@juntaex.es');
+INSERT INTO `ost__search` VALUES ('U',2,'Antonio Baeza','antoniolaruex@gmail.com'),('U',3,'David Valencia','davidlaruex@gmail.com'),('U',4,'José Ángel Corbacho','joseangellaruex@gmail.com'),('U',7,'Mª Ángeles Ontalba','geleslaruex@gmail.com'),('U',8,'José Vasco','pepelaruex@gmail.com');
 /*!40000 ALTER TABLE `ost__search` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -91,7 +91,7 @@ CREATE TABLE `ost_attachment` (
   `lang` varchar(16) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `file-type` (`object_id`,`file_id`,`type`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -161,7 +161,7 @@ CREATE TABLE `ost_config` (
 
 LOCK TABLES `ost_config` WRITE;
 /*!40000 ALTER TABLE `ost_config` DISABLE KEYS */;
-INSERT INTO `ost_config` VALUES (1,'core','admin_email','carlos.nunez@juntaex.es','2017-08-01 10:23:25'),(2,'core','helpdesk_url','http://172.22.13.78/','2017-08-01 10:23:25'),(3,'core','helpdesk_title','Soporte LARUEX','2017-08-01 10:23:25'),(4,'core','schema_signature','98ad7d550c26ac44340350912296e673','2017-08-01 10:23:25'),(5,'core','time_format','hh:mm a','2017-08-01 10:23:25'),(6,'core','date_format','MM/dd/y','2017-08-01 10:23:25'),(7,'core','datetime_format','MM/dd/y h:mm a','2017-08-01 10:23:25'),(8,'core','daydatetime_format','EEE, MMM d y h:mm a','2017-08-01 10:23:25'),(9,'core','default_priority_id','2','2017-08-01 10:23:25'),(10,'core','enable_daylight_saving','','2017-08-01 10:23:25'),(11,'core','reply_separator','-- reply above this line --','2017-08-01 10:23:25'),(12,'core','isonline','1','2017-08-01 10:23:25'),(13,'core','staff_ip_binding','','2017-08-01 10:23:25'),(14,'core','staff_max_logins','4','2017-08-01 10:23:25'),(15,'core','staff_login_timeout','2','2017-08-01 10:23:25'),(16,'core','staff_session_timeout','30','2017-08-01 10:23:25'),(17,'core','passwd_reset_period','0','2017-08-02 09:17:55'),(18,'core','client_max_logins','4','2017-08-01 10:23:25'),(19,'core','client_login_timeout','2','2017-08-01 10:23:25'),(20,'core','client_session_timeout','30','2017-08-01 10:23:25'),(21,'core','max_page_size','25','2017-08-01 10:23:25'),(22,'core','max_open_tickets','0','2017-08-02 09:31:37'),(23,'core','autolock_minutes','3','2017-08-01 10:23:25'),(24,'core','default_smtp_id','0','2017-08-01 12:53:06'),(25,'core','use_email_priority','','2017-08-01 10:23:25'),(26,'core','enable_kb','','2017-08-01 10:23:25'),(27,'core','enable_premade','1','2017-08-01 10:23:25'),(28,'core','enable_captcha','','2017-08-01 10:23:25'),(29,'core','enable_auto_cron','','2017-08-01 10:23:25'),(30,'core','enable_mail_polling','','2017-08-01 10:23:25'),(31,'core','send_sys_errors','0','2017-08-02 05:57:54'),(32,'core','send_sql_errors','1','2017-08-01 10:23:25'),(33,'core','send_login_errors','1','2017-08-01 10:23:25'),(34,'core','save_email_headers','1','2017-08-01 10:23:25'),(35,'core','strip_quoted_reply','1','2017-08-01 10:23:25'),(36,'core','ticket_autoresponder','','2017-08-01 10:23:25'),(37,'core','message_autoresponder','','2017-08-01 10:23:25'),(38,'core','ticket_notice_active','1','2017-08-01 10:23:25'),(39,'core','ticket_alert_active','1','2017-08-01 10:23:25'),(40,'core','ticket_alert_admin','0','2017-08-02 09:48:06'),(41,'core','ticket_alert_dept_manager','1','2017-08-01 10:23:25'),(42,'core','ticket_alert_dept_members','','2017-08-01 10:23:25'),(43,'core','message_alert_active','1','2017-08-01 10:23:25'),(44,'core','message_alert_laststaff','1','2017-08-01 10:23:25'),(45,'core','message_alert_assigned','1','2017-08-01 10:23:25'),(46,'core','message_alert_dept_manager','','2017-08-01 10:23:25'),(47,'core','note_alert_active','0','2017-08-02 05:57:54'),(48,'core','note_alert_laststaff','1','2017-08-01 10:23:25'),(49,'core','note_alert_assigned','1','2017-08-01 10:23:25'),(50,'core','note_alert_dept_manager','','2017-08-01 10:23:25'),(51,'core','transfer_alert_active','0','2017-08-02 05:57:54'),(52,'core','transfer_alert_assigned','','2017-08-01 10:23:25'),(53,'core','transfer_alert_dept_manager','1','2017-08-01 10:23:25'),(54,'core','transfer_alert_dept_members','','2017-08-01 10:23:25'),(55,'core','overdue_alert_active','1','2017-08-01 10:23:25'),(56,'core','overdue_alert_assigned','1','2017-08-01 10:23:25'),(57,'core','overdue_alert_dept_manager','1','2017-08-01 10:23:25'),(58,'core','overdue_alert_dept_members','','2017-08-01 10:23:25'),(59,'core','assigned_alert_active','1','2017-08-01 10:23:25'),(60,'core','assigned_alert_staff','1','2017-08-01 10:23:25'),(61,'core','assigned_alert_team_lead','1','2017-11-02 11:21:53'),(62,'core','assigned_alert_team_members','','2017-08-01 10:23:25'),(63,'core','auto_claim_tickets','1','2017-08-01 10:23:25'),(64,'core','show_related_tickets','0','2017-08-02 09:31:37'),(65,'core','show_assigned_tickets','1','2017-08-02 10:02:02'),(66,'core','show_answered_tickets','1','2017-08-02 09:31:37'),(67,'core','hide_staff_name','','2017-08-01 10:23:25'),(68,'core','overlimit_notice_active','','2017-08-01 10:23:25'),(69,'core','email_attachments','1','2017-08-01 10:23:25'),(70,'core','ticket_number_format','######','2017-08-01 10:23:25'),(71,'core','ticket_sequence_id','1','2017-08-02 11:01:04'),(72,'core','task_number_format','######','2017-08-02 05:58:18'),(73,'core','task_sequence_id','2','2017-08-01 10:23:25'),(74,'core','log_level','2','2017-08-01 10:23:25'),(75,'core','log_graceperiod','12','2017-08-01 10:23:25'),(76,'core','client_registration','closed','2017-08-02 05:52:47'),(77,'core','max_file_size','2097152','2017-08-02 05:52:01'),(78,'core','landing_page_id','1','2017-08-01 10:23:25'),(79,'core','thank-you_page_id','2','2017-08-01 10:23:25'),(80,'core','offline_page_id','3','2017-08-01 10:23:25'),(81,'core','system_language','es_ES','2017-09-25 10:46:18'),(82,'mysqlsearch','reindex','0','2017-08-01 10:59:06'),(83,'core','default_email_id','4','2017-08-01 12:53:06'),(84,'core','alert_email_id','0','2017-08-01 12:53:06'),(85,'core','default_dept_id','4','2017-08-01 12:34:50'),(86,'core','default_sla_id','0','2017-11-06 13:37:30'),(87,'core','default_template_id','2','2017-10-31 10:22:37'),(88,'core','default_timezone','Europe/Madrid','2017-08-02 06:21:56'),(89,'core','default_storage_bk','D','2017-08-01 10:59:14'),(90,'core','date_formats','','2017-08-01 10:59:14'),(91,'core','default_locale','','2017-08-01 10:59:14'),(92,'core','secondary_langs','','2017-09-25 10:18:45'),(93,'core','enable_avatars','1','2017-08-01 10:59:14'),(94,'core','enable_richtext','1','2017-08-01 10:59:14'),(95,'core','files_req_auth','1','2017-08-01 10:59:14'),(96,'core','client_logo_id','','2017-08-01 11:22:18'),(97,'core','staff_logo_id','','2017-08-01 11:22:18'),(98,'core','staff_backdrop_id','','2017-08-01 11:22:18'),(99,'core','verify_email_addrs','1','2017-08-01 12:53:06'),(100,'core','accept_unregistered_email','1','2017-08-01 12:53:06'),(101,'core','add_email_collabs','1','2017-08-01 12:53:06'),(102,'core','clients_only','1','2017-08-02 05:52:57'),(103,'core','client_verify_email','1','2017-08-02 05:52:37'),(104,'core','allow_auth_tokens','1','2017-08-02 05:52:37'),(105,'core','client_name_format','original','2017-08-02 05:52:37'),(106,'core','client_avatar','gravatar.mm','2017-08-02 05:52:37'),(107,'core','message_autoresponder_collabs','1','2017-08-02 05:57:54'),(108,'core','ticket_alert_acct_manager','','2017-08-02 05:57:54'),(109,'core','message_alert_acct_manager','','2017-08-02 05:57:54'),(110,'core','default_task_priority_id','1','2017-08-02 05:58:18'),(111,'core','default_task_sla_id','','2017-08-02 05:58:18'),(112,'core','task_alert_active','0','2017-08-02 05:58:18'),(113,'core','task_alert_admin','','2017-08-02 05:58:18'),(114,'core','task_alert_dept_manager','','2017-08-02 05:58:18'),(115,'core','task_alert_dept_members','','2017-08-02 05:58:18'),(116,'core','task_activity_alert_active','0','2017-08-02 05:58:18'),(117,'core','task_activity_alert_laststaff','','2017-08-02 05:58:18'),(118,'core','task_activity_alert_assigned','','2017-08-02 05:58:18'),(119,'core','task_activity_alert_dept_manager','','2017-08-02 05:58:18'),(120,'core','task_assignment_alert_active','0','2017-08-02 05:58:18'),(121,'core','task_assignment_alert_staff','','2017-08-02 05:58:18'),(122,'core','task_assignment_alert_team_lead','','2017-08-02 05:58:18'),(123,'core','task_assignment_alert_team_members','','2017-08-02 05:58:18'),(124,'core','task_transfer_alert_active','0','2017-08-02 05:58:18'),(125,'core','task_transfer_alert_assigned','','2017-08-02 05:58:18'),(126,'core','task_transfer_alert_dept_manager','','2017-08-02 05:58:18'),(127,'core','task_transfer_alert_dept_members','','2017-08-02 05:58:18'),(128,'core','task_overdue_alert_active','1','2017-09-27 07:16:10'),(129,'core','task_overdue_alert_assigned','1','2017-09-27 07:16:10'),(130,'core','task_overdue_alert_dept_manager','','2017-08-02 05:58:18'),(131,'core','task_overdue_alert_dept_members','','2017-08-02 05:58:18'),(132,'core','restrict_kb','','2017-08-02 05:59:04'),(133,'core','allow_pw_reset','1','2017-08-02 09:17:55'),(134,'core','pw_reset_window','30','2017-08-02 09:17:55'),(135,'core','agent_name_format','full','2017-08-02 09:17:55'),(136,'core','agent_avatar','gravatar.mm','2017-08-02 09:27:05'),(137,'core','default_help_topic','0','2017-08-02 09:31:37'),(138,'core','default_ticket_status_id','1','2017-08-02 09:31:37'),(139,'core','allow_client_updates','','2017-08-02 09:31:37'),(140,'core','ticket_lock','2','2017-08-02 09:31:37'),(141,'staff.1','datetime_format','','2017-09-25 10:26:29'),(142,'staff.1','default_from_name','','2017-09-25 10:26:29'),(143,'staff.1','thread_view_order','','2017-09-25 10:26:29');
+INSERT INTO `ost_config` VALUES (1,'core','admin_email','carlosnb@gmail.com','2017-12-02 10:10:41'),(2,'core','helpdesk_url','http://172.22.13.78/','2017-08-01 10:23:25'),(3,'core','helpdesk_title','Soporte LARUEX','2017-08-01 10:23:25'),(4,'core','schema_signature','98ad7d550c26ac44340350912296e673','2017-08-01 10:23:25'),(5,'core','time_format','hh:mm a','2017-08-01 10:23:25'),(6,'core','date_format','MM/dd/y','2017-08-01 10:23:25'),(7,'core','datetime_format','MM/dd/y h:mm a','2017-08-01 10:23:25'),(8,'core','daydatetime_format','EEE, MMM d y h:mm a','2017-08-01 10:23:25'),(9,'core','default_priority_id','2','2017-08-01 10:23:25'),(10,'core','enable_daylight_saving','','2017-08-01 10:23:25'),(11,'core','reply_separator','-- reply above this line --','2017-08-01 10:23:25'),(12,'core','isonline','1','2017-08-01 10:23:25'),(13,'core','staff_ip_binding','','2017-08-01 10:23:25'),(14,'core','staff_max_logins','4','2017-08-01 10:23:25'),(15,'core','staff_login_timeout','2','2017-08-01 10:23:25'),(16,'core','staff_session_timeout','30','2017-08-01 10:23:25'),(17,'core','passwd_reset_period','0','2017-08-02 09:17:55'),(18,'core','client_max_logins','4','2017-08-01 10:23:25'),(19,'core','client_login_timeout','2','2017-08-01 10:23:25'),(20,'core','client_session_timeout','30','2017-08-01 10:23:25'),(21,'core','max_page_size','25','2017-08-01 10:23:25'),(22,'core','max_open_tickets','0','2017-08-02 09:31:37'),(23,'core','autolock_minutes','3','2017-08-01 10:23:25'),(24,'core','default_smtp_id','0','2017-08-01 12:53:06'),(25,'core','use_email_priority','','2017-08-01 10:23:25'),(26,'core','enable_kb','','2017-08-01 10:23:25'),(27,'core','enable_premade','1','2017-08-01 10:23:25'),(28,'core','enable_captcha','','2017-08-01 10:23:25'),(29,'core','enable_auto_cron','','2017-08-01 10:23:25'),(30,'core','enable_mail_polling','','2017-08-01 10:23:25'),(31,'core','send_sys_errors','0','2017-08-02 05:57:54'),(32,'core','send_sql_errors','1','2017-08-01 10:23:25'),(33,'core','send_login_errors','1','2017-08-01 10:23:25'),(34,'core','save_email_headers','1','2017-08-01 10:23:25'),(35,'core','strip_quoted_reply','1','2017-08-01 10:23:25'),(36,'core','ticket_autoresponder','','2017-08-01 10:23:25'),(37,'core','message_autoresponder','','2017-08-01 10:23:25'),(38,'core','ticket_notice_active','1','2017-08-01 10:23:25'),(39,'core','ticket_alert_active','1','2017-08-01 10:23:25'),(40,'core','ticket_alert_admin','0','2017-08-02 09:48:06'),(41,'core','ticket_alert_dept_manager','1','2017-08-01 10:23:25'),(42,'core','ticket_alert_dept_members','','2017-08-01 10:23:25'),(43,'core','message_alert_active','1','2017-08-01 10:23:25'),(44,'core','message_alert_laststaff','1','2017-08-01 10:23:25'),(45,'core','message_alert_assigned','1','2017-08-01 10:23:25'),(46,'core','message_alert_dept_manager','','2017-08-01 10:23:25'),(47,'core','note_alert_active','0','2017-08-02 05:57:54'),(48,'core','note_alert_laststaff','1','2017-08-01 10:23:25'),(49,'core','note_alert_assigned','1','2017-08-01 10:23:25'),(50,'core','note_alert_dept_manager','','2017-08-01 10:23:25'),(51,'core','transfer_alert_active','0','2017-08-02 05:57:54'),(52,'core','transfer_alert_assigned','','2017-08-01 10:23:25'),(53,'core','transfer_alert_dept_manager','1','2017-08-01 10:23:25'),(54,'core','transfer_alert_dept_members','','2017-08-01 10:23:25'),(55,'core','overdue_alert_active','1','2017-08-01 10:23:25'),(56,'core','overdue_alert_assigned','1','2017-08-01 10:23:25'),(57,'core','overdue_alert_dept_manager','1','2017-08-01 10:23:25'),(58,'core','overdue_alert_dept_members','','2017-08-01 10:23:25'),(59,'core','assigned_alert_active','1','2017-08-01 10:23:25'),(60,'core','assigned_alert_staff','1','2017-08-01 10:23:25'),(61,'core','assigned_alert_team_lead','1','2017-11-02 11:21:53'),(62,'core','assigned_alert_team_members','','2017-08-01 10:23:25'),(63,'core','auto_claim_tickets','1','2017-08-01 10:23:25'),(64,'core','show_related_tickets','0','2017-08-02 09:31:37'),(65,'core','show_assigned_tickets','1','2017-08-02 10:02:02'),(66,'core','show_answered_tickets','1','2017-08-02 09:31:37'),(67,'core','hide_staff_name','','2017-08-01 10:23:25'),(68,'core','overlimit_notice_active','','2017-08-01 10:23:25'),(69,'core','email_attachments','1','2017-08-01 10:23:25'),(70,'core','ticket_number_format','######','2017-08-01 10:23:25'),(71,'core','ticket_sequence_id','1','2017-08-02 11:01:04'),(72,'core','task_number_format','######','2017-08-02 05:58:18'),(73,'core','task_sequence_id','2','2017-08-01 10:23:25'),(74,'core','log_level','2','2017-08-01 10:23:25'),(75,'core','log_graceperiod','12','2017-08-01 10:23:25'),(76,'core','client_registration','closed','2017-08-02 05:52:47'),(77,'core','max_file_size','2097152','2017-08-02 05:52:01'),(78,'core','landing_page_id','1','2017-08-01 10:23:25'),(79,'core','thank-you_page_id','2','2017-08-01 10:23:25'),(80,'core','offline_page_id','3','2017-08-01 10:23:25'),(81,'core','system_language','es_ES','2017-09-25 10:46:18'),(82,'mysqlsearch','reindex','0','2017-08-01 10:59:06'),(83,'core','default_email_id','4','2017-08-01 12:53:06'),(84,'core','alert_email_id','0','2017-08-01 12:53:06'),(85,'core','default_dept_id','4','2017-08-01 12:34:50'),(86,'core','default_sla_id','0','2017-11-06 13:37:30'),(87,'core','default_template_id','2','2017-10-31 10:22:37'),(88,'core','default_timezone','Europe/Madrid','2017-08-02 06:21:56'),(89,'core','default_storage_bk','D','2017-08-01 10:59:14'),(90,'core','date_formats','','2017-08-01 10:59:14'),(91,'core','default_locale','','2017-08-01 10:59:14'),(92,'core','secondary_langs','','2017-09-25 10:18:45'),(93,'core','enable_avatars','1','2017-08-01 10:59:14'),(94,'core','enable_richtext','1','2017-08-01 10:59:14'),(95,'core','files_req_auth','1','2017-08-01 10:59:14'),(96,'core','client_logo_id','','2017-08-01 11:22:18'),(97,'core','staff_logo_id','','2017-08-01 11:22:18'),(98,'core','staff_backdrop_id','','2017-08-01 11:22:18'),(99,'core','verify_email_addrs','1','2017-08-01 12:53:06'),(100,'core','accept_unregistered_email','1','2017-08-01 12:53:06'),(101,'core','add_email_collabs','1','2017-08-01 12:53:06'),(102,'core','clients_only','1','2017-08-02 05:52:57'),(103,'core','client_verify_email','1','2017-08-02 05:52:37'),(104,'core','allow_auth_tokens','1','2017-08-02 05:52:37'),(105,'core','client_name_format','original','2017-08-02 05:52:37'),(106,'core','client_avatar','gravatar.mm','2017-08-02 05:52:37'),(107,'core','message_autoresponder_collabs','1','2017-08-02 05:57:54'),(108,'core','ticket_alert_acct_manager','','2017-08-02 05:57:54'),(109,'core','message_alert_acct_manager','','2017-08-02 05:57:54'),(110,'core','default_task_priority_id','1','2017-08-02 05:58:18'),(111,'core','default_task_sla_id','','2017-08-02 05:58:18'),(112,'core','task_alert_active','0','2017-08-02 05:58:18'),(113,'core','task_alert_admin','','2017-08-02 05:58:18'),(114,'core','task_alert_dept_manager','','2017-08-02 05:58:18'),(115,'core','task_alert_dept_members','','2017-08-02 05:58:18'),(116,'core','task_activity_alert_active','0','2017-08-02 05:58:18'),(117,'core','task_activity_alert_laststaff','','2017-08-02 05:58:18'),(118,'core','task_activity_alert_assigned','','2017-08-02 05:58:18'),(119,'core','task_activity_alert_dept_manager','','2017-08-02 05:58:18'),(120,'core','task_assignment_alert_active','0','2017-08-02 05:58:18'),(121,'core','task_assignment_alert_staff','','2017-08-02 05:58:18'),(122,'core','task_assignment_alert_team_lead','','2017-08-02 05:58:18'),(123,'core','task_assignment_alert_team_members','','2017-08-02 05:58:18'),(124,'core','task_transfer_alert_active','0','2017-08-02 05:58:18'),(125,'core','task_transfer_alert_assigned','','2017-08-02 05:58:18'),(126,'core','task_transfer_alert_dept_manager','','2017-08-02 05:58:18'),(127,'core','task_transfer_alert_dept_members','','2017-08-02 05:58:18'),(128,'core','task_overdue_alert_active','1','2017-09-27 07:16:10'),(129,'core','task_overdue_alert_assigned','1','2017-09-27 07:16:10'),(130,'core','task_overdue_alert_dept_manager','','2017-08-02 05:58:18'),(131,'core','task_overdue_alert_dept_members','','2017-08-02 05:58:18'),(132,'core','restrict_kb','','2017-08-02 05:59:04'),(133,'core','allow_pw_reset','1','2017-08-02 09:17:55'),(134,'core','pw_reset_window','30','2017-08-02 09:17:55'),(135,'core','agent_name_format','full','2017-08-02 09:17:55'),(136,'core','agent_avatar','gravatar.mm','2017-08-02 09:27:05'),(137,'core','default_help_topic','0','2017-08-02 09:31:37'),(138,'core','default_ticket_status_id','1','2017-08-02 09:31:37'),(139,'core','allow_client_updates','','2017-08-02 09:31:37'),(140,'core','ticket_lock','2','2017-08-02 09:31:37'),(141,'staff.1','datetime_format','','2017-09-25 10:26:29'),(142,'staff.1','default_from_name','','2017-09-25 10:26:29'),(143,'staff.1','thread_view_order','','2017-09-25 10:26:29');
 /*!40000 ALTER TABLE `ost_config` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -192,7 +192,7 @@ CREATE TABLE `ost_content` (
 
 LOCK TABLES `ost_content` WRITE;
 /*!40000 ALTER TABLE `ost_content` DISABLE KEYS */;
-INSERT INTO `ost_content` VALUES (1,1,'landing','Landing','<h1>Welcome to the Support Center</h1> <p> In order to streamline support requests and better serve you, we utilize a support ticket system. Every support request is assigned a unique ticket number which you can use to track the progress and responses online. For your reference we provide complete archives and history of all your support requests. A valid email address is required to submit a ticket. </p>','The Landing Page refers to the content of the Customer Portal\'s initial view. The template modifies the content seen above the two links <strong>Open a New Ticket</strong> and <strong>Check Ticket Status</strong>.','2017-08-01 12:23:25','2017-08-01 12:23:25'),(2,1,'thank-you','Thank You','<div>%{ticket.name},\n<br>\n<br>\nThank you for contacting us.\n<br>\n<br>\nA support ticket request has been created and a representative will be\ngetting back to you shortly if necessary.</p>\n<br>\n<br>\nSupport Team\n</div>','This template defines the content displayed on the Thank-You page after a\nClient submits a new ticket in the Client Portal.','2017-08-01 12:23:25','2017-08-01 12:23:25'),(3,1,'offline','Offline','<div><h1>\n<span style=\"font-size: medium\">Support Ticket System Offline</span>\n</h1>\n<p>Thank you for your interest in contacting us.</p>\n<p>Our helpdesk is offline at the moment, please check back at a later\ntime.</p>\n</div>','The Offline Page appears in the Customer Portal when the Help Desk is offline.','2017-08-01 12:23:25','2017-08-01 12:23:25'),(4,1,'registration-staff','Welcome to osTicket','<h3><strong>Hi %{recipient.name.first},</strong></h3> <div> We\'ve created an account for you at our help desk at %{url}.<br /> <br /> Please follow the link below to confirm your account and gain access to your tickets.<br /> <br /> <a href=\"%{link}\">%{link}</a><br /> <br /> <em style=\"font-size: small\">Your friendly Customer Support System<br /> %{company.name}</em> </div>','This template defines the initial email (optional) sent to Agents when an account is created on their behalf.','2017-08-01 12:23:25','2017-08-01 12:23:25'),(5,1,'pwreset-staff','osTicket Staff Password Reset','<h3><strong>Hi %{staff.name.first},</strong></h3> <div> A password reset request has been submitted on your behalf for the helpdesk at %{url}.<br /> <br /> If you feel that this has been done in error, delete and disregard this email. Your account is still secure and no one has been given access to it. It is not locked and your password has not been reset. Someone could have mistakenly entered your email address.<br /> <br /> Follow the link below to login to the help desk and change your password.<br /> <br /> <a href=\"%{link}\">%{link}</a><br /> <br /> <em style=\"font-size: small\">Your friendly Customer Support System</em> <br /> <img src=\"cid:b56944cb4722cc5cda9d1e23a3ea7fbc\" alt=\"Powered by osTicket\" width=\"126\" height=\"19\" style=\"width: 126px\" /> </div>','This template defines the email sent to Staff who select the <strong>Forgot My Password</strong> link on the Staff Control Panel Log In page.','2017-08-01 12:23:25','2017-08-01 12:23:25'),(6,1,'banner-staff','Authentication Required','','This is the initial message and banner shown on the Staff Log In page. The first input field refers to the red-formatted text that appears at the top. The latter textarea is for the banner content which should serve as a disclaimer.','2017-08-01 12:23:25','2017-08-01 12:23:25'),(7,1,'registration-client','Welcome to %{company.name}','<h3><strong>Hi %{recipient.name.first},</strong></h3> <div> We\'ve created an account for you at our help desk at %{url}.<br /> <br /> Please follow the link below to confirm your account and gain access to your tickets.<br /> <br /> <a href=\"%{link}\">%{link}</a><br /> <br /> <em style=\"font-size: small\">Your friendly Customer Support System <br /> %{company.name}</em> </div>','This template defines the email sent to Clients when their account has been created in the Client Portal or by an Agent on their behalf. This email serves as an email address verification. Please use %{link} somewhere in the body.','2017-08-01 12:23:25','2017-08-01 12:23:25'),(8,1,'pwreset-client','%{company.name} Help Desk Access','<h3><strong>Hi %{user.name.first},</strong></h3> <div> A password reset request has been submitted on your behalf for the helpdesk at %{url}.<br /> <br /> If you feel that this has been done in error, delete and disregard this email. Your account is still secure and no one has been given access to it. It is not locked and your password has not been reset. Someone could have mistakenly entered your email address.<br /> <br /> Follow the link below to login to the help desk and change your password.<br /> <br /> <a href=\"%{link}\">%{link}</a><br /> <br /> <em style=\"font-size: small\">Your friendly Customer Support System <br /> %{company.name}</em> </div>','This template defines the email sent to Clients who select the <strong>Forgot My Password</strong> link on the Client Log In page.','2017-08-01 12:23:25','2017-08-01 12:23:25'),(9,1,'banner-client','Sign in to %{company.name}','To better serve you, we encourage our Clients to register for an account.','This composes the header on the Client Log In page. It can be useful to inform your Clients about your log in and registration policies.','2017-08-01 12:23:25','2017-08-01 12:23:25'),(10,1,'registration-confirm','Account registration','<div><strong>Thanks for registering for an account.</strong><br/> <br /> We\'ve just sent you an email to the address you entered. Please follow the link in the email to confirm your account and gain access to your tickets. </div>','This templates defines the page shown to Clients after completing the registration form. The template should mention that the system is sending them an email confirmation link and what is the next step in the registration process.','2017-08-01 12:23:25','2017-08-01 12:23:25'),(11,1,'registration-thanks','Account Confirmed!','<div> <strong>Thanks for registering for an account.</strong><br /> <br /> You\'ve confirmed your email address and successfully activated your account. You may proceed to open a new ticket or manage existing tickets.<br /> <br /> <em>Your friendly support center</em><br /> %{company.name} </div>','This template defines the content displayed after Clients successfully register by confirming their account. This page should inform the user that registration is complete and that the Client can now submit a ticket or access existing tickets.','2017-08-01 12:23:25','2017-08-01 12:23:25'),(12,1,'access-link','Ticket [#%{ticket.number}] Access Link','<h3><strong>Hi %{recipient.name.first},</strong></h3> <div> An access link request for ticket #%{ticket.number} has been submitted on your behalf for the helpdesk at %{url}.<br /> <br /> Follow the link below to check the status of the ticket #%{ticket.number}.<br /> <br /> <a href=\"%{recipient.ticket_link}\">%{recipient.ticket_link}</a><br /> <br /> If you <strong>did not</strong> make the request, please delete and disregard this email. Your account is still secure and no one has been given access to the ticket. Someone could have mistakenly entered your email address.<br /> <br /> --<br /> %{company.name} </div>','This template defines the notification for Clients that an access link was sent to their email. The ticket number and email address trigger the access link.','2017-08-01 12:23:25','2017-08-01 12:23:25');
+INSERT INTO `ost_content` VALUES (1,1,'landing','Landing','<h1>Welcome to the Support Center</h1> <p> In order to streamline support requests and better serve you, we utilize a support ticket system. Every support request is assigned a unique ticket number which you can use to track the progress and responses online. For your reference we provide complete archives and history of all your support requests. A valid email address is required to submit a ticket. </p>','The Landing Page refers to the content of the Customer Portal\'s initial view. The template modifies the content seen above the two links <strong>Open a New Ticket</strong> and <strong>Check Ticket Status</strong>.','2017-08-01 12:23:25','2017-08-01 12:23:25'),(2,1,'thank-you','Thank You','<div>%{ticket.name},\n<br>\n<br>\nThank you for contacting us.\n<br>\n<br>\nA support ticket request has been created and a representative will be\ngetting back to you shortly if necessary.</p>\n<br>\n<br>\nSupport Team\n</div>','This template defines the content displayed on the Thank-You page after a\nClient submits a new ticket in the Client Portal.','2017-08-01 12:23:25','2017-08-01 12:23:25'),(3,1,'offline','Offline','<div><h1>\n<span style=\"font-size: medium\">Support Ticket System Offline</span>\n</h1>\n<p>Thank you for your interest in contacting us.</p>\n<p>Our helpdesk is offline at the moment, please check back at a later\ntime.</p>\n</div>','The Offline Page appears in the Customer Portal when the Help Desk is offline.','2017-08-01 12:23:25','2017-08-01 12:23:25'),(4,1,'registration-staff','Welcome to osTicket','<h3><strong>Hi %{recipient.name.first},</strong></h3> <div> We\'ve created an account for you at our help desk at %{url}.<br /> <br /> Please follow the link below to confirm your account and gain access to your tickets.<br /> <br /> <a href=\"%{link}\">%{link}</a><br /> <br /> <em style=\"font-size: small\">Your friendly Customer Support System<br /> %{company.name}</em> </div>','This template defines the initial email (optional) sent to Agents when an account is created on their behalf.','2017-08-01 12:23:25','2017-08-01 12:23:25'),(5,1,'pwreset-staff','osTicket Staff Password Reset','<h3><strong>Hi %{staff.name.first},</strong></h3> <div> A password reset request has been submitted on your behalf for the helpdesk at %{url}.<br /> <br /> If you feel that this has been done in error, delete and disregard this email. Your account is still secure and no one has been given access to it. It is not locked and your password has not been reset. Someone could have mistakenly entered your email address.<br /> <br /> Follow the link below to login to the help desk and change your password.<br /> <br /> <a href=\"%{link}\">%{link}</a><br /> <br /> <em style=\"font-size: small\">Your friendly Customer Support System</em> <br /> <img src=\"cid:b56944cb4722cc5cda9d1e23a3ea7fbc\" alt=\"Powered by osTicket\" width=\"126\" height=\"19\" style=\"width: 126px\" /> </div>','This template defines the email sent to Staff who select the <strong>Forgot My Password</strong> link on the Staff Control Panel Log In page.','2017-08-01 12:23:25','2017-08-01 12:23:25'),(6,1,'banner-staff','Authentication Required','','This is the initial message and banner shown on the Staff Log In page. The first input field refers to the red-formatted text that appears at the top. The latter textarea is for the banner content which should serve as a disclaimer.','2017-08-01 12:23:25','2017-08-01 12:23:25'),(7,1,'registration-client','Welcome to %{company.name}','<h3><strong>Hi %{recipient.name.first},</strong></h3> <div> We\'ve created an account for you at our help desk at %{url}.<br /> <br /> Please follow the link below to confirm your account and gain access to your tickets.<br /> <br /> <a href=\"%{link}\">%{link}</a><br /> <br /> <em style=\"font-size: small\">Your friendly Customer Support System <br /> %{company.name}</em> </div>','This template defines the email sent to Clients when their account has been created in the Client Portal or by an Agent on their behalf. This email serves as an email address verification. Please use %{link} somewhere in the body.','2017-08-01 12:23:25','2017-08-01 12:23:25'),(8,1,'pwreset-client','%{company.name} Help Desk Access','<h3><strong>Hi %{user.name.first},</strong></h3> <div> A password reset request has been submitted on your behalf for the helpdesk at %{url}.<br /> <br /> If you feel that this has been done in error, delete and disregard this email. Your account is still secure and no one has been given access to it. It is not locked and your password has not been reset. Someone could have mistakenly entered your email address.<br /> <br /> Follow the link below to login to the help desk and change your password.<br /> <br /> <a href=\"%{link}\">%{link}</a><br /> <br /> <em style=\"font-size: small\">Your friendly Customer Support System <br /> %{company.name}</em> </div>','This template defines the email sent to Clients who select the <strong>Forgot My Password</strong> link on the Client Log In page.','2017-08-01 12:23:25','2017-08-01 12:23:25'),(9,1,'banner-client','Acceda a %{company.name}','','This composes the header on the Client Log In page. It can be useful to inform your Clients about your log in and registration policies.','2017-08-01 12:23:25','2017-08-01 12:23:25'),(10,1,'registration-confirm','Account registration','<div><strong>Thanks for registering for an account.</strong><br/> <br /> We\'ve just sent you an email to the address you entered. Please follow the link in the email to confirm your account and gain access to your tickets. </div>','This templates defines the page shown to Clients after completing the registration form. The template should mention that the system is sending them an email confirmation link and what is the next step in the registration process.','2017-08-01 12:23:25','2017-08-01 12:23:25'),(11,1,'registration-thanks','Account Confirmed!','<div> <strong>Thanks for registering for an account.</strong><br /> <br /> You\'ve confirmed your email address and successfully activated your account. You may proceed to open a new ticket or manage existing tickets.<br /> <br /> <em>Your friendly support center</em><br /> %{company.name} </div>','This template defines the content displayed after Clients successfully register by confirming their account. This page should inform the user that registration is complete and that the Client can now submit a ticket or access existing tickets.','2017-08-01 12:23:25','2017-08-01 12:23:25'),(12,1,'access-link','Ticket [#%{ticket.number}] Access Link','<h3><strong>Hi %{recipient.name.first},</strong></h3> <div> An access link request for ticket #%{ticket.number} has been submitted on your behalf for the helpdesk at %{url}.<br /> <br /> Follow the link below to check the status of the ticket #%{ticket.number}.<br /> <br /> <a href=\"%{recipient.ticket_link}\">%{recipient.ticket_link}</a><br /> <br /> If you <strong>did not</strong> make the request, please delete and disregard this email. Your account is still secure and no one has been given access to the ticket. Someone could have mistakenly entered your email address.<br /> <br /> --<br /> %{company.name} </div>','This template defines the notification for Clients that an access link was sent to their email. The ticket number and email address trigger the access link.','2017-08-01 12:23:25','2017-08-01 12:23:25');
 /*!40000 ALTER TABLE `ost_content` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -255,7 +255,7 @@ CREATE TABLE `ost_draft` (
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -318,7 +318,7 @@ CREATE TABLE `ost_email` (
 
 LOCK TABLES `ost_email` WRITE;
 /*!40000 ALTER TABLE `ost_email` DISABLE KEYS */;
-INSERT INTO `ost_email` VALUES (4,0,0,0,0,'laruextickets@gmail.com','LARUEX Gmail','laruextickets@gmail.com','$2$JDEktkgsgZt4xs/boNqXrULW0he2Lp/5IpcbaNePRD9iP/A=',1,'pop.gmail.com','POP','SSL',995,5,10,NULL,1,0,NULL,NULL,1,'smtp.gmail.com',587,1,1,0,NULL,'2017-08-01 14:51:08','2017-08-01 14:51:08');
+INSERT INTO `ost_email` VALUES (4,0,0,0,0,'laruextickets@gmail.com','LARUEX Gmail','laruextickets@gmail.com','$2$JDEkMsdxLVsuzTQhdqozbos8aevM2QewoCH62sgWYxy+ZUQ=',1,'pop.gmail.com','POP','SSL',995,5,10,NULL,1,0,NULL,NULL,1,'smtp.gmail.com',587,1,1,0,NULL,'2017-08-01 14:51:08','2017-12-06 19:50:34');
 /*!40000 ALTER TABLE `ost_email` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -427,7 +427,6 @@ DROP TABLE IF EXISTS `ost_equipment`;
 CREATE TABLE `ost_equipment` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(60) NOT NULL,
-  `description` text,
   `status_id` int(11) unsigned DEFAULT NULL,
   `bookable` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `dept_id` int(11) unsigned NOT NULL DEFAULT '0',
@@ -440,7 +439,7 @@ CREATE TABLE `ost_equipment` (
   PRIMARY KEY (`id`),
   KEY `status_id` (`status_id`),
   CONSTRAINT `ost_equipment_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `ost_equipment_status` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -729,7 +728,7 @@ CREATE TABLE `ost_file` (
   KEY `ft` (`ft`),
   KEY `key` (`key`),
   KEY `signature` (`signature`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -882,7 +881,7 @@ CREATE TABLE `ost_form` (
   `created` datetime NOT NULL,
   `updated` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -891,7 +890,7 @@ CREATE TABLE `ost_form` (
 
 LOCK TABLES `ost_form` WRITE;
 /*!40000 ALTER TABLE `ost_form` DISABLE KEYS */;
-INSERT INTO `ost_form` VALUES (1,NULL,'U',1,'Contact Information',NULL,'',NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(2,NULL,'T',1,'Detalles del ticket','','','This form will be attached to every ticket, regardless of its source.\r\nYou can add any fields to this form and they will be available to all\r\ntickets, and will be searchable with advanced search and filterable.','2017-08-01 12:23:24','2017-10-23 14:29:10'),(3,NULL,'C',1,'Company Information','Details available in email templates','',NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(4,NULL,'O',1,'Organization Information','Details on user organization','',NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(5,NULL,'A',1,'Detalles de la tarea','Por favor, describa la tarea.','','This form is used to create a task.','2017-08-01 12:23:24','2017-11-02 11:58:45'),(6,NULL,'L1',1,'Ticket Status Properties','Properties that can be set on a ticket status.','',NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(7,NULL,'L2',1,'Área Properties',NULL,'',NULL,'2017-08-01 14:59:58','2017-08-01 14:59:58'),(8,NULL,'L3',1,'Categoría Properties',NULL,'',NULL,'2017-08-01 15:01:25','2017-08-01 15:01:25'),(9,NULL,'L4',1,'Tipo de localización Properties',NULL,'',NULL,'2017-08-01 15:02:32','2017-08-01 15:02:32'),(10,NULL,'L5',1,'Localización Properties',NULL,'',NULL,'2017-08-01 15:04:03','2017-08-01 15:04:03'),(11,NULL,'G',1,'Notificación y cierre de desviaciones',NULL,'',NULL,'2017-08-02 08:03:27','2017-08-02 08:03:27'),(12,NULL,'E',1,'Detalles de equipamiento','Please Describe The Equipment','','This form is use to add equipment','2017-08-10 11:52:35','2017-09-29 12:35:07'),(13,NULL,'R',1,'Reservation Information',NULL,'',NULL,'2017-08-25 13:53:58','2017-08-25 13:53:58'),(14,NULL,'S',1,'Información de programación de tarea',NULL,'',NULL,'2017-09-19 09:38:01','2017-11-02 12:29:23');
+INSERT INTO `ost_form` VALUES (1,NULL,'U',1,'Contact Information',NULL,'',NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(2,NULL,'T',1,'Detalles del ticket','','','This form will be attached to every ticket, regardless of its source.\r\nYou can add any fields to this form and they will be available to all\r\ntickets, and will be searchable with advanced search and filterable.','2017-08-01 12:23:24','2017-10-23 14:29:10'),(3,NULL,'C',1,'Company Information','Details available in email templates','',NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(4,NULL,'O',1,'Organization Information','Details on user organization','',NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(5,NULL,'A',1,'Detalles de la tarea','Por favor, describa la tarea.','','This form is used to create a task.','2017-08-01 12:23:24','2017-11-02 11:58:45'),(6,NULL,'L1',1,'Ticket Status Properties','Properties that can be set on a ticket status.','',NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(7,NULL,'L2',1,'Área Properties',NULL,'',NULL,'2017-08-01 14:59:58','2017-08-01 14:59:58'),(8,NULL,'L3',1,'Categoría Properties',NULL,'',NULL,'2017-08-01 15:01:25','2017-08-01 15:01:25'),(9,NULL,'L4',1,'Tipo de localización Properties',NULL,'',NULL,'2017-08-01 15:02:32','2017-08-01 15:02:32'),(10,NULL,'L5',1,'Localización Properties',NULL,'',NULL,'2017-08-01 15:04:03','2017-08-01 15:04:03'),(11,NULL,'G',1,'Notificación y cierre de desviaciones',NULL,'',NULL,'2017-08-02 08:03:27','2017-08-02 08:03:27'),(12,NULL,'E',1,'Detalles de equipamiento','Please Describe The Equipment','','This form is use to add equipment','2017-08-10 11:52:35','2017-09-29 12:35:07'),(13,NULL,'R',1,'Reservation Information',NULL,'',NULL,'2017-08-25 13:53:58','2017-08-25 13:53:58'),(14,NULL,'S',1,'Información de programación de tarea',NULL,'',NULL,'2017-09-19 09:38:01','2017-11-02 12:29:23'),(15,NULL,'L6',1,'Periodicidad Properties',NULL,'',NULL,'2017-12-12 18:56:34','2017-12-12 18:56:34');
 /*!40000 ALTER TABLE `ost_form` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -913,7 +912,7 @@ CREATE TABLE `ost_form_entry` (
   `updated` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `entry_lookup` (`object_type`,`object_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=144 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -922,7 +921,7 @@ CREATE TABLE `ost_form_entry` (
 
 LOCK TABLES `ost_form_entry` WRITE;
 /*!40000 ALTER TABLE `ost_form_entry` DISABLE KEYS */;
-INSERT INTO `ost_form_entry` VALUES (2,3,NULL,'C',1,NULL,'2017-08-01 12:23:25','2017-08-01 12:23:25'),(5,1,2,'U',1,NULL,'2017-08-02 08:29:32','2017-08-02 08:29:32'),(6,1,3,'U',1,NULL,'2017-08-02 08:31:41','2017-08-02 08:31:41'),(7,1,4,'U',1,NULL,'2017-08-02 08:32:46','2017-08-02 08:32:46'),(8,1,5,'U',1,NULL,'2017-08-02 08:33:23','2017-08-02 08:33:23'),(9,1,6,'U',1,NULL,'2017-08-02 08:34:31','2017-08-02 08:34:31'),(10,1,7,'U',1,NULL,'2017-08-02 08:36:14','2017-08-02 08:36:14'),(11,1,8,'U',1,NULL,'2017-08-02 08:37:09','2017-08-02 08:37:09');
+INSERT INTO `ost_form_entry` VALUES (2,3,NULL,'C',1,NULL,'2017-08-01 12:23:25','2017-08-01 12:23:25'),(5,1,2,'U',1,NULL,'2017-08-02 08:29:32','2017-08-02 08:29:32'),(6,1,3,'U',1,NULL,'2017-08-02 08:31:41','2017-08-02 08:31:41'),(7,1,4,'U',1,NULL,'2017-08-02 08:32:46','2017-08-02 08:32:46'),(10,1,7,'U',1,NULL,'2017-08-02 08:36:14','2017-08-02 08:36:14'),(11,1,8,'U',1,NULL,'2017-08-02 08:37:09','2017-08-02 08:37:09');
 /*!40000 ALTER TABLE `ost_form_entry` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -948,7 +947,7 @@ CREATE TABLE `ost_form_entry_values` (
 
 LOCK TABLES `ost_form_entry_values` WRITE;
 /*!40000 ALTER TABLE `ost_form_entry_values` DISABLE KEYS */;
-INSERT INTO `ost_form_entry_values` VALUES (2,23,'LARUEX',NULL),(2,24,NULL,NULL),(2,25,NULL,NULL),(2,26,NULL,NULL),(5,3,NULL,NULL),(5,4,NULL,NULL),(6,3,NULL,NULL),(6,4,NULL,NULL),(7,3,NULL,NULL),(7,4,NULL,NULL),(8,3,NULL,NULL),(8,4,NULL,NULL),(9,3,NULL,NULL),(9,4,NULL,NULL),(10,3,NULL,NULL),(10,4,NULL,NULL),(11,3,NULL,NULL),(11,4,NULL,NULL);
+INSERT INTO `ost_form_entry_values` VALUES (2,23,'LARUEX',NULL),(2,24,NULL,NULL),(2,25,NULL,NULL),(2,26,NULL,NULL),(5,3,NULL,NULL),(5,4,NULL,NULL),(6,3,NULL,NULL),(6,4,NULL,NULL),(7,3,NULL,NULL),(7,4,NULL,NULL),(10,3,NULL,NULL),(10,4,NULL,NULL),(11,3,NULL,NULL),(11,4,NULL,NULL);
 /*!40000 ALTER TABLE `ost_form_entry_values` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -972,7 +971,7 @@ CREATE TABLE `ost_form_field` (
   `created` datetime NOT NULL,
   `updated` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -981,7 +980,7 @@ CREATE TABLE `ost_form_field` (
 
 LOCK TABLES `ost_form_field` WRITE;
 /*!40000 ALTER TABLE `ost_form_field` DISABLE KEYS */;
-INSERT INTO `ost_form_field` VALUES (1,1,489379,'text','Email Address','email','{\"size\":40,\"length\":64,\"validator\":\"email\"}',1,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(2,1,489379,'text','Full Name','name','{\"size\":40,\"length\":64}',2,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(3,1,13057,'phone','Phone Number','phone',NULL,3,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(4,1,12289,'memo','Internal Notes','notes','{\"rows\":4,\"cols\":40}',4,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(20,2,489249,'text','Asunto','subject','{\"size\":\"40\",\"length\":\"50\",\"validator\":\"\",\"regex\":\"\",\"validator-error\":\"\",\"placeholder\":\"\"}',1,NULL,'2017-08-01 12:23:24','2017-10-23 14:32:04'),(21,2,489251,'thread','Descripción','message','{\"attachments\":true,\"size\":2097152,\"mimetypes\":null,\"extensions\":\"\",\"max\":\"\"}',2,'Details on the reason(s) for opening the ticket.','2017-08-01 12:23:24','2017-10-23 14:29:10'),(22,2,266673,'priority','Nivel de prioridad','priority','{\"prompt\":\"\",\"default\":\"\"}',3,NULL,'2017-08-01 12:23:24','2017-11-13 11:31:41'),(23,3,291233,'text','Company Name','name','{\"size\":40,\"length\":64}',1,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(24,3,12545,'text','Website','website','{\"size\":40,\"length\":64}',2,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(25,3,12545,'phone','Phone Number','phone','{\"ext\":false}',3,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(26,3,12545,'memo','Address','address','{\"rows\":2,\"cols\":40,\"html\":false,\"length\":100}',4,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(27,4,489379,'text','Name','name','{\"size\":40,\"length\":64}',1,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(28,4,13057,'memo','Address','address','{\"rows\":2,\"cols\":40,\"length\":100,\"html\":false}',2,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(29,4,13057,'phone','Phone','phone',NULL,3,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(30,4,13057,'text','Website','website','{\"size\":40,\"length\":0}',4,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(31,4,12289,'memo','Internal Notes','notes','{\"rows\":4,\"cols\":40}',5,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(32,5,290977,'text','Título','title','{\"size\":40,\"length\":50}',1,NULL,'2017-08-01 12:23:24','2017-11-02 12:53:05'),(33,5,282867,'thread','Descripción','description','{\"attachments\":true,\"size\":2097152,\"mimetypes\":null,\"extensions\":\"\",\"max\":\"\"}',2,'Details on the reason(s) for creating the task.','2017-08-01 12:23:24','2017-11-02 12:53:05'),(34,6,487665,'state','State','state','{\"prompt\":\"State of a ticket\"}',1,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(35,6,471073,'memo','Description','description','{\"rows\":2,\"cols\":40,\"html\":false,\"length\":100}',3,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(36,10,29697,'list-4','Tipo','tipo','{\"multiselect\":false,\"widget\":\"dropdown\",\"validator-error\":\"\",\"prompt\":\"\",\"default\":null}',1,NULL,'2017-08-01 15:04:03','2017-08-01 15:04:30'),(37,10,29697,'list-2','Área','variable','{\"multiselect\":false,\"widget\":\"dropdown\",\"validator-error\":\"\",\"prompt\":\"\",\"default\":null}',2,NULL,'2017-08-01 15:04:03','2017-08-01 15:04:42'),(38,11,30465,'list-3','Categoría','categoria',NULL,1,NULL,'2017-08-02 08:03:27','2017-08-02 08:03:27'),(39,11,30465,'list-5','Localización','localizacion',NULL,2,NULL,'2017-08-02 08:03:27','2017-08-02 08:03:27'),(41,11,5377,'assignee','Preasignación','preasignacion','{\"prompt\":\"\"}',3,NULL,'2017-08-02 08:03:27','2017-11-02 12:09:23'),(43,11,13069,'memo','Análisis de causas','causas','{\"cols\":\"40\",\"rows\":\"4\",\"length\":\"\",\"html\":true,\"placeholder\":\"\"}',5,NULL,'2017-08-02 08:05:15','2017-11-06 13:57:03'),(44,11,13069,'memo','Análisis de consecuencias','consecuencias','{\"cols\":\"40\",\"rows\":\"4\",\"length\":\"\",\"html\":true,\"placeholder\":\"\"}',6,NULL,'2017-08-02 08:05:15','2017-11-08 12:08:35'),(45,11,13057,'files','Ficheros adjuntos','adjuntos','{\"size\":2097152,\"mimetypes\":null,\"extensions\":\"\",\"max\":\"\"}',7,NULL,'2017-08-02 08:06:09','2017-10-23 14:36:56'),(46,12,290977,'text','Título','name','{\"size\":40,\"length\":50}',1,NULL,'2017-08-10 11:58:41','2017-09-28 13:53:57'),(48,12,12289,'memo','Descripción','description','{\"size\":\"16\",\"length\":\"30\",\"validator\":\"\",\"regex\":\"\",\"validator-error\":\"\",\"placeholder\":\"\"}',3,NULL,'2017-08-17 09:56:23','2017-09-28 13:53:57'),(49,12,12289,'bool','Permite reservas','bookable',NULL,4,NULL,'2017-08-17 13:41:52','2017-08-17 13:41:52'),(50,14,290977,'text','Título','title','{\"size\":40,\"length\":50}',1,NULL,'2017-09-19 12:48:37','2017-11-02 12:53:19'),(51,14,282867,'thread','Descripción','description',NULL,2,'Details on the reason(s) for creating the task.','2017-09-19 12:48:37','2017-11-02 12:53:19'),(52,12,28673,'department','Departamento preasignado','dept',NULL,5,NULL,'2017-09-28 11:02:11','2017-09-29 08:46:45'),(53,11,30465,'memo','Descripción','descripcion',NULL,4,NULL,'2017-10-23 14:32:51','2017-10-23 14:33:00'),(54,5,28673,'list-5','Localización','localizacion','{\"multiselect\":false,\"widget\":\"dropdown\",\"validator-error\":\"\",\"prompt\":\"\",\"default\":null}',3,NULL,'2017-11-02 11:56:10','2017-11-02 11:56:20'),(55,14,28673,'list-5','Localización','localizacion',NULL,3,NULL,'2017-11-02 12:29:23','2017-11-02 12:29:23'),(56,11,12293,'memo','Acciones realizadas','acciones','{\"cols\":\"40\",\"rows\":\"4\",\"length\":\"\",\"html\":true,\"placeholder\":\"\"}',8,NULL,'2017-11-13 08:06:09','2017-11-13 08:08:13');
+INSERT INTO `ost_form_field` VALUES (1,1,489379,'text','Email Address','email','{\"size\":40,\"length\":64,\"validator\":\"email\"}',1,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(2,1,489379,'text','Full Name','name','{\"size\":40,\"length\":64}',2,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(3,1,13057,'phone','Phone Number','phone',NULL,3,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(4,1,12289,'memo','Internal Notes','notes','{\"rows\":4,\"cols\":40}',4,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(20,2,489249,'text','Asunto','subject','{\"size\":\"40\",\"length\":\"50\",\"validator\":\"\",\"regex\":\"\",\"validator-error\":\"\",\"placeholder\":\"\"}',1,NULL,'2017-08-01 12:23:24','2017-10-23 14:32:04'),(21,2,489251,'thread','Descripción','message','{\"attachments\":true,\"size\":2097152,\"mimetypes\":null,\"extensions\":\"\",\"max\":\"\"}',2,'Details on the reason(s) for opening the ticket.','2017-08-01 12:23:24','2017-10-23 14:29:10'),(22,2,266673,'priority','Nivel de prioridad','priority','{\"prompt\":\"\",\"default\":\"\"}',3,NULL,'2017-08-01 12:23:24','2017-11-13 11:31:41'),(23,3,291233,'text','Company Name','name','{\"size\":40,\"length\":64}',1,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(24,3,12545,'text','Website','website','{\"size\":40,\"length\":64}',2,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(25,3,12545,'phone','Phone Number','phone','{\"ext\":false}',3,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(26,3,12545,'memo','Address','address','{\"rows\":2,\"cols\":40,\"html\":false,\"length\":100}',4,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(27,4,489379,'text','Name','name','{\"size\":40,\"length\":64}',1,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(28,4,13057,'memo','Address','address','{\"rows\":2,\"cols\":40,\"length\":100,\"html\":false}',2,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(29,4,13057,'phone','Phone','phone',NULL,3,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(30,4,13057,'text','Website','website','{\"size\":40,\"length\":0}',4,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(31,4,12289,'memo','Internal Notes','notes','{\"rows\":4,\"cols\":40}',5,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(32,5,290977,'text','Título','title','{\"size\":40,\"length\":50}',1,NULL,'2017-08-01 12:23:24','2017-11-02 12:53:05'),(33,5,282867,'thread','Descripción','description','{\"attachments\":true,\"size\":2097152,\"mimetypes\":null,\"extensions\":\"\",\"max\":\"\"}',2,'Details on the reason(s) for creating the task.','2017-08-01 12:23:24','2017-12-09 13:31:48'),(34,6,487665,'state','State','state','{\"prompt\":\"State of a ticket\"}',1,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(35,6,471073,'memo','Description','description','{\"rows\":2,\"cols\":40,\"html\":false,\"length\":100}',3,NULL,'2017-08-01 12:23:24','2017-08-01 12:23:24'),(36,10,29697,'list-4','Tipo','tipo','{\"multiselect\":false,\"widget\":\"dropdown\",\"validator-error\":\"\",\"prompt\":\"\",\"default\":null}',1,NULL,'2017-08-01 15:04:03','2017-08-01 15:04:30'),(37,10,29697,'list-2','Área','variable','{\"multiselect\":false,\"widget\":\"dropdown\",\"validator-error\":\"\",\"prompt\":\"\",\"default\":null}',2,NULL,'2017-08-01 15:04:03','2017-08-01 15:04:42'),(38,11,30465,'list-3','Categoría','categoria',NULL,1,NULL,'2017-08-02 08:03:27','2017-08-02 08:03:27'),(39,11,30465,'list-5','Localización','localizacion',NULL,2,NULL,'2017-08-02 08:03:27','2017-08-02 08:03:27'),(41,11,5377,'assignee','Preasignación','preasignacion','{\"prompt\":\"\"}',3,NULL,'2017-08-02 08:03:27','2017-11-02 12:09:23'),(43,11,13069,'memo','Análisis de causas','causas','{\"cols\":\"40\",\"rows\":\"4\",\"length\":\"\",\"html\":true,\"placeholder\":\"\"}',5,NULL,'2017-08-02 08:05:15','2017-11-06 13:57:03'),(44,11,13069,'memo','Análisis de consecuencias','consecuencias','{\"cols\":\"40\",\"rows\":\"4\",\"length\":\"\",\"html\":true,\"placeholder\":\"\"}',6,NULL,'2017-08-02 08:05:15','2017-11-08 12:08:35'),(45,11,13057,'files','Ficheros adjuntos','adjuntos','{\"size\":2097152,\"mimetypes\":null,\"extensions\":\"\",\"max\":\"\"}',7,NULL,'2017-08-02 08:06:09','2017-10-23 14:36:56'),(46,12,290977,'text','Título','name','{\"size\":40,\"length\":50}',1,NULL,'2017-08-10 11:58:41','2017-09-28 13:53:57'),(48,12,12289,'memo','Descripción','description','{\"size\":\"16\",\"length\":\"30\",\"validator\":\"\",\"regex\":\"\",\"validator-error\":\"\",\"placeholder\":\"\"}',2,NULL,'2017-08-17 09:56:23','2017-12-15 18:45:11'),(49,12,12289,'bool','Permite reservas','bookable',NULL,3,NULL,'2017-08-17 13:41:52','2017-12-15 18:45:11'),(50,14,290977,'text','Título','title','{\"size\":40,\"length\":50}',1,NULL,'2017-09-19 12:48:37','2017-11-02 12:53:19'),(51,14,282867,'thread','Descripción','description','{\"attachments\":true,\"size\":2097152,\"mimetypes\":null,\"extensions\":\"\",\"max\":\"\"}',2,'Details on the reason(s) for creating the task.','2017-09-19 12:48:37','2017-12-09 16:17:14'),(52,12,20481,'department','Departamento preasignado','dept','{\"prompt\":\"\"}',4,NULL,'2017-09-28 11:02:11','2017-12-15 18:45:11'),(53,11,30465,'memo','Descripción','descripcion','{\"cols\":\"40\",\"rows\":\"4\",\"length\":\"\",\"html\":false,\"placeholder\":\"\"}',4,NULL,'2017-10-23 14:32:51','2017-10-23 14:33:00'),(54,5,28673,'list-5','Localización','localizacion','{\"multiselect\":false,\"widget\":\"dropdown\",\"validator-error\":\"\",\"prompt\":\"\",\"default\":null}',3,NULL,'2017-11-02 11:56:10','2017-11-02 11:56:20'),(55,14,28673,'list-5','Localización','localizacion',NULL,3,NULL,'2017-11-02 12:29:23','2017-11-02 12:29:23'),(56,11,12293,'memo','Acciones realizadas','acciones','{\"cols\":\"40\",\"rows\":\"4\",\"length\":\"\",\"html\":true,\"placeholder\":\"\"}',8,NULL,'2017-11-13 08:06:09','2017-11-13 08:08:13'),(57,12,28673,'list-5','Localización','localizacion',NULL,5,NULL,'2017-12-04 18:56:23','2017-12-15 18:45:11'),(58,12,12289,'text','Nº inventario','id_inventario',NULL,6,NULL,'2017-12-04 19:30:41','2017-12-15 18:45:11'),(59,5,12289,'datetime','Vencimiento','duedate','{\"time\":true,\"timezone\":null,\"gmt\":false,\"min\":0,\"max\":0,\"future\":true}',4,NULL,'2017-12-09 17:08:09','2017-12-15 17:52:05'),(60,14,28673,'list-6','Periodicidad','regularity',NULL,4,NULL,'2017-12-12 19:02:05','2017-12-12 19:32:25'),(61,14,28673,'text','Tiempo de resolución (días)','period','{\"size\":\"3\",\"length\":\"3\",\"validator\":\"number\",\"regex\":\"\",\"validator-error\":\"Debe introducir un n\\u00famero de d\\u00edas\",\"placeholder\":\"\"}',5,'Número de días que se conceden para completar la tarea','2017-12-12 19:04:12','2017-12-12 19:32:25'),(62,14,28673,'datetime','Inicio','start','{\"time\":true,\"timezone\":null,\"gmt\":false,\"min\":0,\"max\":0,\"future\":true}',6,'Fecha de creación de la primera tarea','2017-12-12 19:04:12','2017-12-15 17:52:35');
 /*!40000 ALTER TABLE `ost_form_field` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1112,7 +1111,7 @@ CREATE TABLE `ost_list` (
   `updated` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `type` (`type`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1121,7 +1120,7 @@ CREATE TABLE `ost_list` (
 
 LOCK TABLES `ost_list` WRITE;
 /*!40000 ALTER TABLE `ost_list` DISABLE KEYS */;
-INSERT INTO `ost_list` VALUES (1,'Ticket Status','Ticket Statuses','SortCol',13,'ticket-status','{\"handler\":\"TicketStatusList\"}','Ticket statuses','2017-08-01 12:23:24','2017-08-01 12:23:24'),(2,'Área','Áreas','SortCol',0,NULL,'',NULL,'2017-08-01 14:59:58','2017-08-01 14:59:58'),(3,'Categoría','Categorías','SortCol',0,NULL,'',NULL,'2017-08-01 15:01:25','2017-08-01 15:01:25'),(4,'Tipo de localización','Tipos de localización','SortCol',0,NULL,'',NULL,'2017-08-01 15:02:32','2017-08-01 15:02:32'),(5,'Localización','Localizaciones','SortCol',0,NULL,'',NULL,'2017-08-01 15:04:03','2017-08-01 15:04:03');
+INSERT INTO `ost_list` VALUES (1,'Ticket Status','Ticket Statuses','SortCol',13,'ticket-status','{\"handler\":\"TicketStatusList\"}','Ticket statuses','2017-08-01 12:23:24','2017-08-01 12:23:24'),(2,'Área','Áreas','SortCol',0,NULL,'',NULL,'2017-08-01 14:59:58','2017-08-01 14:59:58'),(3,'Categoría','Categorías','SortCol',0,NULL,'',NULL,'2017-08-01 15:01:25','2017-08-01 15:01:25'),(4,'Tipo de localización','Tipos de localización','SortCol',0,NULL,'',NULL,'2017-08-01 15:02:32','2017-08-01 15:02:32'),(5,'Localización','Localizaciones','SortCol',0,NULL,'',NULL,'2017-08-01 15:04:03','2017-08-01 15:04:03'),(6,'Periodicidad','Periodicidades','SortCol',0,NULL,'',NULL,'2017-12-12 18:56:34','2017-12-12 19:00:07');
 /*!40000 ALTER TABLE `ost_list` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1142,7 +1141,7 @@ CREATE TABLE `ost_list_items` (
   `properties` text,
   PRIMARY KEY (`id`),
   KEY `list_item_lookup` (`list_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1151,7 +1150,7 @@ CREATE TABLE `ost_list_items` (
 
 LOCK TABLES `ost_list_items` WRITE;
 /*!40000 ALTER TABLE `ost_list_items` DISABLE KEYS */;
-INSERT INTO `ost_list_items` VALUES (1,2,1,'Almaraz',NULL,1,'[]'),(2,2,1,'Cáceres',NULL,1,'[]'),(3,2,1,'Portugal',NULL,1,'[]'),(4,2,1,'Otra',NULL,1,'[]'),(5,3,1,'Hardware','HW',0,'[]'),(6,3,1,'Software','SW',0,'[]'),(7,4,1,'Estación',NULL,0,'[]'),(8,4,1,'Unidad móvil',NULL,0,'[]'),(9,4,1,'Otro',NULL,0,'[]'),(10,5,1,'Alerta2',NULL,0,'{\"36\":{\"7\":\"Estaci\\u00f3n\"},\"37\":{\"2\":\"C\\u00e1ceres\"}}'),(11,5,1,'Almaraz',NULL,0,'{\"36\":{\"7\":\"Estaci\\u00f3n\"},\"37\":{\"1\":\"Almaraz\"}}'),(12,5,1,'Évora',NULL,0,'{\"36\":{\"7\":\"Estaci\\u00f3n\"},\"37\":{\"3\":\"Portugal\"}}'),(13,5,1,'Portalegre',NULL,0,'{\"36\":{\"7\":\"Estaci\\u00f3n\"},\"37\":{\"3\":\"Portugal\"}}'),(14,5,1,'Saucedilla',NULL,0,'{\"36\":{\"7\":\"Estaci\\u00f3n\"},\"37\":{\"1\":\"Almaraz\"}}'),(15,5,1,'Unidad móvil',NULL,0,'{\"36\":{\"8\":\"Unidad m\\u00f3vil\"},\"37\":{\"4\":\"Otra\"}}'),(16,5,1,'Otros',NULL,0,'{\"36\":{\"9\":\"Otro\"},\"37\":{\"4\":\"Otra\"}}');
+INSERT INTO `ost_list_items` VALUES (1,2,1,'Almaraz',NULL,1,'[]'),(2,2,1,'Cáceres',NULL,1,'[]'),(3,2,1,'Portugal',NULL,1,'[]'),(4,2,1,'Otra',NULL,1,'[]'),(5,3,1,'Hardware','HW',0,'[]'),(6,3,1,'Software','SW',0,'[]'),(7,4,1,'Estación',NULL,0,'[]'),(8,4,1,'Unidad móvil',NULL,0,'[]'),(9,4,1,'Otro',NULL,0,'[]'),(10,5,1,'Alerta2',NULL,0,'{\"36\":{\"7\":\"Estaci\\u00f3n\"},\"37\":{\"2\":\"C\\u00e1ceres\"}}'),(11,5,1,'Almaraz',NULL,0,'{\"36\":{\"7\":\"Estaci\\u00f3n\"},\"37\":{\"1\":\"Almaraz\"}}'),(12,5,1,'Évora',NULL,0,'{\"36\":{\"7\":\"Estaci\\u00f3n\"},\"37\":{\"3\":\"Portugal\"}}'),(13,5,1,'Portalegre',NULL,0,'{\"36\":{\"7\":\"Estaci\\u00f3n\"},\"37\":{\"3\":\"Portugal\"}}'),(14,5,1,'Saucedilla',NULL,0,'{\"36\":{\"7\":\"Estaci\\u00f3n\"},\"37\":{\"1\":\"Almaraz\"}}'),(15,5,1,'Unidad móvil',NULL,0,'{\"36\":{\"8\":\"Unidad m\\u00f3vil\"},\"37\":{\"4\":\"Otra\"}}'),(16,5,1,'Otros',NULL,0,'{\"36\":{\"9\":\"Otro\"},\"37\":{\"4\":\"Otra\"}}'),(17,6,1,'Anual',NULL,0,'[]'),(18,6,1,'Semestral',NULL,0,'[]'),(19,6,1,'Cuatrimestral',NULL,0,'[]'),(20,6,1,'Trimestral',NULL,0,'[]'),(21,6,1,'Bimestral',NULL,0,'[]'),(22,6,1,'Mensual',NULL,0,'[]'),(23,6,1,'Quincenal',NULL,0,'[]'),(24,6,1,'Semanal',NULL,0,'[]');
 /*!40000 ALTER TABLE `ost_list_items` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1354,7 +1353,7 @@ CREATE TABLE `ost_role` (
 
 LOCK TABLES `ost_role` WRITE;
 /*!40000 ALTER TABLE `ost_role` DISABLE KEYS */;
-INSERT INTO `ost_role` VALUES (1,1,'All Access','{\"ticket.create\":1,\"ticket.edit\":1,\"ticket.assign\":1,\"ticket.transfer\":1,\"ticket.delete\":1,\"thread.edit\":1,\"task.create\":1,\"task.edit\":1,\"task.assign\":1,\"task.transfer\":1,\"task.close\":1,\"task.delete\":1,\"canned.manage\":1,\"equipment.create\":1,\"equipment.edit\":1,\"equipment.transfer\":1,\"equipment.delete\":1,\"ticket.close\":1,\"equipment.retire\":1,\"task.reply\":1,\"task-schedule.create\":1,\"task-schedule.delete\":1,\"task-schedule.transfer\":1,\"task-schedule.assign\":1,\"ticket.reply\":1,\"ticket.verify\":1}','Role with unlimited access','2017-08-01 12:23:25','2017-11-08 13:48:56'),(2,1,'Expanded Access','{\"ticket.create\":1,\"ticket.edit\":1,\"ticket.assign\":1,\"ticket.transfer\":1,\"ticket.reply\":1,\"task.create\":1,\"task.edit\":1,\"task.assign\":1,\"task.transfer\":1,\"task.reply\":1,\"task.close\":1,\"canned.manage\":1}','Role with expanded access','2017-08-01 12:23:25','2017-10-25 09:10:50'),(3,1,'Limited Access','{\"ticket.create\":1,\"ticket.assign\":1,\"ticket.transfer\":1,\"task.assign\":1,\"task.transfer\":1,\"task.reply\":1}','Role with limited access','2017-08-01 12:23:25','2017-08-01 12:23:25'),(4,1,'View only',NULL,'Simple role with no permissions','2017-08-01 12:23:25','2017-08-01 12:23:25');
+INSERT INTO `ost_role` VALUES (1,1,'All Access','{\"ticket.create\":1,\"ticket.edit\":1,\"ticket.assign\":1,\"ticket.transfer\":1,\"ticket.delete\":1,\"thread.edit\":1,\"task.create\":1,\"task.edit\":1,\"task.assign\":1,\"task.transfer\":1,\"task.close\":1,\"task.delete\":1,\"canned.manage\":1,\"equipment.create\":1,\"equipment.edit\":1,\"equipment.transfer\":1,\"equipment.delete\":1,\"ticket.close\":1,\"equipment.retire\":1,\"task.reply\":1,\"task-schedule.create\":1,\"task-schedule.delete\":1,\"task-schedule.transfer\":1,\"task-schedule.assign\":1,\"ticket.reply\":1,\"ticket.verify\":1,\"task-schedule.edit\":1}','Role with unlimited access','2017-08-01 12:23:25','2017-12-12 20:07:14'),(2,1,'Expanded Access','{\"ticket.create\":1,\"ticket.edit\":1,\"ticket.assign\":1,\"ticket.transfer\":1,\"ticket.reply\":1,\"task.create\":1,\"task.edit\":1,\"task.assign\":1,\"task.transfer\":1,\"task.reply\":1,\"task.close\":1,\"canned.manage\":1}','Role with expanded access','2017-08-01 12:23:25','2017-10-25 09:10:50'),(3,1,'Limited Access','{\"ticket.create\":1,\"ticket.assign\":1,\"ticket.transfer\":1,\"task.assign\":1,\"task.transfer\":1,\"task.reply\":1}','Role with limited access','2017-08-01 12:23:25','2017-08-01 12:23:25'),(4,1,'View only',NULL,'Simple role with no permissions','2017-08-01 12:23:25','2017-08-01 12:23:25');
 /*!40000 ALTER TABLE `ost_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1383,7 +1382,7 @@ CREATE TABLE `ost_sequence` (
 
 LOCK TABLES `ost_sequence` WRITE;
 /*!40000 ALTER TABLE `ost_sequence` DISABLE KEYS */;
-INSERT INTO `ost_sequence` VALUES (1,'General Tickets',1,1,1,'0','0000-00-00 00:00:00'),(2,'Tasks Sequence',1,74,1,'0','2017-11-10 09:01:04'),(3,'Secuencia incidencias',NULL,52,1,'0','2017-11-23 12:03:16'),(4,'Secuencia no conformidades',NULL,13,1,'0','2017-11-23 12:27:47');
+INSERT INTO `ost_sequence` VALUES (1,'General Tickets',1,1,1,'0','0000-00-00 00:00:00'),(2,'Tasks Sequence',1,88,1,'0','2017-12-15 18:10:02'),(3,'Secuencia incidencias',NULL,56,1,'0','2017-12-16 19:23:04'),(4,'Secuencia no conformidades',NULL,16,1,'0','2017-12-16 19:24:53');
 /*!40000 ALTER TABLE `ost_sequence` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1414,7 +1413,7 @@ CREATE TABLE `ost_session` (
 
 LOCK TABLES `ost_session` WRITE;
 /*!40000 ALTER TABLE `ost_session` DISABLE KEYS */;
-INSERT INTO `ost_session` VALUES ('s482o4r57i57emc76l9chlogb2','csrf|a:2:{s:5:\"token\";s:40:\"903a1d1f9b74433a02857634844f4df7b62f2eef\";s:4:\"time\";i:1511857226;}_auth|a:1:{s:5:\"staff\";N;}','2017-11-29 09:20:26',NULL,'0','10.0.2.2','Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:57.0) Gecko/20100101 Firefox/57.0');
+INSERT INTO `ost_session` VALUES ('a5qc6f44hta9n6b1k6bt0d6mv0','csrf|a:2:{s:5:\"token\";s:40:\"a11312b091a203fcd4727205449d7b62749bb6ee\";s:4:\"time\";i:1513709165;}_auth|a:1:{s:5:\"staff\";N;}','2017-12-20 19:46:05',NULL,'0','10.0.2.2','Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:57.0) Gecko/20100101 Firefox/57.0');
 /*!40000 ALTER TABLE `ost_session` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1505,7 +1504,7 @@ CREATE TABLE `ost_staff` (
 
 LOCK TABLES `ost_staff` WRITE;
 /*!40000 ALTER TABLE `ost_staff` DISABLE KEYS */;
-INSERT INTO `ost_staff` VALUES (1,4,1,'carlos','Carlos','Núñez','$2a$08$Yz1e7fueJl/g51dIcB/d0e3y12fZbp98v4VRcfEFjReMdAFtWlbDe',NULL,'carlos.nunez@juntaex.es','',NULL,'','',NULL,NULL,'',NULL,1,1,0,0,0,0,0,25,0,'none','Letter','{\"browser_lang\":\"es_ES\",\"def_assn_role\":true}','{\"user.create\":1,\"user.edit\":1,\"user.delete\":1,\"user.manage\":1,\"user.dir\":1,\"org.create\":1,\"org.edit\":1,\"org.delete\":1,\"faq.manage\":1,\"emails.banlist\":1}','2017-08-01 12:23:25','2017-11-28 09:20:04','2017-08-01 14:31:46','2017-11-28 09:20:04'),(2,5,3,'antonio','Antonio','Baeza','$2a$08$1RVtwsax8Yr2KcRyne4KH.0yHQz1hCgNUImjBSSQS4uc8RU/bnaSq',NULL,'tritium@juntaex.es','',NULL,'','',NULL,NULL,NULL,NULL,1,0,0,0,0,0,0,0,0,'none','Letter','{\"def_assn_role\":true,\"browser_lang\":\"es_ES\"}','{\"user.create\":1,\"user.edit\":1,\"user.delete\":1,\"user.manage\":1,\"user.dir\":1,\"org.create\":1,\"org.edit\":1,\"org.delete\":1,\"faq.manage\":1}','2017-08-01 14:41:42','2017-09-07 08:43:58','2017-08-02 11:13:33','2017-10-25 09:11:44'),(3,7,2,'david','David','Valencia','$2a$08$A65NrS.FK1SDU147/Tj55.infi5REYgzEkXwNLLvrgKbVDq4ZKKQ2',NULL,'ratvapc@gmail.com','',NULL,'','',NULL,NULL,NULL,NULL,1,0,0,0,0,0,0,0,0,'none','Letter','{\"def_assn_role\":true,\"browser_lang\":\"es_ES\"}','{\"user.create\":1,\"user.edit\":1,\"user.delete\":1,\"user.manage\":1,\"user.dir\":1,\"org.create\":1,\"org.edit\":1,\"org.delete\":1,\"faq.manage\":1}','2017-08-01 14:42:50','2017-11-22 12:45:51','2017-08-02 11:14:22','2017-11-22 12:45:51'),(4,8,2,'jose','José Ángel','Corbacho','$2a$08$QnZ7rGCByMbKMBQiXVaukegi8KLAvXo8wG3P.gY8gPOfZpUfFJwkG',NULL,'rat_va_pc@juntaex.es','',NULL,'','',NULL,NULL,NULL,NULL,1,0,1,0,0,0,0,0,0,'none','Letter','{\"def_assn_role\":true,\"browser_lang\":\"es_ES\"}','{\"user.create\":1,\"user.edit\":1,\"user.delete\":1,\"user.manage\":1,\"user.dir\":1,\"org.create\":1,\"org.edit\":1,\"org.delete\":1,\"faq.manage\":1}','2017-08-01 14:43:38','2017-10-31 14:03:13','2017-08-02 11:13:11','2017-10-31 14:03:13'),(5,7,2,'juan','Juan','Baeza','$2a$08$0oAuiWbbDSayt7KEORpnYuerUZouOChxNaXCJnzoMq5f8WPksSPB2',NULL,'juanbaeza@laruex.es','',NULL,'','',NULL,NULL,NULL,NULL,1,0,0,0,0,0,0,0,0,'none','Letter','{\"def_assn_role\":true,\"browser_lang\":\"es_ES\"}','{\"user.create\":1,\"user.edit\":1,\"user.delete\":1,\"user.manage\":1,\"user.dir\":1,\"org.create\":1,\"org.edit\":1,\"org.delete\":1,\"faq.manage\":1}','2017-08-01 14:44:53','2017-11-10 13:14:57','2017-08-03 14:00:26','2017-11-10 13:14:57'),(6,8,2,'manolo','José Manuel','Caballero',NULL,NULL,'manolo@laruex.es','',NULL,'','',NULL,NULL,NULL,NULL,1,0,0,0,0,0,0,0,0,'none','Letter','{\"def_assn_role\":true}','{\"user.create\":1,\"user.edit\":1,\"user.delete\":1,\"user.manage\":1,\"user.dir\":1,\"org.create\":1,\"org.edit\":1,\"org.delete\":1,\"faq.manage\":1}','2017-08-01 14:45:48',NULL,NULL,'2017-08-02 08:27:55'),(7,6,1,'angeles','Mª Ángeles','Ontalba','$2a$08$tIh8tt6Ss4k8ZnGrtTPfg.2MFcYHaRinCLLf4w5V8ZQcEyxMeDwSu',NULL,'eco2cir@gmail.com','',NULL,'','',NULL,NULL,NULL,NULL,1,0,0,0,0,0,0,0,0,'none','Letter','{\"def_assn_role\":true,\"browser_lang\":\"es_ES\"}','{\"user.create\":1,\"user.edit\":1,\"user.delete\":1,\"user.manage\":1,\"user.dir\":1,\"org.create\":1,\"org.edit\":1,\"org.delete\":1,\"faq.manage\":1}','2017-08-01 14:46:53','2017-11-21 08:19:20','2017-10-11 13:49:50','2017-11-21 08:19:20'),(8,7,2,'pepe','José','Vasco','$2a$08$kc8tsvzqiKnIIB12mnFzi.EbMYsvq24P8GRtJPDV7mzlxfczV07IW',NULL,'eco2cir@juntaex.es','',NULL,'','',NULL,NULL,NULL,NULL,1,0,0,0,0,0,0,0,0,'none','Letter','{\"def_assn_role\":true,\"browser_lang\":\"es_ES\"}','{\"user.create\":1,\"user.edit\":1,\"user.delete\":1,\"user.manage\":1,\"user.dir\":1,\"org.create\":1,\"org.edit\":1,\"org.delete\":1,\"faq.manage\":1}','2017-08-01 14:47:40','2017-11-21 11:48:42','2017-08-02 11:38:55','2017-11-21 11:48:42');
+INSERT INTO `ost_staff` VALUES (1,4,1,'carlos','Carlos','Núñez','$2a$08$Yz1e7fueJl/g51dIcB/d0e3y12fZbp98v4VRcfEFjReMdAFtWlbDe',NULL,'carlosnb@gmail.com','',NULL,'','',NULL,NULL,'',NULL,1,1,0,0,0,0,0,25,0,'none','Letter','{\"browser_lang\":\"es_ES\",\"def_assn_role\":true}','{\"user.create\":1,\"user.edit\":1,\"user.delete\":1,\"user.manage\":1,\"user.dir\":1,\"org.create\":1,\"org.edit\":1,\"org.delete\":1,\"faq.manage\":1,\"emails.banlist\":1}','2017-08-01 12:23:25','2017-12-19 19:45:38','2017-08-01 14:31:46','2017-12-19 19:45:38'),(2,5,3,'antonio','Antonio','Baeza','$2a$08$1RVtwsax8Yr2KcRyne4KH.0yHQz1hCgNUImjBSSQS4uc8RU/bnaSq',NULL,'antoniolaruex@gmail.com','',NULL,'','',NULL,NULL,NULL,NULL,1,0,0,0,0,0,0,0,0,'none','Letter','{\"def_assn_role\":true,\"browser_lang\":\"es_ES\"}','{\"user.create\":1,\"user.edit\":1,\"user.delete\":1,\"user.manage\":1,\"user.dir\":1,\"org.create\":1,\"org.edit\":1,\"org.delete\":1,\"faq.manage\":1}','2017-08-01 14:41:42','2017-09-07 08:43:58','2017-08-02 11:13:33','2017-12-02 11:48:16'),(3,7,2,'david','David','Valencia','$2a$08$A65NrS.FK1SDU147/Tj55.infi5REYgzEkXwNLLvrgKbVDq4ZKKQ2',NULL,'davidlaruex@gmail.com','',NULL,'','',NULL,NULL,NULL,NULL,1,0,0,0,0,0,0,0,0,'none','Letter','{\"def_assn_role\":true,\"browser_lang\":\"es_ES\"}','{\"user.create\":1,\"user.edit\":1,\"user.delete\":1,\"user.manage\":1,\"user.dir\":1,\"org.create\":1,\"org.edit\":1,\"org.delete\":1,\"faq.manage\":1}','2017-08-01 14:42:50','2017-12-17 18:28:13','2017-08-02 11:14:22','2017-12-17 18:28:13'),(4,8,2,'jose','José Ángel','Corbacho','$2a$08$QnZ7rGCByMbKMBQiXVaukegi8KLAvXo8wG3P.gY8gPOfZpUfFJwkG',NULL,'joseangellaruex@gmail.com','',NULL,'','',NULL,NULL,NULL,NULL,1,0,0,0,0,0,0,0,0,'none','Letter','{\"def_assn_role\":true,\"browser_lang\":\"es_ES\"}','{\"user.create\":1,\"user.edit\":1,\"user.delete\":1,\"user.manage\":1,\"user.dir\":1,\"org.create\":1,\"org.edit\":1,\"org.delete\":1,\"faq.manage\":1}','2017-08-01 14:43:38','2017-10-31 14:03:13','2017-08-02 11:13:11','2017-12-02 11:54:06'),(7,6,1,'angeles','Mª Ángeles','Ontalba','$2a$08$tIh8tt6Ss4k8ZnGrtTPfg.2MFcYHaRinCLLf4w5V8ZQcEyxMeDwSu',NULL,'geleslaruex@gmail.com','',NULL,'','',NULL,NULL,NULL,NULL,1,0,0,0,0,0,0,0,0,'none','Letter','{\"def_assn_role\":true,\"browser_lang\":\"es_ES\"}','{\"user.create\":1,\"user.edit\":1,\"user.delete\":1,\"user.manage\":1,\"user.dir\":1,\"org.create\":1,\"org.edit\":1,\"org.delete\":1,\"faq.manage\":1}','2017-08-01 14:46:53','2017-11-21 08:19:20','2017-10-11 13:49:50','2017-12-03 12:46:48'),(8,7,2,'pepe','José','Vasco','$2a$08$kc8tsvzqiKnIIB12mnFzi.EbMYsvq24P8GRtJPDV7mzlxfczV07IW',NULL,'pepelaruex@gmail.com','',NULL,'','',NULL,NULL,NULL,NULL,1,0,0,0,0,0,0,0,0,'none','Letter','{\"def_assn_role\":true,\"browser_lang\":\"es_ES\"}','{\"user.create\":1,\"user.edit\":1,\"user.delete\":1,\"user.manage\":1,\"user.dir\":1,\"org.create\":1,\"org.edit\":1,\"org.delete\":1,\"faq.manage\":1}','2017-08-01 14:47:40','2017-12-03 11:44:21','2017-08-02 11:38:55','2017-12-03 11:44:21');
 /*!40000 ALTER TABLE `ost_staff` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1554,7 +1553,7 @@ CREATE TABLE `ost_syslog` (
   `updated` datetime NOT NULL,
   PRIMARY KEY (`log_id`),
   KEY `log_type` (`log_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1563,7 +1562,7 @@ CREATE TABLE `ost_syslog` (
 
 LOCK TABLES `ost_syslog` WRITE;
 /*!40000 ALTER TABLE `ost_syslog` DISABLE KEYS */;
-INSERT INTO `ost_syslog` VALUES (9,'Warning','Token CSRF inválido __CSRFToken__','Token CSRF inválido [85a55d082b59bb3e06e3d07e53f302d733039fbb] en http://localhost:8000/scp/login.php','','10.0.2.2','2017-11-28 09:19:56','2017-11-28 09:19:56'),(10,'Warning','Token CSRF inválido __CSRFToken__','Token CSRF inválido [85a55d082b59bb3e06e3d07e53f302d733039fbb] en http://localhost:8000/scp/login.php','','10.0.2.2','2017-11-28 09:20:00','2017-11-28 09:20:00');
+INSERT INTO `ost_syslog` VALUES (29,'Warning','Token CSRF inválido __CSRFToken__','Token CSRF inválido [e8ce7a2cb1d589a49e09777ee015c5f0fc04197d] en http://localhost:8000/scp/login.php','','10.0.2.2','2017-12-19 19:45:28','2017-12-19 19:45:28'),(30,'Warning','Token CSRF inválido __CSRFToken__','Token CSRF inválido [e8ce7a2cb1d589a49e09777ee015c5f0fc04197d] en http://localhost:8000/scp/login.php','','10.0.2.2','2017-12-19 19:45:31','2017-12-19 19:45:31');
 /*!40000 ALTER TABLE `ost_syslog` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1594,7 +1593,7 @@ CREATE TABLE `ost_task` (
   KEY `team_id` (`team_id`),
   KEY `created` (`created`),
   KEY `object` (`object_id`,`object_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1617,6 +1616,7 @@ CREATE TABLE `ost_task__cdata` (
   `task_id` int(11) unsigned NOT NULL,
   `title` mediumtext,
   `localizacion` mediumtext,
+  `duedate` mediumtext,
   PRIMARY KEY (`task_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1639,7 +1639,7 @@ DROP TABLE IF EXISTS `ost_task_schedule`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `ost_task_schedule` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `regularity` enum('Anual','Semestral','Cuatrimestral','Trimestral','Bimensual','Mensual','Quincenal','Semanal') NOT NULL,
+  `regularity` enum('Anual','Semestral','Cuatrimestral','Trimestral','Bimestral','Mensual','Quincenal','Semanal') NOT NULL,
   `period` tinyint(3) unsigned NOT NULL,
   `start` datetime NOT NULL,
   `department_id` int(11) unsigned NOT NULL,
@@ -1653,7 +1653,7 @@ CREATE TABLE `ost_task_schedule` (
   KEY `staff_id` (`staff_id`),
   CONSTRAINT `ost_task_schedule_ibfk_1` FOREIGN KEY (`department_id`) REFERENCES `ost_department` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `ost_task_schedule_ibfk_2` FOREIGN KEY (`staff_id`) REFERENCES `ost_staff` (`staff_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1717,7 +1717,7 @@ CREATE TABLE `ost_team_member` (
 
 LOCK TABLES `ost_team_member` WRITE;
 /*!40000 ALTER TABLE `ost_team_member` DISABLE KEYS */;
-INSERT INTO `ost_team_member` VALUES (1,3,1),(1,7,1),(2,4,1),(2,5,1);
+INSERT INTO `ost_team_member` VALUES (1,3,1),(1,7,1),(2,4,1);
 /*!40000 ALTER TABLE `ost_team_member` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1739,7 +1739,7 @@ CREATE TABLE `ost_thread` (
   PRIMARY KEY (`id`),
   KEY `object_id` (`object_id`),
   KEY `object_type` (`object_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=81 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1811,7 +1811,7 @@ CREATE TABLE `ost_thread_entry` (
   KEY `thread_id` (`thread_id`),
   KEY `staff_id` (`staff_id`),
   KEY `type` (`type`)
-) ENGINE=InnoDB AUTO_INCREMENT=117 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1874,7 +1874,7 @@ CREATE TABLE `ost_thread_event` (
   PRIMARY KEY (`id`),
   KEY `ticket_state` (`thread_id`,`state`,`timestamp`),
   KEY `ticket_stats` (`timestamp`,`state`)
-) ENGINE=InnoDB AUTO_INCREMENT=232 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=118 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1932,7 +1932,7 @@ CREATE TABLE `ost_ticket` (
   KEY `duedate` (`duedate`),
   KEY `topic_id` (`topic_id`),
   KEY `sla_id` (`sla_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2083,7 +2083,7 @@ CREATE TABLE `ost_user` (
   `updated` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `org_id` (`org_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2092,7 +2092,7 @@ CREATE TABLE `ost_user` (
 
 LOCK TABLES `ost_user` WRITE;
 /*!40000 ALTER TABLE `ost_user` DISABLE KEYS */;
-INSERT INTO `ost_user` VALUES (2,0,2,0,'Antonio Baeza','2017-08-02 08:29:32','2017-08-02 08:29:32'),(3,0,3,0,'David Valencia','2017-08-02 08:31:41','2017-08-02 08:31:41'),(4,0,4,0,'José Ángel Corbacho','2017-08-02 08:32:46','2017-08-02 08:32:46'),(5,0,5,0,'Juan Baeza','2017-08-02 08:33:23','2017-08-02 08:33:23'),(6,0,6,0,'José Manuel Caballero','2017-08-02 08:34:31','2017-08-02 08:34:31'),(7,0,7,0,'Mª Ángeles Ontalba','2017-08-02 08:36:14','2017-08-02 08:36:14'),(8,0,8,0,'José Vasco','2017-08-02 08:37:09','2017-08-02 08:37:09');
+INSERT INTO `ost_user` VALUES (2,0,2,0,'Antonio Baeza','2017-08-02 08:29:32','2017-08-02 08:29:32'),(3,0,3,0,'David Valencia','2017-08-02 08:31:41','2017-08-02 08:31:41'),(4,0,4,0,'José Ángel Corbacho','2017-08-02 08:32:46','2017-08-02 08:32:46'),(7,0,7,0,'Mª Ángeles Ontalba','2017-08-02 08:36:14','2017-08-02 08:36:14'),(8,0,8,0,'José Vasco','2017-08-02 08:37:09','2017-08-02 08:37:09');
 /*!40000 ALTER TABLE `ost_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2153,7 +2153,7 @@ CREATE TABLE `ost_user_account` (
 
 LOCK TABLES `ost_user_account` WRITE;
 /*!40000 ALTER TABLE `ost_user_account` DISABLE KEYS */;
-INSERT INTO `ost_user_account` VALUES (1,2,1,'Europe/Berlin',NULL,'antonio','$2a$08$OMpeDl1igHTExQGJP7b8xOlJMWgl1UQRTjyOttKJnJiZVv3GKE6KO',NULL,NULL,'2017-08-02 06:30:20'),(2,3,1,'Europe/Berlin',NULL,'david','$2a$08$mt7oKRQXg4iEHXgzEw6sDO/ysORaQrMPYg3DAJT8dhCQom1qkGaGS',NULL,'{\"browser_lang\":\"es_ES\"}','2017-08-02 06:32:04'),(3,4,1,'Europe/Berlin',NULL,'jose','$2a$08$LW41fRzA69EvbHzudvUWzO9v2foCW8OVjVyU3BIggItWBhxvlowEG',NULL,NULL,'2017-08-02 06:32:58'),(4,5,1,'Europe/Berlin',NULL,'juan','$2a$08$PfPfN68QEG0ETWk4o5Z5feBKug11.Bv0uLU9kw9N33m0JE7i1iIKW',NULL,'{\"browser_lang\":\"es_ES\"}','2017-08-02 06:33:42'),(5,6,1,'Europe/Berlin',NULL,'manolo','$2a$08$SB.rklDpfSCIGenHNlRXWOpKOcDfIcUIZb/5ywvSvE13tvdcqUpb6',NULL,NULL,'2017-08-02 06:34:49'),(6,7,1,'Europe/Berlin',NULL,'angeles','$2a$08$aoxkX1qHDCKDh8RsoLICXODT.L9cWk7svw/kKiIinNnGkPXmU9OcK',NULL,NULL,'2017-08-02 06:36:30'),(7,8,1,'Europe/Berlin',NULL,'pepe','$2a$08$63lBB11Z3Lz.h9yEL.zUNeeSIYgT7OEnvM97xne8C.pWILPN0FsvS',NULL,'{\"browser_lang\":\"es_ES\"}','2017-08-02 06:37:25');
+INSERT INTO `ost_user_account` VALUES (1,2,1,'Europe/Berlin',NULL,'antonio','$2a$08$OMpeDl1igHTExQGJP7b8xOlJMWgl1UQRTjyOttKJnJiZVv3GKE6KO',NULL,NULL,'2017-08-02 06:30:20'),(2,3,1,'Europe/Berlin',NULL,'david','$2a$08$mt7oKRQXg4iEHXgzEw6sDO/ysORaQrMPYg3DAJT8dhCQom1qkGaGS',NULL,'{\"browser_lang\":\"es_ES\"}','2017-08-02 06:32:04'),(3,4,1,'Europe/Berlin',NULL,'jose','$2a$08$LW41fRzA69EvbHzudvUWzO9v2foCW8OVjVyU3BIggItWBhxvlowEG',NULL,NULL,'2017-08-02 06:32:58'),(6,7,1,'Europe/Berlin',NULL,'angeles','$2a$08$aoxkX1qHDCKDh8RsoLICXODT.L9cWk7svw/kKiIinNnGkPXmU9OcK',NULL,'{\"browser_lang\":\"es_ES\"}','2017-08-02 06:36:30'),(7,8,1,'Europe/Berlin',NULL,'pepe','$2a$08$63lBB11Z3Lz.h9yEL.zUNeeSIYgT7OEnvM97xne8C.pWILPN0FsvS',NULL,'{\"browser_lang\":\"es_ES\"}','2017-08-02 06:37:25');
 /*!40000 ALTER TABLE `ost_user_account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2172,7 +2172,7 @@ CREATE TABLE `ost_user_email` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `address` (`address`),
   KEY `user_email_lookup` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2181,252 +2181,9 @@ CREATE TABLE `ost_user_email` (
 
 LOCK TABLES `ost_user_email` WRITE;
 /*!40000 ALTER TABLE `ost_user_email` DISABLE KEYS */;
-INSERT INTO `ost_user_email` VALUES (2,2,0,'tritium@juntaex.es'),(3,3,0,'ratvapc@gmail.com'),(4,4,0,'rat_va_pc@juntaex.es'),(5,5,0,'juanbaeza@laruex.es'),(6,6,0,'manolo@laruex.es'),(7,7,0,'eco2cir@gmail.com'),(8,8,0,'eco2cir@juntaex.es');
+INSERT INTO `ost_user_email` VALUES (2,2,0,'antoniolaruex@gmail.com'),(3,3,0,'davidlaruex@gmail.com'),(4,4,0,'joseangellaruex@gmail.com'),(7,7,0,'geleslaruex@gmail.com'),(8,8,0,'pepelaruex@gmail.com');
 /*!40000 ALTER TABLE `ost_user_email` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Dumping routines for database 'osticket'
---
-/*!50003 DROP FUNCTION IF EXISTS `GetProximaFechaCreacion` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`admin`@`localhost` FUNCTION `GetProximaFechaCreacion`(plazo VARCHAR(20), ultima_tarea datetime, inicio datetime) RETURNS datetime
-BEGIN
-	IF ultima_tarea IS NULL THEN
-		RETURN inicio;
-	ELSE
-		CASE plazo
-			WHEN 'Anual' THEN RETURN date_add(ultima_tarea, interval 1 year);
-			WHEN 'Semestral' THEN RETURN date_add(ultima_tarea, interval 6 month);
-			WHEN 'Cuatrimestral' THEN RETURN date_add(ultima_tarea, interval 4 month);
-			WHEN 'Trimestral' THEN RETURN date_add(ultima_tarea, interval 3 month);
-			WHEN 'Bimensual' THEN RETURN date_add(ultima_tarea, interval 2 month);
-			WHEN 'Mensual' THEN RETURN date_add(ultima_tarea, interval 1 month);
-			WHEN 'Quincenal' THEN RETURN date_add(ultima_tarea, interval 15 day);
-			WHEN 'Semanal' THEN RETURN date_add(ultima_tarea, interval 7 day);
-		END CASE;
-	END IF;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `LimpiarInventario` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`admin`@`localhost` PROCEDURE `LimpiarInventario`()
-BEGIN
-	
-    
-    
-    
-    
-    
-    delete from ost__search where object_type != 'U';
-    
-    delete from ost_equipment_booking where equipment_id not in (select id from ost_equipment);
-    delete from ost_equipment_booking_hist where equipment_id not in (select id from ost_equipment);
-    
-    delete from ost_ticket__cdata where ticket_id not in (select ticket_id from ost_ticket);
-    
-    delete from ost_task__cdata where task_id not in (select id from ost_task);
-    
-	delete from ost_attachment where (type = 'T' and object_id not in (select id from ost_ticket));
-    delete from ost_attachment where (type = 'E' and object_id not in (select id from ost_equipment));
-    delete from ost_attachment where (type = 'A' and object_id not in (select id from ost_task));
-    delete from ost_attachment where (type = 'S' and object_id not in (select id from ost_equipment_booking));
-    delete from ost_file where id not in (select file_id from ost_attachment);
-    delete from ost_file_chunk where file_id not in (select id from ost_file);
-    
-	delete from ost_form_entry where object_type = 'T' and object_id not in (select id from ost_ticket);
-    delete from ost_form_entry where object_type = 'E' and object_id not in (select id from ost_equipment);
-    delete from ost_form_entry where object_type = 'A' and object_id not in (select id from ost_task);
-    delete from ost_form_entry where object_type = 'S' and object_id not in (select id from ost_equipment_booking);
-    delete from ost_form_entry_values where entry_id not in (select id from ost_form_entry);
-
-	delete from ost_thread where object_type = 'T' and object_id not in (select id from ost_ticket);
-    delete from ost_thread where object_type = 'E' and object_id not in (select id from ost_equipment);
-    delete from ost_thread where object_type = 'A' and object_id not in (select id from ost_task);
-    delete from ost_thread where object_type = 'S' and object_id not in (select id from ost_equipment_booking);
-	delete from ost_thread_entry where thread_id not in (select id from ost_thread);
-	delete from ost_thread_event where thread_id not in (select id from ost_thread);
-
-    delete from ost_session;
-    
-    delete from ost_draft;
-    
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `ost_CreateEquipmentFormFields` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
-DELIMITER ;;
-CREATE DEFINER=`admin`@`localhost` PROCEDURE `ost_CreateEquipmentFormFields`()
-BEGIN
-	SET @form_id = (SELECT id FROM `ost_form` WHERE title='Equipment' LIMIT 1);
-	SET @status_list_id = (SELECT id FROM `ost_list` WHERE `name`='equipment_status' LIMIT 1);
-	SET @equipment_list_id = (SELECT id FROM `ost_list` WHERE `name`='equipment' LIMIT 1);
-
-	IF (@form_id IS NOT NULL) AND (@status_list_id IS NOT NULL) AND (@equipment_list_id IS NOT NULL) then
-		INSERT INTO `ost_form_field`
-			(`form_id`,
-			`type`,
-			`label`,
-			`required`,
-			`private`,
-			`edit_mask`,
-			`name`,
-			`sort`,
-			`created`,
-			`updated`)
-			VALUES
-			(@form_id,
-			CONCAT('list-',@equipment_list_id),
-			'Equipment',
-			0,0,0,
-			'equipment',			
-			3,			
-			NOW(),
-			NOW());	
-
-		INSERT INTO `ost_form_field`
-			(`form_id`,
-			`type`,
-			`label`,
-			`required`,
-			`private`,
-			`edit_mask`,
-			`name`,
-			`sort`,
-			`created`,
-			`updated`)
-			VALUES
-			(@form_id,
-			CONCAT('list-',@status_list_id),
-			'Status',
-			0,0,0,
-			'status',			
-			2,			
-			NOW(),
-			NOW());	
-
-                INSERT INTO `ost_form_field`
-			(`form_id`,
-			`type`,
-			`label`,
-			`required`,
-			`private`,
-			`edit_mask`,
-			`name`,
-			`sort`,
-			`created`,
-			`updated`)
-			VALUES
-			(@form_id,
-			('text'),
-			'Asset ID',
-			0,0,0,
-			'asset_id',			
-			1,			
-			NOW(),
-			NOW());							
-	END IF;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `ost_UpgradeEquipmentFormFields` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
-DELIMITER ;;
-CREATE DEFINER=`admin`@`localhost` PROCEDURE `ost_UpgradeEquipmentFormFields`()
-BEGIN
-	SET @form_id = (SELECT id FROM `ost_form` WHERE title='Equipment' LIMIT 1);
-	SET @status_list_id = (SELECT id FROM `ost_list` WHERE `name`='equipment_status' LIMIT 1);
-	SET @equipment_list_id = (SELECT id FROM `ost_list` WHERE `name`='equipment' LIMIT 1);
-
-	IF (@form_id IS NOT NULL) AND (@status_list_id IS NOT NULL) AND (@equipment_list_id IS NOT NULL) then			
-
-                INSERT INTO `ost_form_field`
-			(`form_id`,
-			`type`,
-			`label`,
-			`required`,
-			`private`,
-			`edit_mask`,
-			`name`,
-			`sort`,
-			`created`,
-			`updated`)
-			VALUES
-			(@form_id,
-			('text'),
-			'Asset ID',
-			0,0,0,
-			'asset_id',			
-			1,			
-			NOW(),
-			NOW());							
-	END IF;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `VencerSLA` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`admin`@`localhost` PROCEDURE `VencerSLA`(IN id INT)
-BEGIN
-update ost_ticket t inner join ost_sla s on t.sla_id = s.id set t.created = subdate(t.created, INTERVAL s.grace_period HOUR), reopened = subdate(reopened, INTERVAL s.grace_period HOUR), duedate = subdate(duedate, INTERVAL s.grace_period HOUR), last_duedate = subdate(last_duedate, INTERVAL s.grace_period HOUR) where ticket_id = id;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -2437,4 +2194,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-11-28  9:20:30
+-- Dump completed on 2017-12-19 19:47:32
