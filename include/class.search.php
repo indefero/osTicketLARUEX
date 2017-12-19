@@ -266,7 +266,9 @@ class MysqlSearchBackend extends SearchBackend {
         if ($model instanceof Ticket)
             $attrs['title'] = $attrs['number'].' '.$attrs['title'];
         elseif ($model instanceof User)
-            $content .=' '.implode("\n", $attrs['emails']);
+            $content = $content 
+                ? $content.' '.implode("\n", $attrs['emails']) 
+                : implode("\n", $attrs['emails']);
 
         $title = $attrs['title'] ?: '';
 
