@@ -1431,10 +1431,12 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
         
         if ($vars['staff_id']) {
             $params['staff_id'] = $vars['staff_id'];
+            $assignee = Staff::lookup($vars['staff_id']);
         }
         
         if ($vars['team_id']) {
             $params['team_id'] = $vars['team_id'];
+            $assignee = Team::lookup($vars['team_id']);
         }
 
         $task = new static($params);
@@ -1458,6 +1460,7 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
         unset($vars['title']); // Si lo quitamos el título aparece como título del thread
         $thread->addDescription($vars);
 
+        $task->onAssignment($assignee);
 
         $task->logEvent('created');
 
