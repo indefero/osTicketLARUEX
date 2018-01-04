@@ -1,0 +1,46 @@
+#!/bin/bash
+
+## Script que se encarga de hacer login en la web de osTicket para accionar los 
+## mecanismos de detección de tickets y tareas retrasados y sus correspondientes
+## notificaciones por correo electrónico. Se debe configurar en CRON para ejecutarse
+## regularmente y así impedir que, si nadie accede a la web, no se notifiquen a
+## tiempo estas circunstancias.
+
+# PARAMETROS CONFIGURABLES
+
+URL=
+
+USERID=
+PASSWD=
+
+COOKIES_FILE=wget_login.cookie
+LOG_FILE=wget_login.log
+
+
+# INICIO
+
+# Primero se pide el código HTML del formulario de login para poder obtener el token CSRF asociado a la sesión:
+echo "`date` --> Obteniendo token CRSF..." >> $LOG_FILE
+csrf=`wget -O - --save-cookies $COOKIES_FILE $URL/scp/login.php 2>>$LOG_FILE | egrep -o '<input [a-z0-9=" ]* name="__CSRFToken__" [a-z0-9=" ]* />' | egrep -o 'value="[a-z0-9]*"' | sed 's/.*"\([a-z0-9]*\)".*/\1/'`
+echo "`date` --> Token CSRF obtenido: $csrf" >> $LOG_FILE
+
+# Después se envían los parámetros del formulario por POST incluyendo el token CSRF obtenido anteriormente para autenticarse:
+echo "`date` --> Tratando de hacer login en la web..." >> $LOG_FILE
+output=`wget -O - --save-cookies $COOKIES_FILE --load-cookies $COOKIES_FILE --post-data "do=scplogin&userid=$USERID&passwd=$PASSWD&__CSRFToken__=$csrf" $URL/scp/login.php 2>>$LOG_FILE | egrep -o "Bienvenido,|<h3>Nombre de usuario no válido</h3>|<h3>Acceso denegado</h3>|<h3>Autenticación Requerida</h3>"`
+if [ "$output" == "Bienvenido," ]
+then
+	output="OK"
+fi
+echo "`date` --> Resultado login: $output" >> $LOG_FILE
+
+# Por último se pide el fichero PHP que se encarga de las comprobaciones de los posibles retrasos de tickets y/o tareas:
+echo "`date` --> Realizando las comprobaciones de retrasos..." >> $LOG_FILE
+wget -O - --load-cookies $COOKIES_FILE $URL/scp/autocron.php 2>>$LOG_FILE > /dev/null
+
+# Línea en blanco adicional al fichero de LOG
+echo "" >> $LOG_FILE
+
+# Se elimina el fichero de cookies
+rm $COOKIES_FILE
+
+exit 0
