@@ -9,7 +9,7 @@
 function checkbox_checker(formObj, min, max) {
 
     var max = max || 0;
-    var min = min || 1;
+    var min = min || 0;
     var checked=$('input:checkbox:checked', formObj).length;
     var action= action?action:"process";
     if (max>0 && checked > max ){

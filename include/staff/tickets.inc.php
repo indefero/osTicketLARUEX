@@ -639,7 +639,7 @@ return false;">
             <span class="faded pull-right"><?php echo $pageNav->showing(); ?></span>
 <?php
         echo __('Page').':'.$pageNav->getPageLinks().'&nbsp;';
-        echo sprintf('<a class="export-csv no-pjax" href="?%s">%s</a>',
+        echo sprintf('<a id="export" class="export-csv no-pjax" href="?%s">%s</a>',
                 Http::build_query(array(
                         'a' => 'export', 'h' => $hash,
                         'status' => $_REQUEST['status'])),
@@ -671,6 +671,21 @@ return false;">
 <script type="text/javascript">
 $(function() {
     $('[data-toggle=tooltip]').tooltip();
+    
+    // Introducimos como parámetros GET la lista de id de tickets seleccionados
+    // y un contador. Si comentamos o eliminamos esto se exportarán todos los tickets
+    // independientemente de los seleccionados.
+    $("#export").click(function(e){
+        e.preventDefault();
+        var $form = $('form#tickets');
+        var count = checkbox_checker($form);
+        var tids = $('.ckb:checked', $form).map(function() {
+                return this.value;
+            }).get();
+        var url = 'tickets.php'+$(this).attr('href')
+        //+'&count='+count
+        +'&tids='+tids.join(',');
+        window.location.href=url;
+    });
 });
 </script>
-

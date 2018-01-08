@@ -486,7 +486,7 @@ if($ticket) {
         $ts = strftime('%Y%m%d');
         if (!($query=$_SESSION[':Q:tickets']))
             $errors['err'] = __('Query token not found');
-        elseif (!Export::saveTickets($query, "tickets-$ts.csv", 'csv'))
+        elseif (!Export::saveTickets($query, "tickets-$ts.csv", 'csv', $_REQUEST['tids'] ? array_filter(explode(',', $_REQUEST['tids'])) : null))
             $errors['err'] = __('Unable to dump query results.')
                 .' '.__('Internal error occurred');
     }

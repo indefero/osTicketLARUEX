@@ -40,7 +40,7 @@ class Export {
     #      SQL is exported, but for something like tickets, we will need to
     #      export attached messages, reponses, and notes, as well as
     #      attachments associated with each, ...
-    static function dumpTickets($sql, $how='csv') {
+    static function dumpTickets($sql, $how='csv', $tids=false) {
         // Add custom fields to the $sql statement
         $cdata = $fields = array();
         foreach (TicketForm::getInstance()->getFields() as $f) {
@@ -60,8 +60,14 @@ class Export {
         $tickets = $sql->models()
             ->select_related('user', /*'user__default_email',*/ /*'dept',*/ 'staff',
                 'team', 'staff', 'cdata', /*'topic',*/ 'status', 'cdata__:priority')
-            ->options(QuerySet::OPT_NOCACHE)
-            ->annotate(array(
+            ->options(QuerySet::OPT_NOCACHE);
+        
+        // Si hay lista de id de tickets sólo queremos esos
+        if ($tids && count($tids)) {
+            $tickets = $tickets->filter(array('ticket_id__in' => $tids));
+        }
+        
+        $tickets = $tickets->annotate(array(
                 /*'collab_count' => TicketThread::objects()
                     ->filter(array('ticket__ticket_id' => new SqlField('ticket_id', 1)))
                     ->aggregate(array('count' => SqlAggregate::COUNT('collaborators__id'))),*/
@@ -145,9 +151,9 @@ class Export {
             );
     }
 
-    static  function saveTickets($sql, $filename, $how='csv') {
+    static  function saveTickets($sql, $filename, $how='csv', $tids=false) {
         Http::download($filename, "text/$how");
-        self::dumpTickets($sql, $how);
+        self::dumpTickets($sql, $how, $tids);
         exit;
     }
 
