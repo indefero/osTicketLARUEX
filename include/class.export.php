@@ -58,7 +58,7 @@ class Export {
         }
         // Reset the $sql query
         $tickets = $sql->models()
-            ->select_related('user', /*'user__default_email',*/ /*'dept',*/ 'staff',
+            ->select_related('user', /*'user__default_email',*/ /*'dept',*/ 'staff', 'sla',
                 'team', 'staff', 'cdata', /*'topic',*/ 'status', 'cdata__:priority')
             ->options(QuerySet::OPT_NOCACHE);
         
