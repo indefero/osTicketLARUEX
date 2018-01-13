@@ -138,6 +138,10 @@ case 'search':
                 $tickets = $tickets->filter(array(
                     'user__emails__address' => $_REQUEST['query'],
                 ));
+                // Añadimos el filtro del texto que se introdujo en la caja de texto
+                // porque sino salen todos los tickets del usuario
+                $q = trim($_REQUEST['matches']);
+                $tickets = $ost->searcher->find($q, $tickets);
             }
             elseif ($_REQUEST['query']) {
                 $tickets = $tickets->filter(array(
