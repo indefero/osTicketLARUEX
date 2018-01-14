@@ -37,7 +37,14 @@ class EquipmentModel extends VerySimpleModel {
             ),
             'reservations' => array(
                 'reverse' => 'EquipmentReservation.equipment'
-            )
+            ),
+            'entries' => array(
+                'constraint' => array(
+                    "'E'" => 'DynamicFormEntry.object_type',
+                    'id' => 'DynamicFormEntry.object_id',
+                ),
+                'list' => true,
+            ),
         )
     );
     

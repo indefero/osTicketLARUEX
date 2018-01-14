@@ -44,6 +44,7 @@ $queue_columns = array(
         'location' => array(
             'width' => '15%',
             'heading' => 'Localización',
+            'sort_col' => 'location',
             ),
         'date' => array(
             'width' => '10%',
@@ -195,6 +196,9 @@ case 'retirement':
     $equipments->order_by('retirement', $orm_dir);
     break;
 default:
+    // No tengo ni idea de por qué esto hace funcionar las ordenaciones por localización. NO QUITAR!
+    if (count($equipments) > 0) $equipments->getIterator(); 
+    
     if ($sort_cols && isset($queue_columns[$sort_cols])) {
         $queue_columns[$sort_cols]['sort_dir'] = $sort_dir;
         if (isset($queue_columns[$sort_cols]['sort_col']))
@@ -226,6 +230,14 @@ $_SESSION[':Q:equipments'] = $equipments;
 $equipments->values('lock__staff_id', 'id', 'name', 'status_id', 'status__name',
         'status__state', 'updated', 'dept__name');
 
+$equipments->annotate(array(
+        'location' => DynamicFormEntry::objects()
+                    ->values('answers__value')
+                    ->filter(array('answers__field__name' => 'localizacion',
+                            'object_id' => new SqlField('id', 1),
+                            'object_type' => 'E',
+                            'form__title' => 'Detalles de equipamiento')),
+    ));
 
 // Make sure we're only getting active locks
 $equipments->constrain(array('lock' => array(
@@ -331,15 +343,6 @@ return false;">
 
             $lc='';
             $tid=$E['name'];
-            
-            $localizacion = "";
-            foreach (DynamicFormEntry::forObject($E["id"], ObjectModel::OBJECT_TYPE_EQUIPMENT) as $form) {
-                $answers = $form->getAnswers()->filter(Q::any(array(
-                        'field__name__exact' => "Localización")));
-                if (!$answers || count($answers) == 0)
-                    continue;
-                $localizacion = $answers->one()->display();
-            }
             ?>
             <tr id="<?php echo $E['id']; ?>">
                 <?php
@@ -366,7 +369,8 @@ return false;">
                     echo $E['dept__name'];
                 ?></td>
                 <td align="center" nowrap><?php
-                    echo $localizacion;
+                    $location = json_decode($E['location'], true);
+                    echo $location[array_keys($location)[0]];
                 ?></td>
                 <td align="center" nowrap><?php 
                     echo Format::datetime($E[$date_col ?: 'updated']) ?: $date_fallback;
