@@ -26,10 +26,15 @@ $sort_options = array(
 // Queues columns
 
 $queue_columns = array(
-        'id' => array(
+        /*'id' => array(
             'width' => '10%',
             'heading' => __('Number'),
             'sort_col' => 'id',
+            ),*/
+         'reference' => array(
+            'width' => '10%',
+            'heading' => __('Number'),
+            'sort_col' => 'reference',
             ),
         'name' => array(
             'width' => '50%',
@@ -231,9 +236,15 @@ $equipments->values('lock__staff_id', 'id', 'name', 'status_id', 'status__name',
         'status__state', 'updated', 'dept__name');
 
 $equipments->annotate(array(
-        'location' => DynamicFormEntry::objects()
+    'location' => DynamicFormEntry::objects()
                     ->values('answers__value')
                     ->filter(array('answers__field__name' => 'localizacion',
+                            'object_id' => new SqlField('id', 1),
+                            'object_type' => 'E',
+                            'form__title' => 'Detalles de equipamiento')),
+    'reference' => DynamicFormEntry::objects()
+                    ->values('answers__value')
+                    ->filter(array('answers__field__name' => 'id_inventario',
                             'object_id' => new SqlField('id', 1),
                             'object_type' => 'E',
                             'form__title' => 'Detalles de equipamiento')),
@@ -342,7 +353,6 @@ return false;">
                 $flag='locked';
 
             $lc='';
-            $tid=$E['name'];
             ?>
             <tr id="<?php echo $E['id']; ?>">
                 <?php
@@ -355,15 +365,19 @@ return false;">
                     <input class="ckb" type="checkbox" name="tids[]"
                         value="<?php echo $E['id']; ?>" <?php echo $sel?'checked="checked"':''; ?>>
                 </td>
-                <td nowrap>
+                <!--<td nowrap>
                   <a class="Icon <?php echo strtolower($E['source']); ?>Ticket preview"
                     href="equipment.php?id=<?php echo $E['id']; ?>"
                     data-preview="#equipments/<?php echo $E['id']; ?>/preview"
                     ><?php echo sprintf('<b>%s</b>', str_pad($E['id'], 6, "0", STR_PAD_LEFT)); ?></a>
+                </td>-->
+                <td nowrap>
+                    <a href="equipment.php?id=<?php echo $E['id']; ?>"
+                    ><?php echo $E['reference']; ?></a>
                 </td>
                 <td nowrap>
                   <a href="equipment.php?id=<?php echo $E['id']; ?>"
-                    ><?php echo $tid; ?></a>
+                    ><?php echo $E['name'];; ?></a>
                 </td>
                 <td align="center" nowrap><?php
                     echo $E['dept__name'];

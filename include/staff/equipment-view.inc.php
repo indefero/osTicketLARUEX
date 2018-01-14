@@ -122,7 +122,7 @@ if (!$errors['err']) {
         <div class="flush-left">
              <h2><a href="equipment.php?id=<?php echo $equipment->getId(); ?>"
              title="<?php echo __('Reload'); ?>"><i class="icon-refresh"></i>
-             <?php echo sprintf('#%s: %s', str_pad($equipment->getId(), 6, "0", STR_PAD_LEFT), $equipment->getName()); ?></a>
+             <?php echo sprintf('%s', $equipment->getName()); ?></a>
             </h2>
         </div>
     </div>
