@@ -142,6 +142,11 @@ class AttachmentFile extends VerySimpleModel {
 
         if (!parent::delete())
             return false;
+        
+        // Ahora si es un logo eliminamos la copia del fichero que dejamos al
+        // subirlo para la impresión en PDF
+        if ($this->getInfo()['ft'] == 'L')
+            system('rm '.INCLUDE_DIR.'fpdf/'.$this->getKey().$this->getName());
 
         if ($bk = $this->open())
             $bk->unlink();
@@ -354,7 +359,18 @@ class AttachmentFile extends VerySimpleModel {
                 return false;
             }
         }
-        return self::upload($file, 'L', false);
+        
+        $f = self::upload($file, 'L', false);
+        
+        if ($f) {
+            // Copio el fichero temporal a la ruta de logos de fpdf para poder sacar
+            // el logotipo en los PDF que se generan al imprimir tickets, tareas, etc.
+            $logoFile = INCLUDE_DIR.'fpdf/'.$f->getKey().$file['name'];
+            system('cp '.$file['tmp_name'].' '.$logoFile);
+            system('chmod 0664 '.$logoFile);
+        }
+        
+        return $f;
     }
 
     static function create(&$file, $ft='T', $deduplicate=true) {

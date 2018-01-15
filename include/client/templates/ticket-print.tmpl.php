@@ -101,7 +101,7 @@ div.hr {
 
 <htmlpageheader name="def" style="display:none">
 <?php if ($logo = $cfg->getClientLogo()) { ?>
-    <img src="cid:<?php echo $logo->getKey(); ?>" class="logo"/>
+    <img src="<?php echo INCLUDE_DIR . 'fpdf/' . $logo->getKey().$logo->getName(); ?>" class="logo"/>
 <?php } else { ?>
     <img src="<?php echo INCLUDE_DIR . 'fpdf/print-logo.png'; ?>" class="logo"/>
 <?php } ?>
