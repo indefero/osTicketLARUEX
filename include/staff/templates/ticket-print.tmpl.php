@@ -100,11 +100,18 @@ div.hr {
 <body>
 
 <htmlpageheader name="def" style="display:none">
-<?php if ($logo = $cfg->getStaffLogo()) { ?>
-    <img src="<?php echo INCLUDE_DIR . 'fpdf/' . $logo->getKey().$logo->getName(); ?>" class="logo"/>
-<?php } else { ?>
-    <img src="<?php echo INCLUDE_DIR . 'fpdf/print-logo.png'; ?>" class="logo"/>
-<?php } ?>
+    <table class="meta-data" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+            <td class="flush-left">
+                <?php if ($logo = $cfg->getStaffLogo()) { ?>
+                    <img src="<?php echo INCLUDE_DIR . 'fpdf/' . $logo->getKey().$logo->getName(); ?>" class="logo"/>
+                <?php } else { ?>
+                    <img src="<?php echo INCLUDE_DIR . 'fpdf/print-logo.png'; ?>" class="logo"/>
+                <?php } ?>
+            </td>
+            <td class="flush-right" width="30%" style="border: 1px solid black"></td>
+        </tr>
+    </table>
     <div class="hr">&nbsp;</div>
     <table><tr>
         <td class="flush-left"><?php echo (string) $ost->company; ?></td>
@@ -158,8 +165,13 @@ div.hr {
 </tbody>
 <tbody>
 <tr>
-    <th><?php echo __('Assigned To'); ?></th>
-    <td><?php echo $ticket->getAssigned(); ?></td>
+    <?php if ($ticket->isOpen()) { ?>
+        <th><?php echo __('Assigned To'); ?></th>
+        <td><?php echo $ticket->getAssigned(); ?></td>
+    <?php } else { ?>
+        <th><?php echo __('Closed By'); ?></th>
+        <td><?php echo $ticket->getAssigned(); ?></td>
+    <?php } ?>
     <th><?php echo __('Help Topic'); ?></th>
     <td><?php echo $ticket->getHelpTopic(); ?></td>
 </tr>
@@ -170,11 +182,24 @@ div.hr {
     <td><?php echo Format::datetime($ticket->getLastResponseDate()); ?></td>
 </tr>
 <tr>
-    <th><?php echo __('Due Date'); ?></th>
-    <td><?php echo Format::datetime($ticket->getEstDueDate()); ?></td>
+    <?php if ($ticket->isOpen()) { ?>
+        <th><?php echo __('Due Date'); ?></th>
+        <td><?php echo Format::datetime($ticket->getEstDueDate()); ?></td>
+    <?php } else { ?>
+        <th><?php echo __('Close Date'); ?></th>
+        <td><?php echo Format::datetime($ticket->getCloseDate()); ?></td>
+    <?php } ?>
     <th><?php echo __('Last Message'); ?></th>
     <td><?php echo Format::datetime($ticket->getLastMessageDate()); ?></td>
 </tr>
+<?php if (!$ticket->isOpen()) { ?>
+    <tr>
+        <th><?php echo __('Verify Date'); ?></th>
+        <td><?php echo Format::datetime($ticket->getVerifyDate()); ?></td>
+        <th></th>
+        <td></td>
+    </tr>
+<?php } ?>
 </tbody>
 </table>
 
