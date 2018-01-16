@@ -108,7 +108,6 @@ div.hr {
     <div class="hr">&nbsp;</div>
     <table><tr>
         <td class="flush-left"><?php echo (string) $ost->company; ?></td>
-        <td class="flush-right"><?php echo Format::daydatetime(Misc::gmtime()); ?></td>
     </tr></table>
 </htmlpageheader>
 
