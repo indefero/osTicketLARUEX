@@ -95,6 +95,7 @@ case 'search':
         $tasks = $tasks->filter(Q::any(array(
             'number__startswith' => $_REQUEST['query'],
             'cdata__title__contains' => $_REQUEST['query'],
+            'entries__answers__value__contains' => $_REQUEST['query'],
         )));
         unset($_SESSION[$queue_key]);
         break;
