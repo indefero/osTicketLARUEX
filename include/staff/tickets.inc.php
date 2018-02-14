@@ -613,7 +613,12 @@ return false;">
                     echo "<td>$displaystatus</td>";
                 } else { ?>
                 <td class="nohover" align="center"
-                    style="background-color:<?php echo $T['cdata__:priority__priority_color']; ?>;">
+                    style="background-color:<?php 
+                        if ($background_color)
+                            echo $background_color;
+                        else
+                            echo $T['cdata__:priority__priority_color']; 
+                    ?>;">
                     <?php echo $T['cdata__:priority__priority_desc']; ?></td>
                 <?php
                 }
