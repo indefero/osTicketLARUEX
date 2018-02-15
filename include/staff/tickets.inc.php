@@ -385,8 +385,8 @@ TicketForm::ensureDynamicDataView();
 // Select pertinent columns
 // ------------------------------------------------------------
 $tickets->values('lock__staff_id', 'staff_id', 'isoverdue', 'team_id', 'last_duedate',
-'ticket_id', 'number', 'cdata__subject', 'user__default_email__address',
-'source', 'cdata__:priority__priority_color', 'cdata__:priority__priority_desc', 
+'ticket_id', 'number', 'verified', 'cdata__subject', 'user__default_email__address',
+'source', 'cdata__:priority__priority_color', 'cdata__:priority__priority_desc', 'sla__name', 
 'status_id', 'status__name', 'status__state', 'dept_id', 'dept__name', 'user__name', 
 'lastupdate', 'isanswered', 'staff__firstname', 'staff__lastname', 'team__name');
 
@@ -515,6 +515,7 @@ return false;">
         // Setup Subject field for display
         $subject_field = TicketForm::getInstance()->getField('subject');
         $class = "row1";
+        $background_color="";
         $total=0;
         $ids=($errors && $_POST['tids'] && is_array($_POST['tids']))?$_POST['tids']:null;
         foreach ($tickets as $T) {
@@ -542,6 +543,12 @@ return false;">
                 if(!strcasecmp($T['status__state'],'open') && !$T['isanswered'] && !$T['lock__staff_id']) {
                     $tid=sprintf('<b>%s</b>',$tid);
                 }
+                if ($T["verified"])
+                    $background_color = "#CCCCFF;";
+                elseif ($T["isoverdue"] > 0 && !$T["sla__name"])  // Ha vencido definitivamente
+                    $background_color = "#FFCCCC;";
+                else
+                    unset($background_color);
                 ?>
             <tr id="<?php echo $T['ticket_id']; ?>">
                 <?php if($thisstaff->canManageTickets()) {
@@ -555,20 +562,20 @@ return false;">
                         value="<?php echo $T['ticket_id']; ?>" <?php echo $sel?'checked="checked"':''; ?>>
                 </td>
                 <?php } ?>
-                <td title="<?php echo $T['user__default_email__address']; ?>" nowrap>
+                <td title="<?php echo $T['user__default_email__address']; ?>" nowrap style="background-color:<?php echo $background_color; ?>">
                   <a class="Icon <?php echo strtolower($T['source']); ?>Ticket preview"
                     title="Preview Ticket"
                     href="tickets.php?id=<?php echo $T['ticket_id']; ?>"
                     data-preview="#tickets/<?php echo $T['ticket_id']; ?>/preview"
                     ><?php echo $tid; ?></a></td>
-                <td align="center" nowrap><?php 
+                <td align="center" nowrap style="background-color:<?php echo $background_color; ?>"><?php 
                     // Esto permite poner la fecha del último vencimiento cuando ya no va a haber más
                     if ($date_col && $date_col === 'est_duedate' && !$T[$date_col])
                         echo Format::datetime($T['last_duedate']);
                     else
                         echo Format::datetime($T[$date_col ?: 'lastupdate']) ?: $date_fallback;
                 ?></td>
-                <td><div style="max-width: <?php
+                <td style="background-color:<?php echo $background_color; ?>"><div style="max-width: <?php
                     $base = 279;
                     // Make room for the paperclip and some extra
                     if ($T['attachment_count']) $base -= 18;
@@ -589,7 +596,7 @@ return false;">
                         </span>
                     <?php } ?>
                 </td>
-                <td nowrap><div><?php
+                <td nowrap style="background-color:<?php echo $background_color; ?>"><div><?php
                     if ($T['collab_count'])
                         echo '<span class="pull-right faded-more" data-toggle="tooltip" title="'
                             .$T['collab_count'].'"><i class="icon-group"></i></span>';
@@ -611,8 +618,11 @@ return false;">
                 <?php
                 }
                 ?>
-                <td nowrap><span class="truncate" style="max-width: 169px"><?php
-                    echo Format::htmlchars($lc); ?></span></td>
+                <td nowrap style="background-color:<?php echo $background_color; ?>">
+                    <span class="truncate" style="max-width: 169px;"><?php
+                        echo Format::htmlchars($lc); 
+                    ?></span>
+                </td>
             </tr>
             <?php
             } //end of foreach
