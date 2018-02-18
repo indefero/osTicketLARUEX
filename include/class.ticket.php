@@ -533,32 +533,23 @@ implements RestrictedAccess, Threadable {
         return $this->last_duedate;
     }
 
-    function getSLADueDate() {
-        if ($sla = $this->getSLA()) {
-            $dt;
-            if (!$this->isOverdue()) {
-                $dt = new DateTime($this->getCreateDate());
-            } else {
-                $dt = new DateTime($this->getLastDueDate());
-            }
-            return $dt
-                ->add(new DateInterval('P' . $sla->getGracePeriod() . 'D'))
-                ->format('Y-m-d H:i:s');
-        }
-    }
-
     function updateEstDueDate() {
-        $this->est_duedate = $this->getEstDueDate();
+        global $cfg;
+        
+        $dt = $this->getDueDate();
+        if (!$dt) {
+            if ($sla = $this->getSLA()) {
+                $dt = DateTime::createFromFormat('U', Misc::dbtime())
+                        ->add(new DateInterval('P' . $sla->getGracePeriod() .'D'))
+                        ->format('Y-m-d H:i:s');
+            }
+        }
+        $this->est_duedate = $dt;
         $this->save();
     }
 
     function getEstDueDate() {
-        // Real due date
-        if ($duedate = $this->getDueDate()) {
-            return $duedate;
-        }
-        // return sla due date (If ANY)
-        return $this->getSLADueDate();
+        return $this->est_duedate;
     }
 
     function getCloseDate() {
@@ -1206,6 +1197,7 @@ implements RestrictedAccess, Threadable {
             return false;
 
         $this->sla = $sla;
+        $this->updateEstDueDate();
         return $this->save();
     }
     /**
@@ -1306,6 +1298,8 @@ implements RestrictedAccess, Threadable {
 
                 $this->closed = $this->lastupdate = SqlFunction::NOW();
                 $this->duedate = null;
+                $this->sla = null;
+                $this->updateEstDueDate();
                 if ($thisstaff && $set_closing_agent)
                     $this->staff = $thisstaff;
                 $this->clearOverdue(false);
@@ -2147,25 +2141,25 @@ implements RestrictedAccess, Threadable {
         $this->logEvent('overdue');
         $this->onOverdue($whine);
 
-        // Si caducó por SLA...
-        if ($this->getSLADueDate() && Misc::db2gmtime($this->getSLADueDate()) <= Misc::gmtime()) {
-            $this->last_duedate = SqlFunction::NOW();
+        // ...y es por SLA
+        if ($sla = $this->getSLA()) {
             // ...y hay otro encadenado se le asocia...
-            if ($this->sla && ($nextSlaId = $this->sla->getNextSla()))
+            if ($nextSlaId = $sla->getNextSla()) {
                 $this->setSLAId($nextSlaId);
-            else // ...pero si no hay otro encadenado se elimina la asociación
+            } else {    // ...pero si no hay otro encadenado se elimina la asociación
                 $this->sla = null;
+            }
+        } else {
+            $this->duedate = null;
         }
         
-        // Si caducó por fecha de caducidad se elimina dicha fecha
-        if ($this->getDueDate() && Misc::db2gmtime($this->getDueDate()) <= Misc::gmtime())
-            $this->duedate = null;
+        // Se ajusta la fecha de última caducidad
+        $this->last_duedate = SqlFunction::NOW();
         
         // Se añade una caducidad al contador
         $this->isoverdue += 1;
         
         // Update estimated due date in database
-        $estimatedDueDate = $this->getEstDueDate();
         $this->updateEstDueDate();
         
         if (!$this->save())
@@ -2181,14 +2175,6 @@ implements RestrictedAccess, Threadable {
         //NOTE: Previously logged overdue event is NOT annuled.
 
         $this->isoverdue = 0;
-
-        // clear due date if it's in the past
-        if ($this->getDueDate() && Misc::db2gmtime($this->getDueDate()) <= Misc::gmtime())
-            $this->duedate = null;
-
-        // Clear SLA if est. due date is in the past
-        if ($this->getSLADueDate() && Misc::db2gmtime($this->getSLADueDate()) <= Misc::gmtime())
-            $this->sla = null;
 
         return $save ? $this->save() : true;
     }
@@ -2962,7 +2948,10 @@ implements RestrictedAccess, Threadable {
         if ($vars['duedate']) {
             if ($this->isClosed())
                 $errors['duedate']=__('Due date can NOT be set on a closed ticket');
-            elseif (!$vars['time'] || strpos($vars['time'],':') === false)
+            if ($vars['slaId']) {
+                $errors['duedate']='No se puede seleccionar una fecha de vencimiento y un plan de SLA a la vez';
+                $errors['slaId']='No se puede seleccionar un plan de SLA y una fecha de vencimiento a la vez';
+            } elseif (!$vars['time'] || strpos($vars['time'],':') === false)
                 $errors['time']=__('Select a time from the list');
             elseif (strtotime($vars['duedate'].' '.$vars['time']) === false)
                 $errors['duedate']=__('Invalid due date');
@@ -2993,11 +2982,14 @@ implements RestrictedAccess, Threadable {
         if ($errors)
             return false;
 
-        // Decide if we need to keep the just selected SLA
-        $keepSLA = ($this->getSLAId() != $vars['slaId']);
-
         $this->topic_id = $vars['topicId'];
-        $this->sla_id = $vars['slaId'];
+        if ($this->sla_id != $vars['slaId']) {
+            $this->sla_id = $vars['slaId'];
+            // Nuevo SLA así que se desmarca la posible marca actual
+            $this->isoverdue = 0;
+            // Se programa para calcular de nuevo la fecha estimada de retraso
+            $actualizarEstimacion = 1;
+        }
         $this->source = $vars['source'];
         $this->duedate = $vars['duedate']
             ? date('Y-m-d G:i',Misc::dbtime($vars['duedate'].' '.$vars['time']))
@@ -3005,9 +2997,12 @@ implements RestrictedAccess, Threadable {
 
         if ($vars['user_id'])
             $this->user_id = $vars['user_id'];
-        if ($vars['duedate'])
-            // We are setting new duedate...
+        if ($vars['duedate']) {
+            // Nueva fecha de retraso así que se desmarca la posible marca actual
             $this->isoverdue = 0;
+            // Y se programa para calcular de nuevo la fecha estimada
+            $actualizarEstimacion = 1;
+        }
 
         $changes = array();
         foreach ($this->dirty as $F=>$old) {
@@ -3046,24 +3041,17 @@ implements RestrictedAccess, Threadable {
         if ($changes)
             $this->logEvent('edited', $changes);
 
-        // Reselect SLA if transient
-        if (!$keepSLA
-            && (!$this->getSLA() || $this->getSLA()->isTransient())
-        ) {
-            $this->selectSLAId();
-        }
-
         // Update estimated due date in database
-        $estimatedDueDate = $this->getEstDueDate();
-        $this->updateEstDueDate();
+        if ($actualizarEstimacion)
+            $this->updateEstDueDate();
 
         // Clear overdue flag if duedate or SLA changes and the ticket is no longer overdue.
-        if($this->isOverdue()
-            && (!$estimatedDueDate //Duedate + SLA cleared
-                || Misc::db2gmtime($estimatedDueDate) > Misc::gmtime() //New due date in the future.
-        )) {
-            $this->clearOverdue();
-        }
+        // Lo comento porque no es suficiente con que no haya fecha estimada de retraso
+        // para quitar la marca. Cuando se retrasa definitivamente un ticket se elimina
+        // dicha fecha estimada para que no caduque en bucle infinito.
+//        if($this->isOverdue() && !$estimatedDueDate) {
+//            $this->clearOverdue();
+//        }
 
         Signal::send('model.updated', $this);
         return $this->save();
@@ -3887,12 +3875,7 @@ implements RestrictedAccess, Threadable {
             .' INNER JOIN '.TICKET_STATUS_TABLE.' status
                 ON (status.id=T1.status_id AND status.state="open") '
             .' LEFT JOIN '.SLA_TABLE.' T2 ON (T1.sla_id=T2.id AND T2.flags & 1 = 1) '
-            .' WHERE (duedate is NOT NULL AND duedate<NOW()) '
-            .' OR (isoverdue = 0 '
-            .' AND ((reopened is NULL AND duedate is NULL AND TIME_TO_SEC(TIMEDIFF(NOW(),T1.created))>=T2.grace_period*3600*24) '
-            .' OR (reopened is NOT NULL AND duedate is NULL AND TIME_TO_SEC(TIMEDIFF(NOW(),reopened))>=T2.grace_period*3600*24))) '
-            .' OR (isoverdue > 0 ' 
-            .' AND (duedate is NULL AND TIME_TO_SEC(TIMEDIFF(NOW(),T1.last_duedate))>=T2.grace_period*3600*24)) '
+            .' WHERE est_duedate is NOT NULL AND est_duedate<NOW() '
             .' ORDER BY T1.created LIMIT 50'; //Age upto 50 tickets at a time?
 
         if(($res=db_query($sql)) && db_num_rows($res)) {
