@@ -2942,6 +2942,8 @@ implements RestrictedAccess, Threadable {
             $errors['err'] = sprintf('%s — %s',
                 __('Missing or invalid data'),
                 __('Correct any errors below and try again'));
+        
+        $vars['slaId'] = $vars['slaId']?:null;
 
         $vars['note'] = ThreadEntryBody::clean($vars['note']);
 
