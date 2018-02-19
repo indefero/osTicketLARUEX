@@ -280,10 +280,10 @@ return false;">
       <button type="submit" class="attached button"><i class="icon-search"></i>
       </button>
     </div>
-    <a href="#" onclick="javascript:
+    <!--<a href="#" onclick="javascript:
         $.dialog('ajax.php/equipment/search', 201);"
         >[<?php echo __('Advanced Search'); ?>]</a>
-        <i class="help-tip icon-question-sign" href="#advanced"></i>
+        <i class="help-tip icon-question-sign" href="#advanced"></i>-->
     </form>
 </div>
 <!-- SEARCH FORM END -->
