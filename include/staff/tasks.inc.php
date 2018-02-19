@@ -96,6 +96,9 @@ case 'search':
             'number__startswith' => $_REQUEST['query'],
             'cdata__title__contains' => $_REQUEST['query'],
             'entries__answers__value__contains' => $_REQUEST['query'],
+            'staff__firstname__contains' => $_REQUEST['query'],
+            'staff__lastname__contains' => $_REQUEST['query'],
+            'team__name__contains' => $_REQUEST['query'],
         )));
         unset($_SESSION[$queue_key]);
         break;
