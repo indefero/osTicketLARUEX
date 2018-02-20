@@ -107,6 +107,7 @@ class Equipment extends EquipmentModel
 implements Threadable {
     
     var $_entries;
+    var $_answers;
     
     function __onload() {
         $this->loadDynamicData();
@@ -121,9 +122,8 @@ implements Threadable {
                     'entry__object_type' => 'E'
                 )) as $answer
             ) {
-                $tag = mb_strtolower($answer->field->name)
-                    ?: 'field.' . $answer->field->id;
-                    $this->_answers[$tag] = $answer;
+                $tag = mb_strtolower($answer->field->name) ?: 'field.' . $answer->field->id;
+                $this->_answers[$tag] = $answer;
             }
         }
         return $this->_answers;
