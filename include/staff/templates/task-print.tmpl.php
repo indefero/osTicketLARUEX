@@ -100,15 +100,21 @@ div.hr {
 <body>
 
 <htmlpageheader name="def" style="display:none">
-<?php if ($logo = $cfg->getClientLogo()) { ?>
-    <img src="cid:<?php echo $logo->getKey(); ?>" class="logo"/>
-<?php } else { ?>
-    <img src="<?php echo INCLUDE_DIR . 'fpdf/print-logo.png'; ?>" class="logo"/>
-<?php } ?>
+    <table class="meta-data" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+            <td class="flush-left">
+                <?php if ($logo = $cfg->getStaffLogo()) { ?>
+                    <img src="<?php echo INCLUDE_DIR . 'fpdf/' . $logo->getKey().$logo->getName(); ?>" class="logo"/>
+                <?php } else { ?>
+                    <img src="<?php echo INCLUDE_DIR . 'fpdf/print-logo.png'; ?>" class="logo"/>
+                <?php } ?>
+            </td>
+            <td class="flush-right" width="30%" style="border: 1px solid black"></td>
+        </tr>
+    </table>
     <div class="hr">&nbsp;</div>
     <table><tr>
         <td class="flush-left"><?php echo (string) $ost->company; ?></td>
-        <td class="flush-right"><?php echo Format::daydatetime(Misc::gmtime()); ?></td>
     </tr></table>
 </htmlpageheader>
 
