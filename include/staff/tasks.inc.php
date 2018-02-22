@@ -473,7 +473,7 @@ if ($thisstaff->hasPerm(Task::PERM_DELETE, false)) {
     <?php
     if ($total>0) { //if we actually had any tasks returned.
         echo '<div>&nbsp;'.__('Page').':'.$pageNav->getPageLinks().'&nbsp;';
-        echo sprintf('<a class="export-csv no-pjax" href="?%s">%s</a>',
+        echo sprintf('<a id="export" class="export-csv no-pjax" href="?%s">%s</a>',
                 Http::build_query(array(
                         'a' => 'export', 'h' => $hash,
                         'status' => $_REQUEST['status'])),
@@ -522,6 +522,22 @@ $(function() {
         }, $options);
 
         return false;
+    });
+    
+    // Introducimos como parámetros GET la lista de id de tareas seleccionadas
+    // y un contador. Si comentamos o eliminamos esto se exportarán todas las tareas
+    // independientemente de las seleccionadas.
+    $("#export").click(function(e){
+        e.preventDefault();
+        var $form = $('form#tasks');
+        var count = checkbox_checker($form);
+        var tids = $('.ckb:checked', $form).map(function() {
+                return this.value;
+            }).get();
+        var url = 'tasks.php'+$(this).attr('href')
+        //+'&count='+count
+        +'&tids='+tids.join(',');
+        window.location.href=url;
     });
 
     $('[data-toggle=tooltip]').tooltip();

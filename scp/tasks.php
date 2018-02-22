@@ -240,9 +240,9 @@ if($task) {
         $inc = 'task-open.inc.php';
     elseif($_REQUEST['a'] == 'export') {
         $ts = strftime('%Y%m%d');
-        if (!($query=$_SESSION[':Q:tasks']))
+        if (!($query=clone $_SESSION[':Q:tasks']))
             $errors['err'] = __('Query token not found');
-        elseif (!Export::saveTasks($query, "tasks-$ts.csv", 'csv'))
+        elseif (!Export::saveTasks($query, "tasks-$ts.csv", 'csv', $_REQUEST['tids'] ? array_filter(explode(',', $_REQUEST['tids'])) : null))
             $errors['err'] = __('Unable to dump query results.')
                 .' '.__('Internal error occurred');
     }

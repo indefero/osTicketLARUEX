@@ -158,7 +158,7 @@ class Export {
     }
 
 
-    static function dumpTasks($sql, $how='csv') {
+    static function dumpTasks($sql, $how='csv', $tids=false) {
         // Add custom fields to the $sql statement
         $cdata = $fields = array();
         foreach (TaskForm::getInstance()->getFields() as $f) {
@@ -174,7 +174,14 @@ class Export {
         // Reset the $sql query
         $tasks = $sql->models()
             ->select_related('dept', 'staff', 'team', 'cdata')
-            ->annotate(array(
+            ->options(QuerySet::OPT_NOCACHE);
+        
+        // Si hay lista de id de tareas sólo queremos ésas
+        if ($tids && count($tids)) {
+            $tasks = $tasks->filter(array('id__in' => $tids));
+        }
+        
+        $tasks = $tasks->annotate(array(
             'collab_count' => SqlAggregate::COUNT('thread__collaborators'),
             'attachment_count' => SqlAggregate::COUNT('thread__entries__attachments'),
             'thread_count' => SqlAggregate::COUNT('thread__entries'),
@@ -206,10 +213,10 @@ class Export {
     }
 
 
-    static function saveTasks($sql, $filename, $how='csv') {
+    static function saveTasks($sql, $filename, $how='csv', $tids=false) {
 
         ob_start();
-        self::dumpTasks($sql, $how);
+        self::dumpTasks($sql, $how, $tids);
         $stuff = ob_get_contents();
         ob_end_clean();
         if ($stuff)
