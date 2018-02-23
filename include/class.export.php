@@ -173,8 +173,7 @@ class Export {
         }
         // Reset the $sql query
         $tasks = $sql->models()
-            ->select_related('dept', 'staff', 'team', 'cdata')
-            ->options(QuerySet::OPT_NOCACHE);
+            ->select_related('dept', 'staff', 'team', 'cdata');
         
         // Si hay lista de id de tareas sólo queremos ésas
         if ($tids && count($tids)) {
