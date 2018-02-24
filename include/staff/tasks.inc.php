@@ -478,7 +478,14 @@ if ($thisstaff->hasPerm(Task::PERM_DELETE, false)) {
                         'a' => 'export', 'h' => $hash,
                         'status' => $_REQUEST['status'])),
                 __('Export'));
-        echo '&nbsp;<i class="help-tip icon-question-sign" href="#export"></i></div>';
+        echo '&nbsp;<i class="help-tip icon-question-sign" href="#export"></i>';
+        echo ' ';
+        echo sprintf('<a id="print" class="no-pjax" href="?%s">%s</a>',
+                Http::build_query(array(
+                        'a' => 'print', 'h' => $hash,
+                        'status' => $_REQUEST['status'])),
+                __('Print'));
+        echo '&nbsp;<i class="help-tip icon-question-sign" href="#print"></i></div>';
     } ?>
     </form>
 </div>
@@ -528,6 +535,22 @@ $(function() {
     // y un contador. Si comentamos o eliminamos esto se exportarán todas las tareas
     // independientemente de las seleccionadas.
     $("#export").click(function(e){
+        e.preventDefault();
+        var $form = $('form#tasks');
+        var count = checkbox_checker($form);
+        var tids = $('.ckb:checked', $form).map(function() {
+                return this.value;
+            }).get();
+        var url = 'tasks.php'+$(this).attr('href')
+        //+'&count='+count
+        +'&tids='+tids.join(',');
+        window.location.href=url;
+    });
+    
+    // Introducimos como parámetros GET la lista de id de tareas seleccionadas
+    // y un contador. Si comentamos o eliminamos esto se imprimirán todas las tareas
+    // independientemente de las seleccionadas.
+    $("#print").click(function(e){
         e.preventDefault();
         var $form = $('form#tasks');
         var count = checkbox_checker($form);

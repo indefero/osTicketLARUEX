@@ -245,6 +245,11 @@ if($task) {
         elseif (!Export::saveTasks($query, "tasks-$ts.csv", 'csv', $_REQUEST['tids'] ? array_filter(explode(',', $_REQUEST['tids'])) : null))
             $errors['err'] = __('Unable to dump query results.')
                 .' '.__('Internal error occurred');
+    } elseif ($_REQUEST['a'] == 'print') {
+        if (!($query=clone $_SESSION[':Q:tasks']))
+            $errors['err'] = __('Query token not found');
+        else 
+            Task::multiplePdfExport($query, array(), $_REQUEST['tids'] ? array_filter(explode(',', $_REQUEST['tids'])) : null);
     }
 
     //Clear active submenu on search with no status

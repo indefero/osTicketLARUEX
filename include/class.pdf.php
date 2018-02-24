@@ -120,4 +120,43 @@ class Task2PDF extends mPDFWithLocalImages {
     }
 }
 
+// Tasks print
+class Tasks2PDF extends mPDFWithLocalImages {
+
+    var $options = array();
+    var $tasks = array();
+
+    function __construct($query, $options=array(), $tids) {
+
+        $this->options = $options;
+        
+        // Reset the $sql query
+        $tasks = $query->models()
+            ->select_related('dept', 'staff', 'team', 'cdata');
+        
+        // Si hay lista de id de tareas sólo queremos ésas
+        if ($tids && count($tids)) {
+            $tasks = $tasks->filter(array('id__in' => $tids));
+        }
+        foreach ($tasks as $t)
+            $this->tasks[] = $t->model;
+        
+        parent::__construct('', $this->options['psize']);
+        $this->_print();
+    }
+
+    function _print() {
+        global $thisstaff, $cfg;
+
+        if (!($tasks = $this->tasks) || !$thisstaff)
+            return;
+
+        ob_start();
+        include STAFFINC_DIR.'templates/tasks-print.tmpl.php';
+        $html = ob_get_clean();
+        $this->WriteHtml($html, 0, true, true);
+
+    }
+}
+
 ?>
