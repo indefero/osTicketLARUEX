@@ -223,7 +223,68 @@ class Export {
 
         return false;
     }
+    
+    
+    static function dumpEquipment($sql, $how='csv', $tids=false) {
+        // Add custom fields to the $sql statement
+        $cdata = $fields = array();
+        foreach (EquipmentForm::getInstance()->getFields() as $f) {
+            // Ignore non-data fields
+            if (!$f->hasData() || $f->isPresentationOnly())
+                continue;
 
+            $name = $f->get('name') ?: 'field_'.$f->get('id');
+            $key = 'cdata.'.$name;
+            $fields[$key] = $f;
+            $cdata[$key] = $f->getLocal('label');
+        }
+        // Reset the $sql query
+        $equipments = $sql->models()
+            ->select_related('dept', 'cdata');
+        
+        // Si hay lista de id de tareas sólo queremos ésas
+        if ($tids && count($tids)) {
+            $equipments = $equipments->filter(array('id__in' => $tids));
+        }
+        
+        $equipments = $equipments->annotate(array(
+            'thread_count' => SqlAggregate::COUNT('thread__entries'),
+        ));
+
+        return self::dumpQuery($equipments,
+            array(
+                'cdata.id_inventario' => 'Nº inventario',
+                'cdata.name' =>           __('Name'),
+                'cdata.description' =>           __('Description'),
+                'dept::getLocalName' => __('Department'),
+                'status::getName' =>    __('Current Status'),
+                'created' => 'Adquisición',
+                'activation' => 'Inicio operación',
+                'deactivation' => 'Fecha mantenimiento',
+                'retirement' => 'Fecha retirada',
+                'thread_count' =>   __('Thread Count'),
+                'cdata.bookable' => 'Permite reservas',
+                'cdata.localizacion' => 'Localización'
+            ),
+            $how,
+            array('modify' => function(&$record, $keys) use ($fields) {
+                foreach ($fields as $k=>$f) {
+                    if (($i = array_search($k, $keys)) !== false) {
+                        $record[$i] = $f->export($f->to_php($record[$i]));
+                    }
+                }
+                return $record;
+            })
+            );
+    }
+    
+    static  function saveEquipment($sql, $filename, $how='csv', $tids=false) {
+        Http::download($filename, "text/$how");
+        self::dumpEquipment($sql, $how, $tids);
+        exit;
+    }
+
+    
     static function saveUsers($sql, $filename, $how='csv') {
 
         $exclude = array('name', 'email');

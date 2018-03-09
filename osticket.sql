@@ -452,6 +452,34 @@ LOCK TABLES `ost_equipment` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `ost_equipment__cdata`
+--
+
+DROP TABLE IF EXISTS `ost_equipment__cdata`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ost_equipment__cdata` (
+  `equipment_id` int(11) unsigned NOT NULL,
+  `name` mediumtext,
+  `description` mediumtext,
+  `bookable` mediumtext,
+  `dept` mediumtext,
+  `localizacion` mediumtext,
+  `id_inventario` mediumtext,
+  PRIMARY KEY (`equipment_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ost_equipment__cdata`
+--
+
+LOCK TABLES `ost_equipment__cdata` WRITE;
+/*!40000 ALTER TABLE `ost_equipment__cdata` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ost_equipment__cdata` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `ost_equipment_booking`
 --
 
@@ -2433,4 +2461,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-01-27 13:36:47
+-- Dump completed on 2018-03-09 17:40:25

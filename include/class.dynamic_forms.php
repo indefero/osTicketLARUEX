@@ -318,8 +318,7 @@ class DynamicForm extends VerySimpleModel {
             return;
 
         $f = $answer->getField();
-        $name = $f->get('name') ? $f->get('name')
-            : 'field_'.$f->get('id');
+        $name = $f->get('name') ?: 'field_'.$f->get('id');
         $fields = sprintf('`%s`=', $name) . db_input($answer->getSearchKeys());
         $sql = 'INSERT INTO `'.$cdata['table'].'` SET '.$fields
             . sprintf(', `%s`= %s',
@@ -341,6 +340,8 @@ class DynamicForm extends VerySimpleModel {
             return TicketForm::updateDynamicDataView($answer, $data);
         case 'A':
             return TaskForm::updateDynamicDataView($answer, $data);
+        case 'E':
+            return EquipmentForm::updateDynamicDataView($answer, $data);
         case 'U':
             return UserForm::updateDynamicDataView($answer, $data);
         case 'O':
