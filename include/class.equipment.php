@@ -223,6 +223,10 @@ implements Threadable {
         return $this->name;
     }
     
+    function getSubject() {
+        return (string) $this->_answers['description'];
+    }
+    
     function getDescription() {
         return $this->__cdata('description', ObjectModel::OBJECT_TYPE_EQUIPMENT);
     }
@@ -716,6 +720,26 @@ implements Threadable {
         }
 
         return $note;
+    }
+    
+    // Print equipment... export the equipment thread as PDF.
+    function pdfExport($psize='Letter', $notes=false) {
+        global $thisstaff;
+
+        require_once(INCLUDE_DIR.'class.pdf.php');
+        if (!is_string($psize)) {
+            if ($_SESSION['PAPER_SIZE'])
+                $psize = $_SESSION['PAPER_SIZE'];
+            elseif (!$thisstaff || !($psize = $thisstaff->getDefaultPaperSize()))
+                $psize = 'Letter';
+        }
+
+        $pdf = new Equipment2PDF($this, $psize, $notes);
+        $name = 'Equipment-'.$this->getId().'.pdf';
+        Http::download($name, 'application/pdf', $pdf->Output($name, 'S'));
+        //Remember what the user selected - for autoselect on the next print.
+        $_SESSION['PAPER_SIZE'] = $psize;
+        exit;
     }
 
     function delete($comments='') {

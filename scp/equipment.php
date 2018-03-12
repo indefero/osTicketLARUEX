@@ -369,8 +369,8 @@ if($equipment) {
     $ost->setPageTitle(sprintf(__('#%s'),$equipment->getName()));
     $nav->setActiveSubMenu(-1);
     $inc = 'equipment-view.inc.php';
-    if($_REQUEST['a'] == 'print' && !$ticket->pdfExport($_REQUEST['psize'], $_REQUEST['notes']))
-        $errors['err'] = __('Unable to export the ticket to PDF for print.')
+    if($_REQUEST['a'] == 'print' && !$equipment->pdfExport($_REQUEST['psize'], $_REQUEST['notes']))
+        $errors['err'] = __('Unable to export the item to PDF for print.')
             .' '.__('Internal error occurred');
 } else {
     $inc = 'equipments.inc.php';
