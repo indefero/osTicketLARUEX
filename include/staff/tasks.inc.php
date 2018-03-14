@@ -34,11 +34,6 @@ $queue_columns = array(
             'width' => '8%',
             'heading' => __('Number'),
             ),
-        'date' => array(
-            'width' => '20%',
-            'heading' => __('Date Created'),
-            'sort_col' => 'created',
-            ),
         'title' => array(
             'width' => '38%',
             'heading' => __('Title'),
@@ -56,6 +51,16 @@ $queue_columns = array(
         'assignee' => array(
             'width' => '16%',
             'heading' => __('Assigned To'),
+            ),
+        'date' => array(
+            'width' => '20%',
+            'heading' => __('Date Created'),
+            'sort_col' => 'created',
+            ),
+        'status' => array(
+            'width' => '8.4%',
+            'heading' => __('Status'),
+            'sort_col' => 'closed',
             ),
         );
 
@@ -88,6 +93,7 @@ case 'assigned':
     break;
 default:
 case 'search':
+    $search = true;
     $queue_sort_options = array('closed', 'updated', 'created', 'number', 'hot');
     // Consider basic search
     if ($_REQUEST['query']) {
@@ -347,6 +353,12 @@ if ($thisstaff->hasPerm(Task::PERM_DELETE, false)) {
             <?php } ?>
 
             <?php
+            // Swap some columns based on the queue.
+            if ($search)
+                unset($queue_columns['date']);
+            else
+                unset($queue_columns['status']);
+            
             // Query string
             unset($args['sort'], $args['dir'], $args['_pjax']);
             $qstr = Http::build_query($args);
@@ -426,8 +438,6 @@ if ($thisstaff->hasPerm(Task::PERM_DELETE, false)) {
                     href="tasks.php?id=<?php echo $T['id']; ?>"
                     data-preview="#tasks/<?php echo $T['id']; ?>/preview"
                     ><?php echo $number; ?></a></td>
-                <td align="center" nowrap><?php echo
-                Format::datetime($T[$date_col ?: 'created']); ?></td>
                 <td><a <?php if ($flag) { ?> class="Icon <?php echo $flag; ?>Ticket" title="<?php echo ucfirst($flag); ?> Ticket" <?php } ?>
                     href="tasks.php?id=<?php echo $T['id']; ?>"><?php
                     echo $title; ?></a>
@@ -446,6 +456,15 @@ if ($thisstaff->hasPerm(Task::PERM_DELETE, false)) {
                     echo $localizacion;
                 ?></td>
                 <td nowrap>&nbsp;<?php echo $assignee; ?></td>
+                <td align="center" nowrap>
+                    <?php
+                        if ($search) {
+                            echo $T['isopen']?'Abierta':'Cerrada';
+                        } else {
+                            echo Format::datetime($T[$date_col ?: 'created']);
+                        }
+                    ?>
+                </td>
             </tr>
             <?php
             } //end of foreach
