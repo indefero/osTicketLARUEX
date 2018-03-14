@@ -55,7 +55,12 @@ $queue_columns = array(
             'width' => '10%',
             'heading' => __('Date Created'),
             'sort_col' => 'created',
-            )
+            ),
+        'status' => array(
+            'width' => '8.4%',
+            'heading' => __('Status'),
+            'sort_col' => 'status_id',
+            ),
         );
 
 $use_subquery = true;
@@ -319,7 +324,7 @@ return false;">
 
             <?php
             if ($search && !$status)
-                unset($queue_columns['priority']);
+                unset($queue_columns['date']);
             else
                 unset($queue_columns['status']);
 
@@ -387,7 +392,10 @@ return false;">
                     echo $location[array_keys($location)[0]];
                 ?></td>
                 <td align="center" nowrap><?php 
-                    echo Format::datetime($E[$date_col ?: 'updated']) ?: $date_fallback;
+                    if ($search && !$status)
+                        echo $E['status__name'];
+                    else
+                        echo Format::datetime($E[$date_col ?: 'updated']) ?: $date_fallback;
                 ?></td>
             </tr>
             <?php
