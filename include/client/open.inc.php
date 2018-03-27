@@ -124,6 +124,6 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
                 if (redactor && redactor.opts.draftDelete)
                     redactor.deleteDraft();
             });
-            window.location.href='index.php';">
+            window.location.href='tickets.php';">
   </p>
 </form>

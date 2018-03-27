@@ -63,7 +63,7 @@ class JsonDataParser {
 class JsonDataEncoder {
     function encode($var) {
         if (function_exists('json_encode'))
-            return json_encode($var);
+            return json_encode($var, JSON_UNESCAPED_UNICODE);
         else {
             $decoder = new Services_JSON();
             return $decoder->encode($var);

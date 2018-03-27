@@ -55,13 +55,16 @@ if ($role->hasPerm(Task::PERM_TRANSFER)) {
             ));
 }
 
-$actions += array(
+// Esta acción no funciona ni funcionaba tras la instalación original.
+// No se puede tratar como acción así que lo añado manualmente después de que
+// se añadan éstas (mirar bastante más abajo).
+/*$actions += array(
         'print' => array(
-            'href' => sprintf('tasks.php?id=%d&a=print', $task->getId()),
+            'href' => sprintf('tickets.php?id=9&a=print', $task->getId()),
             'class' => 'no-pjax',
             'icon' => 'icon-print',
             'label' => __('Print')
-        ));
+        ));*/
 
 if ($role->hasPerm(Task::PERM_EDIT)) {
     $actions += array(
@@ -285,6 +288,11 @@ if ($task->isOverdue())
                 </span>
            <?php
                 }
+                // Se añade a mano el botón de imprimir, que no puede ser class="task-action"
+                // si se quiere que funcione sin ningún diálogo de opciones intermedio
+                echo '<span class="action-button no-pjax">';
+                echo '<a href="tasks.php?id='.$task->getId().'&a=print"><i class="icon-print"></i></a>';
+                echo '</span>';
            } ?>
         </div>
     </div>

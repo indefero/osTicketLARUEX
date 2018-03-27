@@ -26,10 +26,15 @@ $sort_options = array(
 // Queues columns
 
 $queue_columns = array(
-        'id' => array(
+        /*'id' => array(
             'width' => '10%',
             'heading' => __('Number'),
             'sort_col' => 'id',
+            ),*/
+         'reference' => array(
+            'width' => '10%',
+            'heading' => __('Number'),
+            'sort_col' => 'reference',
             ),
         'name' => array(
             'width' => '50%',
@@ -44,12 +49,18 @@ $queue_columns = array(
         'location' => array(
             'width' => '15%',
             'heading' => 'Localización',
+            'sort_col' => 'location',
             ),
         'date' => array(
             'width' => '10%',
             'heading' => __('Date Created'),
             'sort_col' => 'created',
-            )
+            ),
+        'status' => array(
+            'width' => '8.4%',
+            'heading' => __('Status'),
+            'sort_col' => 'status_id',
+            ),
         );
 
 $use_subquery = true;
@@ -195,6 +206,9 @@ case 'retirement':
     $equipments->order_by('retirement', $orm_dir);
     break;
 default:
+    // No tengo ni idea de por qué esto hace funcionar las ordenaciones por localización. NO QUITAR!
+    if (count($equipments) > 0) $equipments->getIterator(); 
+    
     if ($sort_cols && isset($queue_columns[$sort_cols])) {
         $queue_columns[$sort_cols]['sort_dir'] = $sort_dir;
         if (isset($queue_columns[$sort_cols]['sort_col']))
@@ -226,6 +240,20 @@ $_SESSION[':Q:equipments'] = $equipments;
 $equipments->values('lock__staff_id', 'id', 'name', 'status_id', 'status__name',
         'status__state', 'updated', 'dept__name');
 
+$equipments->annotate(array(
+    'location' => DynamicFormEntry::objects()
+                    ->values('answers__value')
+                    ->filter(array('answers__field__name' => 'localizacion',
+                            'object_id' => new SqlField('id', 1),
+                            'object_type' => 'E',
+                            'form__title' => 'Detalles de equipamiento')),
+    'reference' => DynamicFormEntry::objects()
+                    ->values('answers__value')
+                    ->filter(array('answers__field__name' => 'id_inventario',
+                            'object_id' => new SqlField('id', 1),
+                            'object_type' => 'E',
+                            'form__title' => 'Detalles de equipamiento')),
+    ));
 
 // Make sure we're only getting active locks
 $equipments->constrain(array('lock' => array(
@@ -257,10 +285,10 @@ return false;">
       <button type="submit" class="attached button"><i class="icon-search"></i>
       </button>
     </div>
-    <a href="#" onclick="javascript:
+    <!--<a href="#" onclick="javascript:
         $.dialog('ajax.php/equipment/search', 201);"
         >[<?php echo __('Advanced Search'); ?>]</a>
-        <i class="help-tip icon-question-sign" href="#advanced"></i>
+        <i class="help-tip icon-question-sign" href="#advanced"></i>-->
     </form>
 </div>
 <!-- SEARCH FORM END -->
@@ -296,7 +324,7 @@ return false;">
 
             <?php
             if ($search && !$status)
-                unset($queue_columns['priority']);
+                unset($queue_columns['date']);
             else
                 unset($queue_columns['status']);
 
@@ -330,16 +358,6 @@ return false;">
                 $flag='locked';
 
             $lc='';
-            $tid=$E['name'];
-            
-            $localizacion = "";
-            foreach (DynamicFormEntry::forObject($E["id"], ObjectModel::OBJECT_TYPE_EQUIPMENT) as $form) {
-                $answers = $form->getAnswers()->filter(Q::any(array(
-                        'field__name__exact' => "Localización")));
-                if (!$answers || count($answers) == 0)
-                    continue;
-                $localizacion = $answers->one()->display();
-            }
             ?>
             <tr id="<?php echo $E['id']; ?>">
                 <?php
@@ -352,24 +370,32 @@ return false;">
                     <input class="ckb" type="checkbox" name="tids[]"
                         value="<?php echo $E['id']; ?>" <?php echo $sel?'checked="checked"':''; ?>>
                 </td>
-                <td nowrap>
+                <!--<td nowrap>
                   <a class="Icon <?php echo strtolower($E['source']); ?>Ticket preview"
                     href="equipment.php?id=<?php echo $E['id']; ?>"
                     data-preview="#equipments/<?php echo $E['id']; ?>/preview"
                     ><?php echo sprintf('<b>%s</b>', str_pad($E['id'], 6, "0", STR_PAD_LEFT)); ?></a>
+                </td>-->
+                <td nowrap>
+                    <a href="equipment.php?id=<?php echo $E['id']; ?>"
+                    ><?php echo $E['reference']; ?></a>
                 </td>
                 <td nowrap>
                   <a href="equipment.php?id=<?php echo $E['id']; ?>"
-                    ><?php echo $tid; ?></a>
+                    ><?php echo $E['name'];; ?></a>
                 </td>
                 <td align="center" nowrap><?php
                     echo $E['dept__name'];
                 ?></td>
                 <td align="center" nowrap><?php
-                    echo $localizacion;
+                    $location = json_decode($E['location'], true);
+                    echo $location[array_keys($location)[0]];
                 ?></td>
                 <td align="center" nowrap><?php 
-                    echo Format::datetime($E[$date_col ?: 'updated']) ?: $date_fallback;
+                    if ($search && !$status)
+                        echo $E['status__name'];
+                    else
+                        echo Format::datetime($E[$date_col ?: 'updated']) ?: $date_fallback;
                 ?></td>
             </tr>
             <?php
@@ -401,7 +427,7 @@ return false;">
             <span class="faded pull-right"><?php echo $pageNav->showing(); ?></span>
 <?php
         echo __('Page').':'.$pageNav->getPageLinks().'&nbsp;';
-        echo sprintf('<a class="export-csv no-pjax" href="?%s">%s</a>',
+        echo sprintf('<a id="export" class="export-csv no-pjax" href="?%s">%s</a>',
                 Http::build_query(array(
                         'a' => 'export', 'h' => $hash,
                         'status' => $_REQUEST['status'])),
@@ -433,6 +459,21 @@ return false;">
 <script type="text/javascript">
 $(function() {
     $('[data-toggle=tooltip]').tooltip();
+    
+    // Introducimos como parámetros GET la lista de id de equipamiento seleccionado
+    // y un contador. Si comentamos o eliminamos esto se exportarán todos los items
+    // independientemente de los seleccionados.
+    $("#export").click(function(e){
+        e.preventDefault();
+        var $form = $('form#equipments');
+        var count = checkbox_checker($form);
+        var tids = $('.ckb:checked', $form).map(function() {
+                return this.value;
+            }).get();
+        var url = 'equipment.php'+$(this).attr('href')
+        //+'&count='+count
+        +'&tids='+tids.join(',');
+        window.location.href=url;
+    });
 });
 </script>
-

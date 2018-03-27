@@ -40,7 +40,7 @@ class Export {
     #      SQL is exported, but for something like tickets, we will need to
     #      export attached messages, reponses, and notes, as well as
     #      attachments associated with each, ...
-    static function dumpTickets($sql, $how='csv') {
+    static function dumpTickets($sql, $how='csv', $tids=false) {
         // Add custom fields to the $sql statement
         $cdata = $fields = array();
         foreach (TicketForm::getInstance()->getFields() as $f) {
@@ -58,10 +58,16 @@ class Export {
         }
         // Reset the $sql query
         $tickets = $sql->models()
-            ->select_related('user', /*'user__default_email',*/ /*'dept',*/ 'staff',
+            ->select_related('user', /*'user__default_email',*/ /*'dept',*/ 'staff', 'sla',
                 'team', 'staff', 'cdata', /*'topic',*/ 'status', 'cdata__:priority')
-            ->options(QuerySet::OPT_NOCACHE)
-            ->annotate(array(
+            ->options(QuerySet::OPT_NOCACHE);
+        
+        // Si hay lista de id de tickets sólo queremos esos
+        if ($tids && count($tids)) {
+            $tickets = $tickets->filter(array('ticket_id__in' => $tids));
+        }
+        
+        $tickets = $tickets->annotate(array(
                 /*'collab_count' => TicketThread::objects()
                     ->filter(array('ticket__ticket_id' => new SqlField('ticket_id', 1)))
                     ->aggregate(array('count' => SqlAggregate::COUNT('collaborators__id'))),*/
@@ -145,14 +151,14 @@ class Export {
             );
     }
 
-    static  function saveTickets($sql, $filename, $how='csv') {
+    static  function saveTickets($sql, $filename, $how='csv', $tids=false) {
         Http::download($filename, "text/$how");
-        self::dumpTickets($sql, $how);
+        self::dumpTickets($sql, $how, $tids);
         exit;
     }
 
 
-    static function dumpTasks($sql, $how='csv') {
+    static function dumpTasks($sql, $how='csv', $tids=false) {
         // Add custom fields to the $sql statement
         $cdata = $fields = array();
         foreach (TaskForm::getInstance()->getFields() as $f) {
@@ -167,8 +173,14 @@ class Export {
         }
         // Reset the $sql query
         $tasks = $sql->models()
-            ->select_related('dept', 'staff', 'team', 'cdata')
-            ->annotate(array(
+            ->select_related('dept', 'staff', 'team', 'cdata');
+        
+        // Si hay lista de id de tareas sólo queremos ésas
+        if ($tids && count($tids)) {
+            $tasks = $tasks->filter(array('id__in' => $tids));
+        }
+        
+        $tasks = $tasks->annotate(array(
             'collab_count' => SqlAggregate::COUNT('thread__collaborators'),
             'attachment_count' => SqlAggregate::COUNT('thread__entries__attachments'),
             'thread_count' => SqlAggregate::COUNT('thread__entries'),
@@ -200,10 +212,10 @@ class Export {
     }
 
 
-    static function saveTasks($sql, $filename, $how='csv') {
+    static function saveTasks($sql, $filename, $how='csv', $tids=false) {
 
         ob_start();
-        self::dumpTasks($sql, $how);
+        self::dumpTasks($sql, $how, $tids);
         $stuff = ob_get_contents();
         ob_end_clean();
         if ($stuff)
@@ -211,7 +223,68 @@ class Export {
 
         return false;
     }
+    
+    
+    static function dumpEquipment($sql, $how='csv', $tids=false) {
+        // Add custom fields to the $sql statement
+        $cdata = $fields = array();
+        foreach (EquipmentForm::getInstance()->getFields() as $f) {
+            // Ignore non-data fields
+            if (!$f->hasData() || $f->isPresentationOnly())
+                continue;
 
+            $name = $f->get('name') ?: 'field_'.$f->get('id');
+            $key = 'cdata.'.$name;
+            $fields[$key] = $f;
+            $cdata[$key] = $f->getLocal('label');
+        }
+        // Reset the $sql query
+        $equipments = $sql->models()
+            ->select_related('dept', 'cdata');
+        
+        // Si hay lista de id de tareas sólo queremos ésas
+        if ($tids && count($tids)) {
+            $equipments = $equipments->filter(array('id__in' => $tids));
+        }
+        
+        $equipments = $equipments->annotate(array(
+            'thread_count' => SqlAggregate::COUNT('thread__entries'),
+        ));
+
+        return self::dumpQuery($equipments,
+            array(
+                'cdata.id_inventario' => 'Nº inventario',
+                'cdata.name' =>           __('Name'),
+                'cdata.description' =>           __('Description'),
+                'dept::getLocalName' => __('Department'),
+                'status::getName' =>    __('Current Status'),
+                'created' => 'Adquisición',
+                'activation' => 'Inicio operación',
+                'deactivation' => 'Fecha mantenimiento',
+                'retirement' => 'Fecha retirada',
+                'thread_count' =>   __('Thread Count'),
+                'cdata.bookable' => 'Permite reservas',
+                'cdata.localizacion' => 'Localización'
+            ),
+            $how,
+            array('modify' => function(&$record, $keys) use ($fields) {
+                foreach ($fields as $k=>$f) {
+                    if (($i = array_search($k, $keys)) !== false) {
+                        $record[$i] = $f->export($f->to_php($record[$i]));
+                    }
+                }
+                return $record;
+            })
+            );
+    }
+    
+    static  function saveEquipment($sql, $filename, $how='csv', $tids=false) {
+        Http::download($filename, "text/$how");
+        self::dumpEquipment($sql, $how, $tids);
+        exit;
+    }
+
+    
     static function saveUsers($sql, $filename, $how='csv') {
 
         $exclude = array('name', 'email');

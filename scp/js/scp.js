@@ -9,7 +9,7 @@
 function checkbox_checker(formObj, min, max) {
 
     var max = max || 0;
-    var min = min || 1;
+    var min = min || 0;
     var checked=$('input:checkbox:checked', formObj).length;
     var action= action?action:"process";
     if (max>0 && checked > max ){
@@ -272,6 +272,8 @@ var scp_prep = function() {
             $el.val(obj.value);
             if (obj.id) {
                 form.append($('<input type="hidden" name="number">').val(obj.id))
+            } else if (obj.matches) {
+                form.append($('<input type="hidden" name="matches">').val(obj.matches))
             }
             form.submit();
         },

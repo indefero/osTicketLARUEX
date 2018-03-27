@@ -33,7 +33,7 @@ if(OSTINSTALLED!=TRUE){
 define('SECRET_SALT','tOLMfxPD5UW3o8LgJl2Gyiqxf4jFhMjK');
 
 #Default admin email. Used only on db connection issues and related alerts.
-define('ADMIN_EMAIL','carlos.nunez@juntaex.es');
+define('ADMIN_EMAIL','administrador@gmail.com');
 
 # Database Options
 # ---------------------------------------------------

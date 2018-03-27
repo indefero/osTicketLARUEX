@@ -94,18 +94,18 @@ if (!$errors['err']) {
             }
             ?>
             
-            <!--<span class="action-button pull-right" data-placement="bottom" data-dropdown="#action-dropdown-print" data-toggle="tooltip" title="<?php echo __('Print'); ?>">
+            <span class="action-button pull-right" data-placement="bottom" data-dropdown="#action-dropdown-print" data-toggle="tooltip" title="<?php echo __('Print'); ?>">
                 <i class="icon-caret-down pull-right"></i>
                 <a id="equipment-print" href="equipment.php?id=<?php echo $equipment->getId(); ?>&a=print"><i class="icon-print"></i></a>
             </span>
             <div id="action-dropdown-print" class="action-dropdown anchor-right">
               <ul>
                  <li><a class="no-pjax" target="_blank" href="equipment.php?id=<?php echo $equipment->getId(); ?>&a=print&notes=0"><i
-                 class="icon-file-alt"></i> <?php echo __('Ticket Thread'); ?></a>
+                 class="icon-file-alt"></i> <?php echo 'Asunto del item'; ?></a>
                  <li><a class="no-pjax" target="_blank" href="equipment.php?id=<?php echo $equipment->getId(); ?>&a=print&notes=1"><i
                  class="icon-file-text-alt"></i> <?php echo __('Thread + Internal Notes'); ?></a>
               </ul>
-            </div>-->
+            </div>
             
             <a href="#post-note" id="post-note" class="post-response action-button"
                     data-placement="bottom" data-toggle="tooltip"
@@ -122,7 +122,7 @@ if (!$errors['err']) {
         <div class="flush-left">
              <h2><a href="equipment.php?id=<?php echo $equipment->getId(); ?>"
              title="<?php echo __('Reload'); ?>"><i class="icon-refresh"></i>
-             <?php echo sprintf('#%s: %s', str_pad($equipment->getId(), 6, "0", STR_PAD_LEFT), $equipment->getName()); ?></a>
+             <?php echo sprintf('%s', $equipment->getName()); ?></a>
             </h2>
         </div>
     </div>

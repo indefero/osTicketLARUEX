@@ -1067,6 +1067,27 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
         $_SESSION['PAPER_SIZE'] = $options['psize'];
         exit;
     }
+    
+    static function multiplePdfExport($query, $options=array(), $tids=false) {
+        global $thisstaff;
+
+        require_once(INCLUDE_DIR.'class.pdf.php');
+        if (!isset($options['psize'])) {
+            if ($_SESSION['PAPER_SIZE'])
+                $psize = $_SESSION['PAPER_SIZE'];
+            elseif (!$thisstaff || !($psize = $thisstaff->getDefaultPaperSize()))
+                $psize = 'Letter';
+
+            $options['psize'] = $psize;
+        }
+
+        $pdf = new Tasks2PDF($query, $options, $tids);
+        $name = 'Tasks-'.strftime('%Y%m%d').'.pdf';
+        Http::download($name, 'application/pdf', $pdf->Output($name, 'S'));
+        //Remember what the user selected - for autoselect on the next print.
+        $_SESSION['PAPER_SIZE'] = $options['psize'];
+        exit;
+    }
 
     /* util routines */
     function replaceVars($input, $vars = array()) {
@@ -1671,7 +1692,7 @@ extends AbstractForm {
                 'assignee' => new AssigneeField(array(
                     'id'=>2,
                     'label' => __('Assignee'),
-                    'required' => false,
+                    'required' => true,
                     'layout' => new GridFluidCell(6),
                     ))
 

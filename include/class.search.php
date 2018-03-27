@@ -141,6 +141,25 @@ class SearchInterface {
                 )
             );
             break;
+            
+        case $model instanceof Equipment:
+            $cdata = array();
+            foreach ($model->loadDynamicData() as $a)
+                if ($v = $a->getSearchable())
+                    $cdata[] = $v;
+            $this->update($model, $model->getId(),
+                trim(implode("\n", $cdata)),
+                $new === true,
+                array(
+                    'title'=>       Format::searchable($model->getName()),
+                    'status'=>      $model->getStatus(),
+                    'dept_id'=>     $model->getDeptId(),
+                    // Sorting and ranging preferences
+                    'created'=>     $model->getCreateDate(),
+                    // Add last-updated timestamp
+                )
+            );
+            break;
 
         case $model instanceof User:
             $cdata = array();
@@ -387,6 +406,31 @@ class MysqlSearchBackend extends SearchBackend {
                 )
             ));
             $criteria->filter(array('ticket_id'=>new SqlCode('Z1.`ticket_id`')));
+            break;
+            
+        case 'EquipmentModel':
+            if ($addRelevance) {
+                $criteria = $criteria->extra(array(
+                    'select' => array(
+                        '__relevance__' => 'Z1.`relevance`',
+                    ),
+                ));
+            }
+            $criteria->extra(array(
+                'tables' => array(
+                    str_replace(array(':', '{}'), array(TABLE_PREFIX, $search),
+                    "(SELECT COALESCE(Z3.`object_id`, Z5.`id`, Z8.`ticket_id`) as `id`, SUM({}) AS `relevance` "
+                        . "FROM `:_search` Z1 "
+                            . "LEFT JOIN `:thread_entry` Z2 ON (Z1.`object_type` = 'H' AND Z1.`object_id` = Z2.`id`) "
+                            . "LEFT JOIN `:thread` Z3 ON (Z2.`thread_id` = Z3.`id` AND Z3.`object_type` = 'E') "
+                            . "LEFT JOIN `:equipment` Z5 ON (Z1.`object_type` = 'E' AND Z1.`object_id` = Z5.`id`) "
+                            . "LEFT JOIN `:user` Z6 ON (Z6.`id` = Z1.`object_id` and Z1.`object_type` = 'U') "
+                            . "LEFT JOIN `:organization` Z7 ON (Z7.`id` = Z1.`object_id` AND Z7.`id` = Z6.`org_id` AND Z1.`object_type` = 'O') "
+                            . "LEFT JOIN :ticket Z8 ON (Z8.`user_id` = Z6.`id`) "
+                        . "WHERE {} GROUP BY `id`) Z1"),
+                )
+            ));
+            $criteria->filter(array('id'=>new SqlCode('Z1.`id`')));
             break;
 
         case 'User':

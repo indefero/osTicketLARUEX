@@ -1670,6 +1670,8 @@ class ChoiceField extends FormField {
         $selection = array();
         if ($value && is_array($value)) {
             $selection = $value;
+        } elseif ($value && $value instanceof Dept) {
+            $selection = $value->getId();   // Lo añado para que se guarde como CDATA el id del departamento preasignado del equipamiento
         } elseif (isset($choices[$value]))
             $selection[] = $choices[$value];
         elseif ($this->get('default'))

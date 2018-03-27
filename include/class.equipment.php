@@ -35,9 +35,20 @@ class EquipmentModel extends VerySimpleModel {
                 'list' => false,
                 'null' => true,
             ),
+            'cdata' => array(
+                'reverse' => 'EquipmentCData.equipment',
+                'list' => false,
+            ),
             'reservations' => array(
                 'reverse' => 'EquipmentReservation.equipment'
-            )
+            ),
+            'entries' => array(
+                'constraint' => array(
+                    "'E'" => 'DynamicFormEntry.object_type',
+                    'id' => 'DynamicFormEntry.object_id',
+                ),
+                'list' => true,
+            ),
         )
     );
     
@@ -96,13 +107,42 @@ class EquipmentModel extends VerySimpleModel {
 
 RolePermission::register(/* @trans */ 'Equipment', EquipmentModel::getPermissions(), true);
 
+class EquipmentCData extends VerySimpleModel {
+    static $meta = array(
+        'pk' => array('equipment_id'),
+        'table' => EQUIPMENT_CDATA_TABLE,
+        'joins' => array(
+            'equipment' => array(
+                'constraint' => array('equipment_id' => 'EquipmentModel.id'),
+            ),
+        ),
+    );
+}
+
 class Equipment extends EquipmentModel
 implements Threadable {
     
     var $_entries;
+    var $_answers;
     
     function __onload() {
         $this->loadDynamicData();
+    }
+    
+    function __cdata($field, $ftype=null) {
+
+        foreach ($this->getDynamicData() as $e) {
+            // Make sure the form type matches
+            if (!$e->form
+                    || ($ftype && $ftype != $e->form->get('type')))
+                continue;
+
+            // Get the named field and return the answer
+            if ($a = $e->getAnswer($field))
+                return $a;
+        }
+
+        return null;
     }
 
     function loadDynamicData($force=false) {
@@ -111,16 +151,17 @@ implements Threadable {
             foreach (DynamicFormEntryAnswer::objects()
                 ->filter(array(
                     'entry__object_id' => $this->getId(),
-                    'entry__object_type' => 'E'
+                    'entry__object_type' => ObjectModel::OBJECT_TYPE_EQUIPMENT
                 )) as $answer
             ) {
-                $tag = mb_strtolower($answer->field->name)
-                    ?: 'field.' . $answer->field->id;
-                    $this->_answers[$tag] = $answer;
+                $tag = mb_strtolower($answer->field->name) ?: 'field.' . $answer->field->id;
+                $this->_answers[$tag] = $answer;
             }
         }
         return $this->_answers;
     }
+    
+    
     
     function hasState($state) {
         return  strcasecmp($this->getState(), $state) == 0;
@@ -181,6 +222,14 @@ implements Threadable {
     function getName(){
         return $this->name;
     }
+    
+    function getSubject() {
+        return (string) $this->_answers['description'];
+    }
+    
+    function getDescription() {
+        return $this->__cdata('description', ObjectModel::OBJECT_TYPE_EQUIPMENT);
+    }
 
     function getCreateDate() {
         return $this->created;
@@ -192,6 +241,18 @@ implements Threadable {
     
     function getDeactivationDate() {
         return $this->deactivation;
+    }
+    
+    function addDynamicData($data) {
+
+        $tf = EquipmentForm::getInstance($this->id, true);
+        foreach ($tf->getFields() as $f)
+            if (isset($data[$f->get('name')]))
+                $tf->setAnswer($f->get('name'), $data[$f->get('name')]);
+
+        $tf->save();
+
+        return $tf;
     }
     
     function getDynamicData() {
@@ -660,6 +721,26 @@ implements Threadable {
 
         return $note;
     }
+    
+    // Print equipment... export the equipment thread as PDF.
+    function pdfExport($psize='Letter', $notes=false) {
+        global $thisstaff;
+
+        require_once(INCLUDE_DIR.'class.pdf.php');
+        if (!is_string($psize)) {
+            if ($_SESSION['PAPER_SIZE'])
+                $psize = $_SESSION['PAPER_SIZE'];
+            elseif (!$thisstaff || !($psize = $thisstaff->getDefaultPaperSize()))
+                $psize = 'Letter';
+        }
+
+        $pdf = new Equipment2PDF($this, $psize, $notes);
+        $name = 'Equipment-'.$this->getId().'.pdf';
+        Http::download($name, 'application/pdf', $pdf->Output($name, 'S'));
+        //Remember what the user selected - for autoselect on the next print.
+        $_SESSION['PAPER_SIZE'] = $psize;
+        exit;
+    }
 
     function delete($comments='') {
         global $ost, $thisstaff;
@@ -902,7 +983,7 @@ implements Threadable {
         }
         
         if ($vars['default_formdata']['bookable'])
-            $task->bookable = $vars['default_formdata']['bookable'];
+            $equipment->bookable = $vars['default_formdata']['bookable'];
         
         if (!($thread = EquipmentThread::create($equipment->getId()))) {
             return null;
@@ -977,6 +1058,12 @@ class EquipmentForm extends DynamicForm {
     static $internalForm;
 
     static $forms;
+    
+    static $cdata = array(
+            'table' => EQUIPMENT_CDATA_TABLE,
+            'object_id' => 'equipment_id',
+            'object_type' => ObjectModel::OBJECT_TYPE_EQUIPMENT,
+        );
 
     static function objects() {
         $os = parent::objects();

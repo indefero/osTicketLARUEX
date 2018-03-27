@@ -34,11 +34,6 @@ $queue_columns = array(
             'width' => '8%',
             'heading' => __('Number'),
             ),
-        'date' => array(
-            'width' => '20%',
-            'heading' => __('Date Created'),
-            'sort_col' => 'created',
-            ),
         'title' => array(
             'width' => '38%',
             'heading' => __('Title'),
@@ -56,6 +51,16 @@ $queue_columns = array(
         'assignee' => array(
             'width' => '16%',
             'heading' => __('Assigned To'),
+            ),
+        'date' => array(
+            'width' => '20%',
+            'heading' => __('Date Created'),
+            'sort_col' => 'created',
+            ),
+        'status' => array(
+            'width' => '8.4%',
+            'heading' => __('Status'),
+            'sort_col' => 'closed',
             ),
         );
 
@@ -88,6 +93,7 @@ case 'assigned':
     break;
 default:
 case 'search':
+    $search = true;
     $queue_sort_options = array('closed', 'updated', 'created', 'number', 'hot');
     // Consider basic search
     if ($_REQUEST['query']) {
@@ -95,6 +101,10 @@ case 'search':
         $tasks = $tasks->filter(Q::any(array(
             'number__startswith' => $_REQUEST['query'],
             'cdata__title__contains' => $_REQUEST['query'],
+            'entries__answers__value__contains' => $_REQUEST['query'],
+            'staff__firstname__contains' => $_REQUEST['query'],
+            'staff__lastname__contains' => $_REQUEST['query'],
+            'team__name__contains' => $_REQUEST['query'],
         )));
         unset($_SESSION[$queue_key]);
         break;
@@ -343,6 +353,12 @@ if ($thisstaff->hasPerm(Task::PERM_DELETE, false)) {
             <?php } ?>
 
             <?php
+            // Swap some columns based on the queue.
+            if ($search)
+                unset($queue_columns['date']);
+            else
+                unset($queue_columns['status']);
+            
             // Query string
             unset($args['sort'], $args['dir'], $args['_pjax']);
             $qstr = Http::build_query($args);
@@ -422,8 +438,6 @@ if ($thisstaff->hasPerm(Task::PERM_DELETE, false)) {
                     href="tasks.php?id=<?php echo $T['id']; ?>"
                     data-preview="#tasks/<?php echo $T['id']; ?>/preview"
                     ><?php echo $number; ?></a></td>
-                <td align="center" nowrap><?php echo
-                Format::datetime($T[$date_col ?: 'created']); ?></td>
                 <td><a <?php if ($flag) { ?> class="Icon <?php echo $flag; ?>Ticket" title="<?php echo ucfirst($flag); ?> Ticket" <?php } ?>
                     href="tasks.php?id=<?php echo $T['id']; ?>"><?php
                     echo $title; ?></a>
@@ -442,6 +456,15 @@ if ($thisstaff->hasPerm(Task::PERM_DELETE, false)) {
                     echo $localizacion;
                 ?></td>
                 <td nowrap>&nbsp;<?php echo $assignee; ?></td>
+                <td align="center" nowrap>
+                    <?php
+                        if ($search) {
+                            echo $T['isopen']?'Abierta':'Cerrada';
+                        } else {
+                            echo Format::datetime($T[$date_col ?: 'created']);
+                        }
+                    ?>
+                </td>
             </tr>
             <?php
             } //end of foreach
@@ -469,12 +492,19 @@ if ($thisstaff->hasPerm(Task::PERM_DELETE, false)) {
     <?php
     if ($total>0) { //if we actually had any tasks returned.
         echo '<div>&nbsp;'.__('Page').':'.$pageNav->getPageLinks().'&nbsp;';
-        echo sprintf('<a class="export-csv no-pjax" href="?%s">%s</a>',
+        echo sprintf('<a id="export" class="export-csv no-pjax" href="?%s">%s</a>',
                 Http::build_query(array(
                         'a' => 'export', 'h' => $hash,
                         'status' => $_REQUEST['status'])),
                 __('Export'));
-        echo '&nbsp;<i class="help-tip icon-question-sign" href="#export"></i></div>';
+        echo '&nbsp;<i class="help-tip icon-question-sign" href="#export"></i>';
+        echo ' ';
+        echo sprintf('<a id="print" class="no-pjax" href="?%s">%s</a>',
+                Http::build_query(array(
+                        'a' => 'print', 'h' => $hash,
+                        'status' => $_REQUEST['status'])),
+                __('Print'));
+        echo '&nbsp;<i class="help-tip icon-question-sign" href="#print"></i></div>';
     } ?>
     </form>
 </div>
@@ -518,6 +548,38 @@ $(function() {
         }, $options);
 
         return false;
+    });
+    
+    // Introducimos como parámetros GET la lista de id de tareas seleccionadas
+    // y un contador. Si comentamos o eliminamos esto se exportarán todas las tareas
+    // independientemente de las seleccionadas.
+    $("#export").click(function(e){
+        e.preventDefault();
+        var $form = $('form#tasks');
+        var count = checkbox_checker($form);
+        var tids = $('.ckb:checked', $form).map(function() {
+                return this.value;
+            }).get();
+        var url = 'tasks.php'+$(this).attr('href')
+        //+'&count='+count
+        +'&tids='+tids.join(',');
+        window.location.href=url;
+    });
+    
+    // Introducimos como parámetros GET la lista de id de tareas seleccionadas
+    // y un contador. Si comentamos o eliminamos esto se imprimirán todas las tareas
+    // independientemente de las seleccionadas.
+    $("#print").click(function(e){
+        e.preventDefault();
+        var $form = $('form#tasks');
+        var count = checkbox_checker($form);
+        var tids = $('.ckb:checked', $form).map(function() {
+                return this.value;
+            }).get();
+        var url = 'tasks.php'+$(this).attr('href')
+        //+'&count='+count
+        +'&tids='+tids.join(',');
+        window.location.href=url;
     });
 
     $('[data-toggle=tooltip]').tooltip();

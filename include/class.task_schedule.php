@@ -1439,7 +1439,7 @@ extends AbstractForm {
                 'assignee' => new AssigneeField(array(
                     'id'=>4,
                     'label' => __('Assignee'),
-                    'required' => false,
+                    'required' => true,
                     'layout' => new GridFluidCell(6),
                     ))
 

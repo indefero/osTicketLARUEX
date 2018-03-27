@@ -103,6 +103,7 @@ class Bootstrap {
         define('TICKET_PRIORITY_TABLE',$prefix.'ticket_priority');
         
         define('EQUIPMENT_TABLE',$prefix.'equipment');
+        define('EQUIPMENT_CDATA_TABLE', $prefix.'equipment__cdata');
         define('EQUIPMENT_STATUS_TABLE', $prefix.'equipment_status');
         define('EQUIPMENT_RESERVATION_TABLE', $prefix.'equipment_booking');
         define('HIST_RESERVATION_TABLE', $prefix.'equipment_booking_hist');

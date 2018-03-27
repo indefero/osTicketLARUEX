@@ -130,10 +130,10 @@ $qstr .= '&amp;order='.($order=='DESC' ? 'ASC' : 'DESC');
                 <td>&nbsp;<?php echo Format::datetime($sla->getUpdateDate()); ?></td>
                 <td>&nbsp;<?php 
                     if ($id = $sla->getAlertStaff()) {
-                        if ($id[0] == 's') {
-                            echo Staff::lookup(substr($id, 1))->getName();
-                        } elseif ($id[0] == 't') {
-                            echo Team::lookup(substr($id, 1))->getName();
+                        if ($id[0] == 's' && ($staff=Staff::lookup(substr($id, 1)))) {
+                            echo $staff->getName();
+                        } elseif ($id[0] == 't' && ($team=Team::lookup(substr($id, 1)))) {
+                            echo $team->getName();
                         }
                     }
                 ?></td>

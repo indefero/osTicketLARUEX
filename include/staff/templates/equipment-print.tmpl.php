@@ -16,30 +16,30 @@
   height: auto;
   margin: 0;
 }
-#ticket_thread .message,
-#ticket_thread .response,
-#ticket_thread .note {
+#equipment_thread .message,
+#equipment_thread .response,
+#equipment_thread .note {
     margin-top:10px;
     border:1px solid #aaa;
     border-bottom:2px solid #aaa;
 }
-#ticket_thread .header {
+#equipment_thread .header {
     text-align:left;
     border-bottom:1px solid #aaa;
     padding:3px;
     width: 100%;
     table-layout: fixed;
 }
-#ticket_thread .message .header {
+#equipment_thread .message .header {
     background:#C3D9FF;
 }
-#ticket_thread .response .header {
-    background:#DDD;
+#equipment_thread .response .header {
+    background:#FFE0B3;
 }
-#ticket_thread .note .header {
+#equipment_thread .note .header {
     background:#FFE;
 }
-#ticket_thread .info {
+#equipment_thread .info {
     padding:5px;
     background: snow;
     border-top: 0.3mm solid #ccc;
@@ -103,7 +103,7 @@ div.hr {
     <table class="meta-data" cellpadding="0" cellspacing="0" width="100%">
         <tr>
             <td class="flush-left">
-                <?php if ($logo = $cfg->getClientLogo()) { ?>
+                <?php if ($logo = $cfg->getStaffLogo()) { ?>
                     <img src="<?php echo INCLUDE_DIR . 'fpdf/' . $logo->getKey().$logo->getName(); ?>" class="logo"/>
                 <?php } else { ?>
                     <img src="<?php echo INCLUDE_DIR . 'fpdf/print-logo.png'; ?>" class="logo"/>
@@ -121,8 +121,8 @@ div.hr {
 <htmlpagefooter name="def" style="display:none">
     <div class="hr">&nbsp;</div>
     <table width="100%"><tr><td class="flush-left">
-        Ticket #<?php echo $ticket->getNumber(); ?> printed by
-        <?php echo $thisclient->getName()->getFirst(); ?> on
+        Equipment #<?php echo $equipment->getId(); ?> printed by
+        <?php echo $thisstaff->getUserName(); ?> on
         <?php echo Format::daydatetime(Misc::gmtime()); ?>
     </td>
     <td class="flush-right">
@@ -132,44 +132,53 @@ div.hr {
 </htmlpagefooter>
 
 <!-- Ticket metadata -->
-<h1>Ticket #<?php echo $ticket->getNumber(); ?></h1>
+<h1><?php echo $equipment->getName(); ?></h1>
 <table class="meta-data" cellpadding="0" cellspacing="0">
-<tbody>
-<tr>
-    <th><?php echo __('Status'); ?></th>
-    <td><?php echo $ticket->getStatus(); ?></td>
-    <th><?php echo __('Name'); ?></th>
-    <td><?php echo $ticket->getOwner()->getName(); ?></td>
-</tr>
-<tr>
-    <th><?php echo __('Priority'); ?></th>
-    <td><?php echo $ticket->getPriority(); ?></td>
-    <th><?php echo __('Email'); ?></th>
-    <td><?php echo $ticket->getEmail(); ?></td>
-</tr>
-<tr>
-    <th><?php echo __('Department'); ?></th>
-    <td><?php echo $ticket->getDept(); ?></td>
-    <th><?php echo __('Phone'); ?></th>
-    <td><?php echo $ticket->getPhoneNumber(); ?></td>
-</tr>
-<tr>
-    <th><?php echo __('Create Date'); ?></th>
-    <td><?php echo Format::datetime($ticket->getCreateDate()); ?></td>
-    <th><?php echo __('Source'); ?></th>
-    <td><?php echo $ticket->getSource(); ?></td>
-</tr>
-</tbody>
+    <tbody>
+        <tr>
+            <td width="50%">
+                <table>
+                    <tr>
+                        <th><?php echo __('Status'); ?></th>
+                        <td><?php echo $equipment->getStatus(); ?></td>
+                    </tr>
+                    <tr>
+                        <th><?php echo __('Create Date'); ?></th>
+                        <td><?php echo Format::datetime($equipment->getCreateDate()); ?></td>
+                    </tr>
+                </table>
+            </td>
+            <td width="50%">
+                <table>
+                    <tr>
+                        <th><?php echo __('Department'); ?></th>
+                        <td><?php echo $equipment->getDept(); ?></td>
+                    </tr>
+                    <tr>
+                        <?php if ($equipment->isActive()) { ?>
+                            <th><?php echo 'Activo desde'; ?></th>
+                            <td><?php echo $equipment->getActivationDate(); ?></td>
+                        <?php } elseif ($equipment->isInactive()) { ?>
+                            <th><?php echo 'Inactivo desde'; ?></th>
+                            <td><?php echo $equipment->getDeactivationDate(); ?></td>
+                        <?php } elseif ($equipment->isRetired()) { ?>
+                            <th><?php echo 'Retirado desde'; ?></th>
+                            <td><?php echo $equipment->getRetireDate(); ?></td>
+                        <?php } ?>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </tbody>
 </table>
 
 <!-- Custom Data -->
 <?php
-foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
-    // Skip core fields shown earlier in the ticket view
+foreach (DynamicFormEntry::forEquipment($equipment->getId()) as $form) {
+    // Skip core fields shown earlier in the equipment view
     $answers = $form->getAnswers()->exclude(Q::any(array(
         'field__flags__hasbit' => DynamicFormField::FLAG_EXT_STORED,
-        Q::not(array('field__flags__hasbit' => DynamicFormField::FLAG_CLIENT_VIEW)),
-        'field__name__in' => array('subject', 'priority'),
+        'field__name__in' => array('name', 'description')
     )));
     if (count($answers) == 0)
         continue;
@@ -193,16 +202,18 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
 } ?>
 
 <!-- Ticket Thread -->
-<h2><?php echo $ticket->getSubject(); ?></h2>
-<div id="ticket_thread">
+<h2><?php echo $equipment->getSubject(); ?></h2>
+<div id="equipment_thread">
 <?php
 $types = array('M', 'R');
+if ($this->includenotes)
+    $types[] = 'N';
 
-if ($thread = $ticket->getThreadEntries($types)) {
+if ($thread = $equipment->getThreadEntries($types)) {
     $threadTypes=array('M'=>'message','R'=>'response', 'N'=>'note');
     foreach ($thread as $entry) { ?>
         <div class="thread-entry <?php echo $threadTypes[$entry->type]; ?>">
-            <table class="header"><tr><td>
+            <table class="header" style="width:100%"><tr><td>
                     <span><?php
                         echo Format::datetime($entry->created);?></span>
                     <span style="padding:0 1em" class="faded title"><?php
@@ -215,7 +226,6 @@ if ($thread = $ticket->getThreadEntries($types)) {
             </tr></table>
             <div class="thread-body">
                 <div><?php echo $entry->getBody()->display('pdf'); ?></div>
-            </div>
             <?php
             if ($entry->has_attachments
                     && ($files = $entry->attachments)) { ?>
@@ -228,6 +238,7 @@ if ($thread = $ticket->getThreadEntries($types)) {
 <?php           } ?>
                 </div>
 <?php       } ?>
+            </div>
         </div>
 <?php }
 } ?>

@@ -71,7 +71,8 @@ elseif (!$thisstaff || !($thisstaff->getId() || $thisstaff->isValid())) {
 }
 
 // Browsers shouldn't suggest saving that username/password
-Http::response(422);
+// Comentado porque WGET no puede capturar el código del login para obtener el CSRF
+//Http::response(422);
 
 define("OSTSCPINC",TRUE); //Make includes happy!
 include_once(INCLUDE_DIR.'staff/login.tpl.php');
