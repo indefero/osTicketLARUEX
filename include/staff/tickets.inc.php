@@ -108,10 +108,14 @@ case 'assigned':
     $status='open';
     $staffId=$thisstaff->getId();
     $results_type=__('My Tickets');
-    $tickets->filter(Q::any(array(
-        'staff_id'=>$thisstaff->getId(),
-        Q::all(array('staff_id' => 0, 'team_id__gt' => 0)),
-    )));
+    
+    $assigned = Q::any(array(
+        'staff_id' => $thisstaff->getId(),
+    ));
+    if ($teams = array_filter($thisstaff->getTeams())) 
+        $assigned->add(array('team_id__in' => $teams));
+    $tickets->filter(Q::any($assigned));
+    
     $queue_sort_options = array('updated', 'priority,updated',
         'priority,created', 'priority,due', 'due', 'answered', 'number',
         'hot');
@@ -236,7 +240,7 @@ if (!$view_all_tickets) {
     if ($teams = array_filter($thisstaff->getTeams())) 
         $assigned->add(array('team_id__in' => $teams));
 
-    $visibility = Q::all(new Q(array('status__state'=>'open', $assigned)));
+    $visibility = Q::any(new Q(array('status__state'=>'open', $assigned)));
 
     // -- Routed to a department of mine
     if (!$thisstaff->showAssignedOnly() && ($depts=$thisstaff->getDepts()))
