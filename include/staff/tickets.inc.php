@@ -227,15 +227,16 @@ if ($status)
 // Impose visibility constraints
 // ------------------------------------------------------------
 if (!$view_all_tickets) {
+    error_log ("Sólo los míos");
     // -- Open and assigned to me
     $assigned = Q::any(array(
         'staff_id' => $thisstaff->getId(),
     ));
     // -- Open and assigned to a team of mine
-    if ($teams = array_filter($thisstaff->getTeams()))
+    if ($teams = array_filter($thisstaff->getTeams())) 
         $assigned->add(array('team_id__in' => $teams));
 
-    $visibility = Q::any(new Q(array('status__state'=>'open', $assigned)));
+    $visibility = Q::all(new Q(array('status__state'=>'open', $assigned)));
 
     // -- Routed to a department of mine
     if (!$thisstaff->showAssignedOnly() && ($depts=$thisstaff->getDepts()))
@@ -243,6 +244,8 @@ if (!$view_all_tickets) {
 
     $tickets->filter(Q::any($visibility));
 }
+
+error_log("Ahora tenemos ".$tickets->count());
 
 // TODO :: Apply requested quick filter
 
