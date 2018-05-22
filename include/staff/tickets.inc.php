@@ -231,7 +231,6 @@ if ($status)
 // Impose visibility constraints
 // ------------------------------------------------------------
 if (!$view_all_tickets) {
-    error_log ("Sólo los míos");
     // -- Open and assigned to me
     $assigned = Q::any(array(
         'staff_id' => $thisstaff->getId(),
@@ -248,8 +247,6 @@ if (!$view_all_tickets) {
 
     $tickets->filter(Q::any($visibility));
 }
-
-error_log("Ahora tenemos ".$tickets->count());
 
 // TODO :: Apply requested quick filter
 
