@@ -614,7 +614,7 @@ implements RestrictedAccess, Threadable {
 
     function getDeptName() {
         if ($this->dept instanceof Dept)
-            return $this->dept->getFullName();
+            return $this->dept->getName();
     }
 
     function getPriorityId() {

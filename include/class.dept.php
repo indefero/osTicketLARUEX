@@ -595,13 +595,13 @@ implements TemplateVariable {
                 $name = $info['name'];
                 $loop = array($id=>true);
                 $parent = false;
-                while ($info['pid'] && ($info = $depts[$info['pid']])) {
-                    $name = sprintf('%s / %s', $info['name'], $name);
-                    if (isset($loop[$info['pid']]))
-                        break;
-                    $loop[$info['pid']] = true;
-                    $parent = $info;
-                }
+//                while ($info['pid'] && ($info = $depts[$info['pid']])) {
+//                    $name = sprintf('%s / %s', $info['name'], $name);
+//                    if (isset($loop[$info['pid']]))
+//                        break;
+//                    $loop[$info['pid']] = true;
+//                    $parent = $info;
+//                }
                 // Fetch local names
                 $names[$id] = $localize_this($id, $name);
             }
