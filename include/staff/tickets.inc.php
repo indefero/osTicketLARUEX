@@ -538,7 +538,7 @@ return false;">
                 $flag=null;
                 if($T['lock__staff_id'] && $T['lock__staff_id'] != $thisstaff->getId())
                     $flag='locked';
-                elseif($T['isoverdue'])
+                elseif($T['isoverdue'] && strcasecmp($T['status__state'],'open') == 0)
                     $flag='overdue';
 
                 $lc='';
@@ -559,7 +559,7 @@ return false;">
                 }
                 if ($T["verified"])
                     $background_color = "#CCCCFF;";
-                elseif ($T["isoverdue"] > 0 && !$T["sla__name"])  // Ha vencido definitivamente
+                elseif ($T["isoverdue"] > 0 && !$T["sla__name"] && strcasecmp($T['status__state'],'open') == 0)  // Ha vencido definitivamente y está abierto
                     $background_color = "#FFCCCC;";
                 else
                     unset($background_color);
