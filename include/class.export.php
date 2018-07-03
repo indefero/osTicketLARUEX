@@ -79,12 +79,17 @@ class Export {
                     ->filter(array('ticket__ticket_id' => new SqlField('ticket_id', 1)))
                     ->exclude(array('entries__flags__hasbit' => ThreadEntry::FLAG_HIDDEN))
                     ->aggregate(array('count' => SqlAggregate::COUNT('entries__id'))),*/
-                'descripcion' => DynamicFormEntry::objects()
+                'descripcion' => TicketThread::objects()
+                        ->values('entries__body')
+                        ->filter(array('ticket__ticket_id' => new SqlField('ticket_id', 1),
+                                'entries__type' => 'M'))
+                        ->limit(1),
+                /*'descripcion' => DynamicFormEntry::objects()
                     ->values('answers__value')
                     ->filter(array('answers__field__name' => 'descripcion',
                             'object_id' => new SqlField('ticket_id', 1),
                             'object_type' => 'T',
-                            'form__title' => 'Notificación y cierre de desviaciones')),  // OJO! No se puede cambiar el nombre en la web!!
+                            'form__title' => 'Notificación y cierre de desviaciones')),  // OJO! No se puede cambiar el nombre en la web!!*/
                 'causas' => DynamicFormEntry::objects()
                     ->values('answers__value')
                     ->filter(array('answers__field__name' => 'causas',
@@ -102,9 +107,15 @@ class Export {
                     ->filter(array('answers__field__name' => 'acciones',
                             'object_id' => new SqlField('ticket_id', 1),
                             'object_type' => 'T',
+                            'form__title' => 'Notificación y cierre de desviaciones')),  // OJO! No se puede cambiar el nombre en la web!!
+                'tipo' => DynamicFormEntry::objects()
+                    ->values('answers__value')
+                    ->filter(array('answers__field__name' => 'tipo',
+                            'object_id' => new SqlField('ticket_id', 1),
+                            'object_type' => 'T',
                             'form__title' => 'Notificación y cierre de desviaciones'))  // OJO! No se puede cambiar el nombre en la web!!
             ));
-
+        
         // Fetch staff information
         // FIXME: Adjust Staff model so it doesn't do extra queries
         foreach (Staff::objects() as $S)
@@ -113,6 +124,7 @@ class Export {
         return self::dumpQuery($tickets,
             array(
                 'number' =>         __('Number'),
+                'tipo' =>           __('Tipo'),
                 'created' =>        __('Fecha Desviación'),
                 'cdata.subject' =>  __('Subject'),
                 'descripcion' => __('Description'),
